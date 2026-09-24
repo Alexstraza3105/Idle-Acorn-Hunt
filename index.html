@@ -46,6 +46,12 @@ aside h2{font-size:17px;margin:0 0 6px}aside h3{font:600 14px Fraunces,Georgia,s
 .ag button{background:var(--bg);border:2px solid var(--line);border-radius:12px;padding:6px 2px;cursor:pointer;color:var(--ink);font:inherit;font-size:12px}.ag button.on{border-color:var(--acc)}
 .ag svg{width:52px;height:52px;display:block;margin:0 auto 2px}
 .odds{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:8px 12px;margin-top:10px}.odds .sub{margin:6px 0 2px}
+.ab{position:fixed;top:calc(12px + env(safe-area-inset-top,0px));left:50%;transform:translateX(-50%);z-index:20;background:var(--acc);color:var(--onacc);padding:10px 16px;border-radius:14px;box-shadow:0 6px 20px rgba(0,0,0,.3);text-align:center;max-width:min(320px,90vw)}.ab[hidden]{display:none}.ab .sub{color:inherit;opacity:.85}
+details{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:0 12px;margin-bottom:8px}
+summary{cursor:pointer;font-weight:600;padding:10px 0}
+details.sec{background:none;border:0;border-radius:0;padding:0;margin:0}
+.sec>summary{list-style:none;display:flex;align-items:center;padding:0}.sec>summary::-webkit-details-marker{display:none}
+.sec>summary h2{margin:22px 0 8px}.sec>summary::after{content:'▾';margin-left:auto;color:var(--mute);font-size:18px}.sec:not([open])>summary::after{content:'▸'}details .it{background:none;border:0;padding:6px 0;margin:0;cursor:default}
 .sub{color:var(--mute);font-size:13px}
 .bank{display:flex;gap:10px;margin:16px 0}
 .bank div{flex:1;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:10px 14px}
@@ -73,17 +79,19 @@ div.it{cursor:default}
 <div class="sub" id="hs" style="text-align:center;margin-top:8px"></div>
 <div class="odds" id="od"></div>
 <div id="msg">Send the squirrel out to find acorns and seeds.</div>
-<h2>Farm</h2><div class="sub" id="fi" style="margin-bottom:8px"></div><div id="fl"></div>
-<h2>Upgrades</h2><div id="ul"></div>
-<h2>Special finds</h2><div id="sl"></div>
-<h2>Golden shop</h2><div id="gl"></div>
-<button class="pay" onclick="toast('Buying golden acorns is coming soon.')">💳 Get golden acorns (coming soon)</button>
+<details class="sec" data-s="farm" open ontoggle="secT(this)"><summary><h2>Farm</h2></summary><div class="sub" id="fi" style="margin-bottom:8px"></div><div id="fl"></div></details>
+<details class="sec" data-s="up" open ontoggle="secT(this)"><summary><h2>Upgrades</h2></summary><div id="ul"></div></details>
+<details class="sec" data-s="sp" open ontoggle="secT(this)"><summary><h2>Special finds</h2></summary><div id="sl"></div></details>
+<details class="sec" data-s="gold" open ontoggle="secT(this)"><summary><h2>Golden shop</h2></summary><div id="gl"></div>
+<button class="pay" onclick="toast('Buying golden acorns is coming soon.')">💳 Get golden acorns (coming soon)</button></details>
 <div id="sk"></div>
-<h2>Prestige</h2><div id="pl"></div>
+<details class="sec" data-s="ach" open ontoggle="secT(this)"><summary><h2>Achievements</h2></summary><div class="sub" id="ai" style="margin-bottom:8px"></div><div id="al"></div></details>
+<details class="sec" data-s="pres" open ontoggle="secT(this)"><summary><h2>Prestige</h2></summary><div id="pl"></div></details>
 <button class="link" id="rs" onclick="reset()">Reset save</button>
 <div class="foot">Ad space · <button class="link" style="margin:0" onclick="toast('Ad removal is coming soon.')">Remove ads</button> · <a href="privacy.html" style="color:inherit">Privacy</a></div>
 </main><aside id="st"></aside></div>
 <div class="ov" id="ov" hidden><div class="card"><h2 id="ovt" style="margin-top:0">Create your profile</h2><div class="sub" style="margin-bottom:4px">Username</div><input id="un" maxlength="16" placeholder="e.g. NuttyNora" autocomplete="off"><div class="sub" style="margin:14px 0 6px">Choose your squirrel</div><div id="ag" class="ag"></div><button class="mini" id="ovs" style="margin:0" onclick="saveProfile()">Start hunting</button><button class="link" id="ovc" style="margin-left:14px" onclick="closeProfile()" hidden>Cancel</button><div style="margin-top:12px"><button class="link" id="ovi" style="margin:0" onclick="loginUI()">Already have an account? Sign in</button></div></div></div>
+<div class="ab" id="ab" hidden></div>
 <div class="ov" id="ov2" hidden><div class="card" id="mc"></div></div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
@@ -94,28 +102,28 @@ const SP=[{id:'oak',n:'Oak Charm',e:'🌳',d:n=>'+'+5*n+'% harvest yield'},{id:'
 const G=[{id:'sack',n:'Acorn Sack',d:'Instantly get 5,000 acorns',e:'🎒',c:3},{id:'tonic',n:'Miracle Grow',d:'Every growing plot advances 5 hunts',e:'🧪',c:2},{id:'pouch',n:'Trinket Pouch',d:'+5 stack limit on every special find',e:'👜',c:5}];
 const PU=[{id:'keen',n:'Keen Nose',e:'👃',d:'+0.25% special find chance',max:10,c:l=>3+2*l},{id:'luck',n:'Golden Instinct',e:'💫',d:'+0.25% golden acorn chance',max:8,c:l=>4+2*l},{id:'farm',n:'Farmhand',e:'🧑‍🌾',d:'Acorn seeds grow 1 hunt faster (min 5)',max:7,c:l=>2*(l+1)},{id:'gfarm',n:'Golden Farmhand',e:'👩‍🌾',d:'Golden seeds grow 3 hunts faster (min 15)',max:5,c:l=>3*(l+1)},{id:'mkt',n:'Skin Market',e:'🏪',d:'Unlocks colour skins in the golden shop',max:1,c:l=>5}];
 const SK=[{id:'',n:'Forest',e:'🌲'},{id:'autumn',n:'Autumn',e:'🍁'},{id:'frost',n:'Frost',e:'❄️'},{id:'plum',n:'Plum',e:'🫐'}];
-const def=()=>({a:0,g:0,hc:1,ht:Date.now(),pf:{name:'',av:'red'},cap:5000,run:0,seed:1,gseed:0,plots:[null],up:{},sp:{oak:0,feather:0,clover:0,satchel:0},slot:0,mus:0,vol:50,T:{since:Date.now(),time:0,earned:0,hunts:0,seeds:0,gseeds:0,harv:0,gfound:0,sp:{oak:0,feather:0,clover:0,satchel:0}},P:{hw:0,n:0,lv:{}},skins:[''],skin:''});
+const def=()=>({a:0,g:0,hc:1,ht:Date.now(),pf:{name:'',av:'red'},ach:{},col:{},cap:5000,run:0,seed:1,gseed:0,plots:[null],up:{},sp:{oak:0,feather:0,clover:0,satchel:0},slot:0,mus:0,vol:50,T:{since:Date.now(),time:0,earned:0,hunts:0,seeds:0,gseeds:0,harv:0,gfound:0,sp:{oak:0,feather:0,clover:0,satchel:0}},P:{hw:0,n:0,lv:{}},skins:[''],skin:''});
 let S;try{S=Object.assign(def(),JSON.parse(localStorage.getItem(KEY)||'{}'))}catch(e){S=def()}
 for(const k in S.sp)if(S.T.sp[k]<S.sp[k])S.T.sp[k]=S.sp[k];S.T.earned=Math.max(S.T.earned,S.run);if(!S.T.since)S.T.since=Date.now();
 const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}};
 const fmt=n=>{n=Math.floor(n);return n>=1e6?(n/1e6).toFixed(2)+'M':n.toLocaleString()};
 const lv=id=>S.up[id]||0,pl=id=>S.P.lv[id]||0,lim=()=>5+5*S.slot;
 const need=k=>k=='g'?Math.max(15,30-3*pl('gfarm')):Math.max(5,12-pl('farm'));
-const yld=()=>Math.round(150*(1+.05*S.sp.oak)*(1+.25*lv('soil')));
+const yld=()=>Math.round(150*(1+.05*S.sp.oak)*(1+.25*lv('soil'))*(1+ab('yield')));
 const uc=u=>u.id=='store'?S.cap:Math.ceil(u.c*Math.pow(u.g,lv(u.id))),pc=()=>Math.ceil(200*Math.pow(3,S.plots.length-1));
-const gcst=x=>x.id=='pouch'?5*(S.slot+1):x.c,pgain=()=>Math.floor(Math.sqrt(S.run/1000));
+const gcst=x=>x.id=='pouch'?5*(S.slot+1):x.c,pgain=()=>Math.floor(Math.sqrt(S.run/1000)*(1+ab('heart')));
 function toast(t){$('msg').innerHTML=t}
 function gain(n){n=Math.floor(n);const t=Math.max(0,Math.min(n,S.cap-S.a));S.a+=t;S.run+=t;S.T.earned+=t;return t}
 function hunt(){
  accrue();if(S.hc<1)return;S.hc--;S.T.hunts++;
- const m=1+.5*lv('claws')+.05*S.sp.feather,gc=.03+.005*lv('whisk')+.005*S.sp.clover+.0025*pl('luck'),r=Math.random();let msg,n=0;
+ const m=1+.5*lv('claws')+.05*S.sp.feather+ab('hauls'),gc=.03+.005*lv('whisk')+.005*S.sp.clover+.0025*pl('luck')+ab('gold'),r=Math.random();let msg,n=0;
  if(r<gc){S.g++;S.T.gfound++;msg=AC(1)+' A golden acorn glinting in the roots!'}
  else if(r<gc+.25){n=Math.round((25+Math.random()*25)*m);msg='🍂 Big stash: +'+fmt(n)+' acorns!'}
  else{n=Math.round((5+Math.random()*10)*m);msg=AC()+' Dug up +'+fmt(n)+' acorns'}
  if(n&&gain(n)<n)msg+=' (storage full!)';
- if(Math.random()<.1+.01*S.sp.satchel){const k=1+Math.floor(Math.random()*3);S.seed+=k;S.T.seeds+=k;msg+='<br>🌱 Found '+k+' seed'+(k>1?'s':'')+'!'}
- if(Math.random()<.05){S.gseed++;S.T.gseeds++;msg+='<br>'+AC(1)+'🌱 Found a golden seed!'}
- if(Math.random()<.01+.0025*pl('keen')){const o=SP.filter(x=>S.sp[x.id]<lim());if(o.length){const x=o[Math.floor(Math.random()*o.length)];S.sp[x.id]++;S.T.sp[x.id]++;msg+='<br>'+x.e+' <b>Special find: '+x.n+'!</b> '+x.d(S.sp[x.id])+' in total'}}
+ if(Math.random()<.1+.01*S.sp.satchel+ab('seed')){const k=1+Math.floor(Math.random()*3);S.seed+=k;S.T.seeds+=k;msg+='<br>🌱 Found '+k+' seed'+(k>1?'s':'')+'!'}
+ if(Math.random()<.05+ab('gseed')){S.gseed++;S.T.gseeds++;msg+='<br>'+AC(1)+'🌱 Found a golden seed!'}
+ if(Math.random()<.01+.0025*pl('keen')+ab('special')){const o=SP.filter(x=>S.sp[x.id]<lim());if(o.length){const x=o[Math.floor(Math.random()*o.length)];S.sp[x.id]++;S.T.sp[x.id]++;msg+='<br>'+x.e+' <b>Special find: '+x.n+'!</b> '+x.d(S.sp[x.id])+' in total'}}
  S.plots.forEach(p=>{if(p&&p.h<need(p.k))p.h++});
  toast(msg);save();lists();ui()}
 function plant(i,k){if(S.plots[i])return;if(k=='g'){if(!S.gseed)return;S.gseed--}else{if(!S.seed)return;S.seed--}S.plots[i]={k,h:0};lists();ui();save()}
@@ -132,9 +140,9 @@ function skin(i){const x=SK[i];if(!S.skins.includes(x.id)){if(S.g<4)return;S.g-=
 let parm=0;
 function prestige(){if(S.run<UNL)return;
  if(!parm){parm=1;$('pb').textContent='Tap again: resets acorns, farm, upgrades and finds';setTimeout(()=>{parm=0;lists()},4000);return}
- const x=pgain(),k={g:S.g,slot:S.slot,skins:S.skins,skin:S.skin,P:S.P,mus:S.mus,vol:S.vol,T:S.T,pf:S.pf,cloudAt:S.cloudAt,cloudUid:S.cloudUid};S=Object.assign(def(),k);S.P.hw+=x;S.P.n++;parm=0;save();lists();ui();toast('🪵 Prestiged! +'+x+' Heartwood. A fresh forest awaits.')}
+ const x=pgain(),k={g:S.g,slot:S.slot,skins:S.skins,skin:S.skin,P:S.P,mus:S.mus,vol:S.vol,T:S.T,pf:S.pf,cloudAt:S.cloudAt,cloudUid:S.cloudUid,ach:S.ach,col:S.col};S=Object.assign(def(),k);S.P.hw+=x;S.P.n++;parm=0;save();lists();ui();toast('🪵 Prestiged! +'+x+' Heartwood. A fresh forest awaits.')}
 function lists(){
- odds();
+ odds();achList();
  const nd=need('n'),gd=need('g');
  $('fi').innerHTML=`🌱 ${S.seed} seeds · ${AC(1)}🌱 ${S.gseed} golden seeds<br>Acorn seed: ${nd} hunts to grow, harvests ${fmt(yld())} acorns. Golden seed: ${gd} hunts, harvests 1 golden acorn.`;
  $('fl').innerHTML=S.plots.map((p,i)=>{
@@ -143,9 +151,9 @@ function lists(){
   return `<div class="it"><span class="em">${d?'🧺':p.k=='g'?'🌟':'🌱'}</span><span class="tx"><b>Plot ${i+1}</b><small>${d?'Ready to harvest':(p.k=='g'?'Golden seed':'Acorn seed')+' · '+p.h+'/'+q+' hunts'}</small><div class="bar"><i style="width:${Math.min(100,100*p.h/q)}%"></i></div></span>${d?`<button class="mini" onclick="harvest(${i})">Harvest</button>`:''}</div>`}).join('')
   +(S.plots.length<PMAX?`<button class="it" data-k="a" data-c="${pc()}" onclick="buyPlot()"><span class="em">🟩</span><span class="tx"><b>Buy land</b><small>Plot ${S.plots.length+1}</small></span><span class="pr">${AC()} ${fmt(pc())}</span></button>`:'');
  $('ul').innerHTML=U.map((u,i)=>{const l=lv(u.id),mx=l>=u.max;return `<button class="it" data-k="a" data-c="${mx?1e99:uc(u)}" onclick="buyU(${i})"><span class="em">${u.e}</span><span class="tx"><b>${u.n}</b> Lv ${l}<small>${u.d}</small></span><span class="pr">${mx?'Max':AC()+' '+fmt(uc(u))}</span></button>`}).join('');
- $('sl').innerHTML=`<div class="sub" style="margin:-4px 0 8px">${(1+0.25*pl('keen')).toFixed(2)}% chance per hunt. Lost on prestige.</div>`+SP.map(x=>{const n=S.sp[x.id];return `<div class="it"><span class="em">${x.e}</span><span class="tx"><b>${x.n}</b> ${n}/${lim()}<small>${n?x.d(n):'Rare drop · '+x.d(1)+' each'}</small></span></div>`}).join('');
+ $('sl').innerHTML=`<div class="sub" style="margin:-4px 0 8px">${(1+0.25*pl('keen')+100*ab('special')).toFixed(2)}% chance per hunt. Lost on prestige.</div>`+SP.map(x=>{const n=S.sp[x.id];return `<div class="it"><span class="em">${x.e}</span><span class="tx"><b>${x.n}</b> ${n}/${lim()}<small>${n?x.d(n):'Rare drop · '+x.d(1)+' each'}</small></span></div>`}).join('');
  $('gl').innerHTML=G.map((x,i)=>`<button class="it gi" data-k="g" data-c="${gcst(x)}" onclick="buyG(${i})"><span class="em">${x.e}</span><span class="tx"><b>${x.n}</b><small>${x.d}</small></span><span class="pr">${AC(1)} ${gcst(x)}</span></button>`).join('');
- $('sk').innerHTML=pl('mkt')?'<h2>Skin market</h2>'+SK.map((x,i)=>{const o=S.skins.includes(x.id);return `<button class="it gi" ${o?'':'data-k="g" data-c="4"'} onclick="skin(${i})"><span class="em">${x.e}</span><span class="tx"><b>${x.n}</b><small>${o?(S.skin==x.id?'Equipped':'Tap to equip'):'Colour skin'}</small></span><span class="pr">${o?'':AC(1)+' 4'}</span></button>`}).join(''):'';
+ $('sk').innerHTML=pl('mkt')?`<details class="sec" data-s="skins" ${S.col.skins?'':'open'} ontoggle="secT(this)"><summary><h2>Skin market</h2></summary>`+SK.map((x,i)=>{const o=S.skins.includes(x.id);return `<button class="it gi" ${o?'':'data-k="g" data-c="4"'} onclick="skin(${i})"><span class="em">${x.e}</span><span class="tx"><b>${x.n}</b><small>${o?(S.skin==x.id?'Equipped':'Tap to equip'):'Colour skin'}</small></span><span class="pr">${o?'':AC(1)+' 4'}</span></button>`}).join('')+'</details>':'';
  $('pl').innerHTML=`<div class="sub" style="margin-bottom:8px">Heartwood 🪵 ${S.P.hw} · prestiges ${S.P.n}<br>Resets acorns, farm, upgrades and special finds. Heartwood upgrades and things bought with golden acorns are kept.</div><button class="it" id="pb" onclick="prestige()"><span class="em">🪵</span><span class="tx"><b>Prestige for ${pgain()} Heartwood</b><small>Unlocks at ${fmt(UNL)} acorns earned this run (${fmt(S.run)} so far)</small></span></button>`+PU.map((x,i)=>{const l=pl(x.id),mx=l>=x.max;return `<button class="it" data-k="h" data-c="${mx?1e99:x.c(l)}" onclick="buyP(${i})"><span class="em">${x.e}</span><span class="tx"><b>${x.n}</b> Lv ${l}/${x.max}<small>${x.d}</small></span><span class="pr">${mx?'Max':'🪵 '+x.c(l)}</span></button>`}).join('')}
 function ui(){
  $('a').textContent=fmt(S.a);$('g').textContent=S.g;
@@ -156,7 +164,7 @@ function ui(){
  const bal={a:S.a,g:S.g,h:S.P.hw};
  document.querySelectorAll('.it[data-c]').forEach(el=>{el.disabled=bal[el.dataset.k]<+el.dataset.c});
  const pb=$('pb');if(pb)pb.disabled=S.run<UNL;
- const nw=Date.now();if(!document.hidden)S.T.time+=Math.min((nw-lastUi)/1000,5);lastUi=nw;stats();pfRows()}
+ const nw=Date.now();if(!document.hidden)S.T.time+=Math.min((nw-lastUi)/1000,5);lastUi=nw;stats();pfRows();checkAch()}
 const ft=t=>{t=Math.floor(t);const h=Math.floor(t/3600),m=Math.floor(t%3600/60);return h?h+'h '+m+'m':m+'m '+t%60+'s'};
 function stats(){const T=S.T,row=(a,b)=>`<div class="row"><span>${a}</span><b>${b}</b></div>`;
  $('st').innerHTML='<h2>Your stats</h2>'+row('Time played',ft(T.time))+row('Hunts',fmt(T.hunts))
@@ -189,14 +197,14 @@ document.addEventListener('visibilitychange',()=>{if(!AX)return;if(document.hidd
 sndUI();
 const maxH=()=>3+lv('burrow');
 function odds(){
- const m=1+.5*lv('claws')+.05*S.sp.feather,gc=.03+.005*lv('whisk')+.005*S.sp.clover+.0025*pl('luck'),big=.25,sm=1-gc-big;
+ const m=1+.5*lv('claws')+.05*S.sp.feather+ab('hauls'),gc=.03+.005*lv('whisk')+.005*S.sp.clover+.0025*pl('luck')+ab('gold'),big=.25,sm=1-gc-big;
  const p=x=>(+(x*100).toFixed(2))+'%',row=(a,b)=>`<div class="row"><span>${a}</span><b>${b}</b></div>`;
  const h='<div class="sub" style="margin-top:0">Each hunt gives one of:</div>'
   +row('Small haul · '+fmt(Math.round(5*m))+'–'+fmt(Math.round(15*m))+' acorns',p(sm))
   +row('Big stash · '+fmt(Math.round(25*m))+'–'+fmt(Math.round(50*m))+' acorns',p(big))
   +row(AC(1)+' Golden acorn',p(gc))
   +'<div class="sub">Plus bonus rolls on any hunt:</div>'
-  +row('🌱 Acorn seeds (1–3)',p(.1+.01*S.sp.satchel))+row(AC(1)+'🌱 Golden seed',p(.05))+row('✨ Special find',p(.01+.0025*pl('keen')));$('od').innerHTML=h;$('od2').innerHTML=h}
+  +row('🌱 Acorn seeds (1–3)',p(.1+.01*S.sp.satchel+ab('seed')))+row(AC(1)+'🌱 Golden seed',p(.05+ab('gseed')))+row('✨ Special find',p(.01+.0025*pl('keen')+ab('special')));$('od').innerHTML=h;$('od2').innerHTML=h}
 function accrue(){const n=Date.now(),m=maxH();
  if(S.ht>n)S.ht=n;
  if(S.hc>=m){S.ht=n;return}
@@ -214,7 +222,7 @@ function saveProfile(){const n=$('un').value.trim().replace(/\s+/g,' ');if(n.len
 function profile(){const x=SQ.find(a=>a.id==S.pf.av)||SQ[0];
  $('pf').innerHTML=`<div class="hd">${sq(x,72)}<div><h2>${esc(S.pf.name||'Squirrel')}</h2><div class="sub">${x.n}</div></div></div><button class="mini" style="margin:10px 0 0" onclick="openProfile(0)">Edit profile</button><div id="ac" style="margin-top:10px"></div><div id="pfr" style="margin-top:8px"></div>`;acct();pfRows()}
 function pfRows(){const e=$('pfr');if(!e)return;const row=(a,b)=>`<div class="row"><span>${a}</span><b>${b}</b></div>`;
- e.innerHTML=row('Playing since',new Date(S.T.since).toLocaleDateString())+row('Prestiges',S.P.n)+row('Hunts',fmt(S.T.hunts))+row('Plots',S.plots.length)}
+ e.innerHTML=row('Playing since',new Date(S.T.since).toLocaleDateString())+row('Prestiges',S.P.n)+row('Hunts',fmt(S.T.hunts))+row('Plots',S.plots.length)+row('Achievements',Object.keys(S.ach).length+'/'+ATOT)}
 const SBU='https://yqmopirxnwldtkhfodov.supabase.co',SBK='sb_publishable_am4tu9fCzpDGu-vNZhP_xA_riORcEHD';
 let sb=null,user=null,syncMsg='',pend=null;
 try{sb=window.supabase.createClient(SBU,SBK)}catch(e){}
@@ -252,16 +260,52 @@ async function cloudSync(){if(!sb||!user)return;
  modal(`<h2 style="margin-top:0">Which save do you want?</h2><div class="sub" style="margin-bottom:10px">Your online save and this device are different.</div><p><b>☁️ Online save</b><br><span class="sub">${cnt(c.data)}</span></p><p><b>📱 This device</b><br><span class="sub">${cnt(S)}</span></p><button class="mini" style="margin:0" onclick="useCloud()">Use online save</button><button class="mini" onclick="useLocal()">Keep this device</button>`)}
 function applyCloud(d,ct){S=Object.assign(def(),d);S.cloudAt=ct;S.cloudUid=user.id;save();
  document.documentElement.dataset.skin=S.skin||'';if(S.pf.name)$('ov').hidden=true;
- sndUI();profile();lists();ui();closeModal();setMsg('Loaded your online save')}
+ sndUI();profile();lists();applyCol();ui();closeModal();setMsg('Loaded your online save')}
 const useCloud=()=>applyCloud(pend.d,pend.t),useLocal=()=>{closeModal();push()};
 async function cloudInit(){if(!sb)return;
  const g=await sb.auth.getSession();user=g.data.session?g.data.session.user:null;acct();if(user)cloudSync();
  sb.auth.onAuthStateChange((ev,ses)=>{const u=ses?ses.user:null;if((u&&u.id)!==(user&&user.id)){user=u;acct();if(u)cloudSync()}})}
 document.addEventListener('visibilitychange',()=>{if(document.hidden&&user&&$('ov2').hidden)cloudSync()});
+const AG=[
+{k:'hunt',n:'Hunting',v:()=>S.T.hunts,t:[[1,'First Hunt','Go on your first hunt'],[10,'Getting the Hang of It','Go on 10 hunts'],[100,'Seasoned Scavenger','Go on 100 hunts'],[1000,'Forest Veteran','Go on 1,000 hunts'],[5000,'Legend of the Woods','Go on 5,000 hunts']]},
+{k:'acorn',n:'Acorns',v:()=>S.T.earned,t:[[100,'Nutty Start','Earn 100 acorns in total'],[10000,'Stash Builder','Earn 10,000 acorns in total'],[100000,'Acorn Hoarder','Earn 100,000 acorns in total'],[1000000,'Acorn Tycoon','Earn 1,000,000 acorns in total']]},
+{k:'gold',n:'Golden acorns',v:()=>S.T.gfound,t:[[1,'Yummy Gold!','Get your first Golden Acorn'],[10,'Gold Digger','Find 10 golden acorns'],[50,'Golden Touch','Find 50 golden acorns'],[200,'Midas Squirrel','Find 200 golden acorns']]},
+{k:'harv',n:'Farming: harvests',v:()=>S.T.harv,t:[[1,'Green Paws','Harvest your first crop'],[10,'Sprout Keeper','Harvest 10 crops'],[50,'Seasoned Farmer','Harvest 50 crops'],[250,'Harvest Hero','Harvest 250 crops']]},
+{k:'seed',n:'Farming: seeds',v:()=>S.T.seeds,t:[[1,'Seed Spotter','Find your first seed'],[25,'Seed Collector','Find 25 seeds'],[100,'Seed Baron','Find 100 seeds']]},
+{k:'gseed',n:'Farming: golden seeds',v:()=>S.T.gseeds,t:[[1,'Shiny Seed','Find your first golden seed'],[10,'Golden Sower','Find 10 golden seeds'],[50,'Golden Orchard','Find 50 golden seeds']]},
+{k:'land',n:'Farming: land',v:()=>S.plots.length,t:[[3,'Small Holding','Own 3 plots of land'],[6,'Big Farm','Own 6 plots of land'],[12,'Acorn Estate','Own 12 plots of land']]},
+{k:'pres',n:'Prestige',v:()=>S.P.n,t:[[1,'Fresh Start','Prestige for the first time'],[3,'Turning Seasons','Prestige 3 times'],[10,'Forest Elder','Prestige 10 times'],[25,'Ancient Oak','Prestige 25 times']]},
+{k:'spec',n:'Special finds',v:()=>Object.values(S.T.sp).reduce((a,b)=>a+b,0),t:[[1,'Lucky Find','Find your first special item'],[5,'Trinket Hunter','Find 5 special items'],[20,'Treasure Keeper','Find 20 special items'],[50,'Relic Master','Find 50 special items']]},
+{k:'coll',n:'Collection',v:()=>Object.values(S.T.sp).filter(x=>x>0).length,t:[[2,'Matching Pair','Find 2 different kinds of special item'],[4,'Complete Collection','Find all 4 kinds of special item']]},
+{k:'time',n:'Time played',v:()=>S.T.time,f:ft,t:[[3600,'Settling In','Play for 1 hour'],[36000,'Regular Visitor','Play for 10 hours'],[360000,'Dedicated Squirrel','Play for 100 hours']]},
+{k:'prof',n:'Profile',v:()=>S.pf.name?1:0,t:[[1,'Say Hello','Create your profile']]},
+{k:'acct',n:'Account',v:()=>user?1:0,t:[[1,'Cloud Squirrel','Sign in to an online account']]}];
+const CB={hunt:'hauls',acorn:'hauls',gold:'gold',harv:'yield',seed:'seed',gseed:'gseed',land:'yield',pres:'heart',spec:'special',coll:'special',time:'hauls',prof:'hauls',acct:'hauls'};
+AG.forEach(c=>c.b=CB[c.k]);
+const BN={hauls:{v:.005,t:'acorns per hunt'},yield:{v:.005,t:'harvest yield'},gold:{v:.001,t:'golden acorn chance'},seed:{v:.0025,t:'seed drop chance'},gseed:{v:.001,t:'golden seed chance'},special:{v:.0005,t:'special find chance'},heart:{v:.01,t:'Heartwood from prestige'}};
+const pcf=x=>(+(x*100).toFixed(2))+'%',bl=b=>'+'+pcf(BN[b].v)+' '+BN[b].t;
+function ab(t){let n=0;for(const c of AG)if(c.b==t)for(const x of c.t)if(S.ach[c.k+x[0]])n++;return n*BN[t].v}
+const applyCol=()=>document.querySelectorAll('details.sec[data-s]').forEach(d=>{d.open=!S.col[d.dataset.s]});
+function secT(d){if(d.open){if(S.col[d.dataset.s]){delete S.col[d.dataset.s];save()}}else if(!S.col[d.dataset.s]){S.col[d.dataset.s]=1;save()}}
+const ATOT=AG.reduce((a,c)=>a+c.t.length,0),opn=new Set(),fv=(c,x)=>c.f?c.f(x):fmt(x);
+let bt;
+function tg(k,o){o?opn.add(k):opn.delete(k)}
+function banner(nw){$('ab').innerHTML=nw.length==1?`🏆 <b>${esc(nw[0][1])}</b><br><span class="sub">${esc(nw[0][2])}</span><br><span class="sub">Bonus: ${bl(nw[0][3])}</span>`:`🏆 <b>${nw.length} achievements unlocked!</b>`;$('ab').hidden=false;clearTimeout(bt);bt=setTimeout(()=>{$('ab').hidden=true},4500)}
+function checkAch(){const now=Date.now(),nw=[];
+ for(const c of AG){const v=c.v();for(const t of c.t){const id=c.k+t[0];if(!S.ach[id]&&v>=t[0]){S.ach[id]=now;nw.push([t[0],t[1],t[2],c.b])}}}
+ if(nw.length){banner(nw);save();achList();lists()}}
+function achList(){let got=0;
+ $('al').innerHTML=AG.map(c=>{const v=c.v();let done=0,first=1;
+  const rows=c.t.map(t=>{const d=!!S.ach[c.k+t[0]];if(d){got++;done++}
+   const nx=!d&&first;if(!d)first=0;
+   const pr=nx?`<div class="bar"><i style="width:${Math.min(100,100*v/t[0])}%"></i></div><small>${fv(c,Math.min(v,t[0]))} / ${fv(c,t[0])}</small>`:'';
+   return `<div class="it" style="${d?'':'opacity:.65'}"><span class="em">${d?'🏆':'🔒'}</span><span class="tx"><b>${esc(t[1])}</b><small>${esc(t[2])}</small>${pr}</span></div>`}).join('');
+  return `<details ${opn.has(c.k)?'open':''} ontoggle="tg('${c.k}',this.open)"><summary>${c.n} <span class="sub">${done}/${c.t.length}</span></summary><div class="sub" style="margin-bottom:4px">Each: ${bl(c.b)} · Now: +${pcf(done*BN[c.b].v)}</div>${rows}</details>`}).join('');
+ $('ai').textContent=got+' of '+ATOT+' unlocked'}
 let armed=0,lastUi=Date.now();
 function reset(){const b=$('rs');if(!armed){armed=1;b.textContent=user?'Tap again: erases this device and your online save':'Tap again to erase everything';setTimeout(()=>{armed=0;b.textContent='Reset save'},4000);return}
  S=def();if(AX)AX.suspend();sndUI();save();if(user)push();armed=0;b.textContent='Reset save';document.documentElement.dataset.skin='';lists();ui();toast('Save erased. Fresh start!')}
 document.documentElement.dataset.skin=S.skin||'';
 $('la').innerHTML=AC()+' Acorns';$('lg').innerHTML=AC(1)+' Golden';
-profile();if(!S.pf.name)openProfile(1);lists();ui();setInterval(ui,1000);setInterval(save,5000);cloudInit();setInterval(()=>{if(user&&!document.hidden&&$('ov2').hidden)cloudSync()},60000);
+profile();if(!S.pf.name)openProfile(1);lists();applyCol();ui();setInterval(ui,1000);setInterval(save,5000);cloudInit();setInterval(()=>{if(user&&!document.hidden&&$('ov2').hidden)cloudSync()},60000);
 </script></body></html>
