@@ -1,7 +1,24 @@
 <!DOCTYPE html>
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Acorn Hunt</title>
+<title>Acorn Hunt: a free semi-idle squirrel game</title>
+<meta name="description" content="Hunt for acorns every 5 minutes, plant seeds, grow your farm, and prestige for permanent upgrades. A free idle game that runs in your browser.">
+<meta name="theme-color" content="#e6ecd6">
+<link rel="canonical" href="https://alexstraza3105.github.io/Idle-Squirrel-Hunt/">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Crect x='11' y='2.5' width='2' height='4.5' rx='1' fill='%23b8800a'/%3E%3Cpath d='M12 22.5c-4.2 0-6.7-3.6-6.7-8.2h13.4c0 4.6-2.5 8.2-6.7 8.2z' fill='%23f5c02a'/%3E%3Cpath d='M4.3 14c0-4.7 3.4-7.5 7.7-7.5s7.7 2.8 7.7 7.5z' fill='%23b8800a'/%3E%3C/svg%3E">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Acorn Hunt">
+<meta property="og:title" content="Acorn Hunt: a free semi-idle squirrel game">
+<meta property="og:description" content="Hunt for acorns every 5 minutes, plant seeds, grow your farm, and prestige for permanent upgrades. A free idle game that runs in your browser.">
+<meta property="og:url" content="https://alexstraza3105.github.io/Idle-Squirrel-Hunt/">
+<meta property="og:image" content="https://alexstraza3105.github.io/Idle-Squirrel-Hunt/preview.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Acorn Hunt: a free semi-idle squirrel game">
+<meta name="twitter:description" content="Hunt for acorns every 5 minutes, plant seeds, grow your farm, and prestige for permanent upgrades. A free idle game that runs in your browser.">
+<meta name="twitter:image" content="https://alexstraza3105.github.io/Idle-Squirrel-Hunt/preview.png">
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@600;800&display=swap" rel="stylesheet">
 <style>
 :root{--bg:#e6ecd6;--card:#f6f8ec;--ink:#1e2b1a;--mute:#66745c;--line:#cbd6b6;--acc:#5b3a1e;--onacc:#fff6e4;--gold:#b8800a;--dis:#d5dcc4;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
@@ -17,6 +34,11 @@ main{max-width:520px;margin:0 auto;padding:16px}
 h1{font:800 28px/1 Fraunces,Georgia,serif;margin:0}
 h2{font:600 19px Fraunces,Georgia,serif;margin:26px 0 8px}
 .top{display:flex;justify-content:space-between;align-items:center;gap:10px}.snd{display:flex;align-items:center;gap:8px}.snd input{width:90px;accent-color:var(--acc)}.snd button{font-size:18px;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:5px 10px;cursor:pointer;color:var(--ink)}
+.wrap{display:flex;flex-direction:column}
+aside{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px 16px;margin:0 16px 20px;width:calc(100% - 32px);max-width:520px;align-self:center}
+aside h2{font-size:17px;margin:0 0 6px}aside h3{font:600 14px Fraunces,Georgia,serif;margin:14px 0 4px;color:var(--mute)}
+.row{display:flex;justify-content:space-between;gap:10px;font-size:14px;padding:3px 0;border-bottom:1px solid var(--line)}
+@media(min-width:900px){.wrap{flex-direction:row;justify-content:center;align-items:flex-start}main{flex:0 1 520px;margin:0}aside{position:sticky;top:16px;width:300px;flex:none;margin:16px 16px 0 0;align-self:flex-start}}
 .sub{color:var(--mute);font-size:13px}
 .bank{display:flex;gap:10px;margin:16px 0}
 .bank div{flex:1;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:10px 14px}
@@ -37,7 +59,7 @@ div.it{cursor:default}
 .link{font:inherit;font-size:13px;background:none;border:0;color:var(--mute);text-decoration:underline;padding:0;margin-top:20px;cursor:pointer}
 .pay{width:100%;font:inherit;font-size:13px;color:var(--mute);border:1px dashed var(--line);border-radius:10px;padding:8px;margin-top:6px;background:none}
 .foot{margin-top:26px;padding:10px;text-align:center;font-size:13px;color:var(--mute);border:1px dashed var(--line);border-radius:10px}
-</style></head><body><main>
+</style></head><body><div class="wrap"><main>
 <div class="top"><h1>Acorn Hunt</h1><div class="snd"><button id="mb" onclick="music()" aria-label="Toggle music">🔇</button><input type="range" id="vol" min="0" max="100" oninput="setVol(this.value)" aria-label="Volume"></div></div>
 <div class="bank"><div><span id="la"></span><b id="a">0</b><span class="sub" id="cap"></span></div><div class="gold"><span id="lg"></span><b id="g">0</b></div></div>
 <button id="hunt" onclick="hunt()">Hunt 🐿️</button>
@@ -51,7 +73,7 @@ div.it{cursor:default}
 <h2>Prestige</h2><div id="pl"></div>
 <button class="link" id="rs" onclick="reset()">Reset save</button>
 <div class="foot">Ad space · <button class="link" style="margin:0" onclick="toast('Ad removal is coming soon.')">Remove ads</button></div>
-</main>
+</main><aside id="st"></aside></div>
 <script>
 const $=id=>document.getElementById(id),KEY='acornhunt2',HUNT=300000,UNL=25000,PMAX=12;
 const AC=g=>{const b=g?'#f5c02a':'#b9793b',c=g?'#b8800a':'#5b3a1e';return `<svg viewBox="0 0 24 24" width="1.1em" height="1.1em" style="vertical-align:-.2em" aria-hidden="true"><rect x="11" y="2.5" width="2" height="4.5" rx="1" fill="${c}"/><path d="M12 22.5c-4.2 0-6.7-3.6-6.7-8.2h13.4c0 4.6-2.5 8.2-6.7 8.2z" fill="${b}"/><path d="M4.3 14c0-4.7 3.4-7.5 7.7-7.5s7.7 2.8 7.7 7.5z" fill="${c}"/>${g?'<path d="M8.5 16.5c.3 1.6 1.3 2.9 2.6 3.5" stroke="#fff3b8" stroke-width="1.4" fill="none" stroke-linecap="round"/>':''}</svg>`};
@@ -60,8 +82,9 @@ const SP=[{id:'oak',n:'Oak Charm',e:'🌳',d:n=>'+'+5*n+'% harvest yield'},{id:'
 const G=[{id:'sack',n:'Acorn Sack',d:'Instantly get 5,000 acorns',e:'🎒',c:3},{id:'tonic',n:'Miracle Grow',d:'Every growing plot advances 5 hunts',e:'🧪',c:2},{id:'pouch',n:'Trinket Pouch',d:'+5 stack limit on every special find',e:'👜',c:5}];
 const PU=[{id:'keen',n:'Keen Nose',e:'👃',d:'+0.05% special find chance',max:10,c:l=>3+2*l},{id:'luck',n:'Golden Instinct',e:'💫',d:'+0.25% golden acorn chance',max:8,c:l=>4+2*l},{id:'farm',n:'Farmhand',e:'🧑‍🌾',d:'Acorn seeds grow 1 hunt faster (min 5)',max:7,c:l=>2*(l+1)},{id:'gfarm',n:'Golden Farmhand',e:'👩‍🌾',d:'Golden seeds grow 3 hunts faster (min 15)',max:5,c:l=>3*(l+1)},{id:'mkt',n:'Skin Market',e:'🏪',d:'Unlocks colour skins in the golden shop',max:1,c:l=>5}];
 const SK=[{id:'',n:'Forest',e:'🌲'},{id:'autumn',n:'Autumn',e:'🍁'},{id:'frost',n:'Frost',e:'❄️'},{id:'plum',n:'Plum',e:'🫐'}];
-const def=()=>({a:0,g:0,last:0,cap:5000,run:0,seed:1,gseed:0,plots:[null],up:{},sp:{oak:0,feather:0,clover:0,satchel:0},slot:0,mus:0,vol:50,P:{hw:0,n:0,lv:{}},skins:[''],skin:''});
+const def=()=>({a:0,g:0,last:0,cap:5000,run:0,seed:1,gseed:0,plots:[null],up:{},sp:{oak:0,feather:0,clover:0,satchel:0},slot:0,mus:0,vol:50,T:{time:0,earned:0,hunts:0,seeds:0,gseeds:0,harv:0,gfound:0,sp:{oak:0,feather:0,clover:0,satchel:0}},P:{hw:0,n:0,lv:{}},skins:[''],skin:''});
 let S;try{S=Object.assign(def(),JSON.parse(localStorage.getItem(KEY)||'{}'))}catch(e){S=def()}
+for(const k in S.sp)if(S.T.sp[k]<S.sp[k])S.T.sp[k]=S.sp[k];S.T.earned=Math.max(S.T.earned,S.run);
 const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}};
 const fmt=n=>{n=Math.floor(n);return n>=1e6?(n/1e6).toFixed(2)+'M':n.toLocaleString()};
 const lv=id=>S.up[id]||0,pl=id=>S.P.lv[id]||0,lim=()=>5+5*S.slot;
@@ -70,35 +93,35 @@ const yld=()=>Math.round(150*(1+.05*S.sp.oak)*(1+.25*lv('soil')));
 const uc=u=>Math.ceil(u.c*Math.pow(u.g,lv(u.id))),pc=()=>Math.ceil(200*Math.pow(3,S.plots.length-1));
 const gcst=x=>x.id=='pouch'?5*(S.slot+1):x.c,pgain=()=>Math.floor(Math.sqrt(S.run/1000));
 function toast(t){$('msg').innerHTML=t}
-function gain(n){n=Math.floor(n);const t=Math.max(0,Math.min(n,S.cap-S.a));S.a+=t;S.run+=t;return t}
+function gain(n){n=Math.floor(n);const t=Math.max(0,Math.min(n,S.cap-S.a));S.a+=t;S.run+=t;S.T.earned+=t;return t}
 function hunt(){
  if(Date.now()-S.last<HUNT)return;
- S.last=Date.now();
+ S.last=Date.now();S.T.hunts++;
  const m=1+.5*lv('claws')+.05*S.sp.feather,gc=.03+.005*lv('whisk')+.005*S.sp.clover+.0025*pl('luck'),r=Math.random();let msg,n=0;
- if(r<gc){S.g++;msg=AC(1)+' A golden acorn glinting in the roots!'}
+ if(r<gc){S.g++;S.T.gfound++;msg=AC(1)+' A golden acorn glinting in the roots!'}
  else if(r<gc+.25){n=Math.round((25+Math.random()*25)*m);msg='🍂 Big stash: +'+fmt(n)+' acorns!'}
  else{n=Math.round((5+Math.random()*10)*m);msg=AC()+' Dug up +'+fmt(n)+' acorns'}
  if(n&&gain(n)<n)msg+=' (storage full!)';
- if(Math.random()<.1+.01*S.sp.satchel){const k=1+Math.floor(Math.random()*3);S.seed+=k;msg+='<br>🌱 Found '+k+' seed'+(k>1?'s':'')+'!'}
- if(Math.random()<.02){S.gseed++;msg+='<br>'+AC(1)+'🌱 Found a golden seed!'}
- if(Math.random()<.001+.0005*pl('keen')){const o=SP.filter(x=>S.sp[x.id]<lim());if(o.length){const x=o[Math.floor(Math.random()*o.length)];S.sp[x.id]++;msg+='<br>'+x.e+' <b>Special find: '+x.n+'!</b> '+x.d(S.sp[x.id])+' in total'}}
+ if(Math.random()<.1+.01*S.sp.satchel){const k=1+Math.floor(Math.random()*3);S.seed+=k;S.T.seeds+=k;msg+='<br>🌱 Found '+k+' seed'+(k>1?'s':'')+'!'}
+ if(Math.random()<.02){S.gseed++;S.T.gseeds++;msg+='<br>'+AC(1)+'🌱 Found a golden seed!'}
+ if(Math.random()<.001+.0005*pl('keen')){const o=SP.filter(x=>S.sp[x.id]<lim());if(o.length){const x=o[Math.floor(Math.random()*o.length)];S.sp[x.id]++;S.T.sp[x.id]++;msg+='<br>'+x.e+' <b>Special find: '+x.n+'!</b> '+x.d(S.sp[x.id])+' in total'}}
  S.plots.forEach(p=>{if(p&&p.h<need(p.k))p.h++});
  toast(msg);save();lists();ui()}
 function plant(i,k){if(S.plots[i])return;if(k=='g'){if(!S.gseed)return;S.gseed--}else{if(!S.seed)return;S.seed--}S.plots[i]={k,h:0};lists();ui();save()}
 function harvest(i){const p=S.plots[i];if(!p||p.h<need(p.k))return;
- if(p.k=='g'){S.g++;toast(AC(1)+' Harvested a golden acorn!')}else{const n=yld();gain(n)<n?toast('🧺 Harvested +'+fmt(n)+' acorns (storage full!)'):toast('🧺 Harvested +'+fmt(n)+' acorns!')}
- S.plots[i]=null;lists();ui();save()}
+ if(p.k=='g'){S.g++;S.T.gfound++;toast(AC(1)+' Harvested a golden acorn!')}else{const n=yld();gain(n)<n?toast('🧺 Harvested +'+fmt(n)+' acorns (storage full!)'):toast('🧺 Harvested +'+fmt(n)+' acorns!')}
+ S.T.harv++;S.plots[i]=null;lists();ui();save()}
 function buyPlot(){const c=pc();if(S.a<c||S.plots.length>=PMAX)return;S.a-=c;S.plots.push(null);lists();ui();save()}
 function buyU(i){const u=U[i],c=uc(u);if(S.a<c||lv(u.id)>=u.max)return;S.a-=c;S.up[u.id]=lv(u.id)+1;if(u.id=='store')S.cap*=2;lists();ui();save()}
 function buyG(i){const x=G[i],c=gcst(x);if(S.g<c)return;S.g-=c;
- if(x.id=='sack')S.a+=5000;if(x.id=='tonic')S.plots.forEach(p=>{if(p)p.h=Math.min(need(p.k),p.h+5)});if(x.id=='pouch')S.slot++;
+ if(x.id=='sack'){S.a+=5000;S.T.earned+=5000}if(x.id=='tonic')S.plots.forEach(p=>{if(p)p.h=Math.min(need(p.k),p.h+5)});if(x.id=='pouch')S.slot++;
  lists();ui();save()}
 function buyP(i){const x=PU[i],l=pl(x.id),c=x.c(l);if(S.P.hw<c||l>=x.max)return;S.P.hw-=c;S.P.lv[x.id]=l+1;lists();ui();save()}
 function skin(i){const x=SK[i];if(!S.skins.includes(x.id)){if(S.g<4)return;S.g-=4;S.skins.push(x.id)}S.skin=x.id;document.documentElement.dataset.skin=x.id;lists();ui();save()}
 let parm=0;
 function prestige(){if(S.run<UNL)return;
  if(!parm){parm=1;$('pb').textContent='Tap again: resets acorns, farm, upgrades and finds';setTimeout(()=>{parm=0;lists()},4000);return}
- const x=pgain(),k={g:S.g,slot:S.slot,skins:S.skins,skin:S.skin,P:S.P,mus:S.mus,vol:S.vol};S=Object.assign(def(),k);S.P.hw+=x;S.P.n++;parm=0;save();lists();ui();toast('🪵 Prestiged! +'+x+' Heartwood. A fresh forest awaits.')}
+ const x=pgain(),k={g:S.g,slot:S.slot,skins:S.skins,skin:S.skin,P:S.P,mus:S.mus,vol:S.vol,T:S.T};S=Object.assign(def(),k);S.P.hw+=x;S.P.n++;parm=0;save();lists();ui();toast('🪵 Prestiged! +'+x+' Heartwood. A fresh forest awaits.')}
 function lists(){
  const nd=need('n'),gd=need('g');
  $('fi').innerHTML=`🌱 ${S.seed} seeds · ${AC(1)}🌱 ${S.gseed} golden seeds<br>Acorn seed: ${nd} hunts to grow, harvests ${fmt(yld())} acorns. Golden seed: ${gd} hunts, harvests 1 golden acorn.`;
@@ -120,7 +143,15 @@ function ui(){
  else{h.disabled=false;h.textContent='Hunt 🐿️'}
  const bal={a:S.a,g:S.g,h:S.P.hw};
  document.querySelectorAll('.it[data-c]').forEach(el=>{el.disabled=bal[el.dataset.k]<+el.dataset.c});
- const pb=$('pb');if(pb)pb.disabled=S.run<UNL}
+ const pb=$('pb');if(pb)pb.disabled=S.run<UNL;
+ const nw=Date.now();if(!document.hidden)S.T.time+=Math.min((nw-lastUi)/1000,5);lastUi=nw;stats()}
+const ft=t=>{t=Math.floor(t);const h=Math.floor(t/3600),m=Math.floor(t%3600/60);return h?h+'h '+m+'m':m+'m '+t%60+'s'};
+function stats(){const T=S.T,row=(a,b)=>`<div class="row"><span>${a}</span><b>${b}</b></div>`;
+ $('st').innerHTML='<h2>Your stats</h2>'+row('Time played',ft(T.time))+row('Hunts',fmt(T.hunts))
+ +'<h3>Acorns</h3>'+row('Owned now',fmt(S.a))+row('Earned this run',fmt(S.run))+row('Earned all-time',fmt(T.earned))+row('Golden acorns owned',S.g)+row('Golden acorns found',fmt(T.gfound))
+ +'<h3>Farm</h3>'+row('Seeds owned',S.seed+' + '+S.gseed+' golden')+row('Seeds found',fmt(T.seeds)+' + '+T.gseeds+' golden')+row('Harvests',fmt(T.harv))
+ +'<h3>Special finds</h3>'+SP.map(x=>row(x.e+' '+x.n,S.sp[x.id]+' now · '+T.sp[x.id]+' all-time')).join('')
+ +'<h3>Prestige</h3>'+row('Prestiges',S.P.n)+row('Heartwood',S.P.hw)}
 let AX,MG,birdT;
 const gainOf=()=>Math.pow(S.vol/100,2)*.8;
 function sndUI(){$('mb').textContent=S.mus?'🔊':'🔇';$('vol').value=S.vol}
@@ -128,10 +159,7 @@ function startAudio(){
  if(AX){AX.resume();return}
  const C=window.AudioContext||window.webkitAudioContext;if(!C)return;
  AX=new C();MG=AX.createGain();MG.gain.value=gainOf();MG.connect(AX.destination);
- const nb=AX.createBuffer(1,AX.sampleRate*2,AX.sampleRate),d=nb.getChannelData(0);for(let i=0;i<d.length;i++)d[i]=Math.random()*2-1;
- const layer=(type,f,gv,hz,dep)=>{const src=AX.createBufferSource();src.buffer=nb;src.loop=true;const fl=AX.createBiquadFilter();fl.type=type;fl.frequency.value=f;const g=AX.createGain();g.gain.value=gv;const l=AX.createOscillator(),lg=AX.createGain();l.frequency.value=hz;lg.gain.value=dep;l.connect(lg);lg.connect(g.gain);src.connect(fl);fl.connect(g);g.connect(MG);src.start();l.start()};
- layer('lowpass',450,.3,.07,.2);
- layer('highpass',3500,.05,.13,.035)}
+}
 function bird(){
  if(!S.mus||!AX||AX.state!='running')return;
  const t=AX.currentTime,f=2200+Math.random()*2200,n=2+Math.floor(Math.random()*4);
@@ -147,7 +175,7 @@ function setVol(v){S.vol=+v;if(MG)MG.gain.setTargetAtTime(gainOf(),AX.currentTim
 document.addEventListener('pointerdown',()=>{if(S.mus&&(!AX||AX.state!='running')){startAudio();birds()}});
 document.addEventListener('visibilitychange',()=>{if(!AX)return;if(document.hidden)AX.suspend();else if(S.mus)AX.resume()});
 sndUI();
-let armed=0;
+let armed=0,lastUi=Date.now();
 function reset(){const b=$('rs');if(!armed){armed=1;b.textContent='Tap again to erase everything';setTimeout(()=>{armed=0;b.textContent='Reset save'},4000);return}
  S=def();if(AX)AX.suspend();sndUI();save();armed=0;b.textContent='Reset save';document.documentElement.dataset.skin='';lists();ui();toast('Save erased. Fresh start!')}
 document.documentElement.dataset.skin=S.skin||'';
