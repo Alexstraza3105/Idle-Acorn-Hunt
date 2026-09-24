@@ -45,6 +45,7 @@ aside h2{font-size:17px;margin:0 0 6px}aside h3{font:600 14px Fraunces,Georgia,s
 .ag{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:14px}
 .ag button{background:var(--bg);border:2px solid var(--line);border-radius:12px;padding:6px 2px;cursor:pointer;color:var(--ink);font:inherit;font-size:12px}.ag button.on{border-color:var(--acc)}
 .ag svg{width:52px;height:52px;display:block;margin:0 auto 2px}
+.odds{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:8px 12px;margin-top:10px}.odds .sub{margin:6px 0 2px}
 .sub{color:var(--mute);font-size:13px}
 .bank{display:flex;gap:10px;margin:16px 0}
 .bank div{flex:1;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:10px 14px}
@@ -70,6 +71,7 @@ div.it{cursor:default}
 <div class="bank"><div><span id="la"></span><b id="a">0</b><span class="sub" id="cap"></span></div><div class="gold"><span id="lg"></span><b id="g">0</b></div></div>
 <button id="hunt" onclick="hunt()">Hunt 🐿️</button>
 <div class="sub" id="hs" style="text-align:center;margin-top:8px"></div>
+<div class="odds" id="od"></div>
 <div id="msg">Send the squirrel out to find acorns and seeds.</div>
 <h2>Farm</h2><div class="sub" id="fi" style="margin-bottom:8px"></div><div id="fl"></div>
 <h2>Upgrades</h2><div id="ul"></div>
@@ -88,7 +90,7 @@ const AC=g=>{const b=g?'#f5c02a':'#b9793b',c=g?'#b8800a':'#5b3a1e';return `<svg 
 const U=[{id:'claws',n:'Sharp Claws',d:'+50% acorns per hunt',e:'🐾',c:150,g:1.8,max:99},{id:'soil',n:'Rich Soil',d:'+25% harvest yield',e:'🪱',c:300,g:1.9,max:99},{id:'burrow',n:'Deeper Burrow',d:'+1 stored hunt',e:'🕳️',c:300,g:1.9,max:5},{id:'whisk',n:'Lucky Whiskers',d:'+0.5% golden acorn chance',e:'✨',c:500,g:1.8,max:10},{id:'store',n:'Bigger Cheeks',d:'Doubles acorn storage',e:'🐿️',c:2000,g:2.2,max:99}];
 const SP=[{id:'oak',n:'Oak Charm',e:'🌳',d:n=>'+'+5*n+'% harvest yield'},{id:'feather',n:"Hunter's Feather",e:'🪶',d:n=>'+'+5*n+'% acorns per hunt'},{id:'clover',n:'Four-leaf Clover',e:'🍀',d:n=>'+'+0.5*n+'% golden acorn chance'},{id:'satchel',n:'Seed Satchel',e:'🧺',d:n=>'+'+n+'% seed drop chance'}];
 const G=[{id:'sack',n:'Acorn Sack',d:'Instantly get 5,000 acorns',e:'🎒',c:3},{id:'tonic',n:'Miracle Grow',d:'Every growing plot advances 5 hunts',e:'🧪',c:2},{id:'pouch',n:'Trinket Pouch',d:'+5 stack limit on every special find',e:'👜',c:5}];
-const PU=[{id:'keen',n:'Keen Nose',e:'👃',d:'+0.05% special find chance',max:10,c:l=>3+2*l},{id:'luck',n:'Golden Instinct',e:'💫',d:'+0.25% golden acorn chance',max:8,c:l=>4+2*l},{id:'farm',n:'Farmhand',e:'🧑‍🌾',d:'Acorn seeds grow 1 hunt faster (min 5)',max:7,c:l=>2*(l+1)},{id:'gfarm',n:'Golden Farmhand',e:'👩‍🌾',d:'Golden seeds grow 3 hunts faster (min 15)',max:5,c:l=>3*(l+1)},{id:'mkt',n:'Skin Market',e:'🏪',d:'Unlocks colour skins in the golden shop',max:1,c:l=>5}];
+const PU=[{id:'keen',n:'Keen Nose',e:'👃',d:'+0.25% special find chance',max:10,c:l=>3+2*l},{id:'luck',n:'Golden Instinct',e:'💫',d:'+0.25% golden acorn chance',max:8,c:l=>4+2*l},{id:'farm',n:'Farmhand',e:'🧑‍🌾',d:'Acorn seeds grow 1 hunt faster (min 5)',max:7,c:l=>2*(l+1)},{id:'gfarm',n:'Golden Farmhand',e:'👩‍🌾',d:'Golden seeds grow 3 hunts faster (min 15)',max:5,c:l=>3*(l+1)},{id:'mkt',n:'Skin Market',e:'🏪',d:'Unlocks colour skins in the golden shop',max:1,c:l=>5}];
 const SK=[{id:'',n:'Forest',e:'🌲'},{id:'autumn',n:'Autumn',e:'🍁'},{id:'frost',n:'Frost',e:'❄️'},{id:'plum',n:'Plum',e:'🫐'}];
 const def=()=>({a:0,g:0,hc:1,ht:Date.now(),pf:{name:'',av:'red'},cap:5000,run:0,seed:1,gseed:0,plots:[null],up:{},sp:{oak:0,feather:0,clover:0,satchel:0},slot:0,mus:0,vol:50,T:{since:Date.now(),time:0,earned:0,hunts:0,seeds:0,gseeds:0,harv:0,gfound:0,sp:{oak:0,feather:0,clover:0,satchel:0}},P:{hw:0,n:0,lv:{}},skins:[''],skin:''});
 let S;try{S=Object.assign(def(),JSON.parse(localStorage.getItem(KEY)||'{}'))}catch(e){S=def()}
@@ -110,8 +112,8 @@ function hunt(){
  else{n=Math.round((5+Math.random()*10)*m);msg=AC()+' Dug up +'+fmt(n)+' acorns'}
  if(n&&gain(n)<n)msg+=' (storage full!)';
  if(Math.random()<.1+.01*S.sp.satchel){const k=1+Math.floor(Math.random()*3);S.seed+=k;S.T.seeds+=k;msg+='<br>🌱 Found '+k+' seed'+(k>1?'s':'')+'!'}
- if(Math.random()<.02){S.gseed++;S.T.gseeds++;msg+='<br>'+AC(1)+'🌱 Found a golden seed!'}
- if(Math.random()<.001+.0005*pl('keen')){const o=SP.filter(x=>S.sp[x.id]<lim());if(o.length){const x=o[Math.floor(Math.random()*o.length)];S.sp[x.id]++;S.T.sp[x.id]++;msg+='<br>'+x.e+' <b>Special find: '+x.n+'!</b> '+x.d(S.sp[x.id])+' in total'}}
+ if(Math.random()<.05){S.gseed++;S.T.gseeds++;msg+='<br>'+AC(1)+'🌱 Found a golden seed!'}
+ if(Math.random()<.01+.0025*pl('keen')){const o=SP.filter(x=>S.sp[x.id]<lim());if(o.length){const x=o[Math.floor(Math.random()*o.length)];S.sp[x.id]++;S.T.sp[x.id]++;msg+='<br>'+x.e+' <b>Special find: '+x.n+'!</b> '+x.d(S.sp[x.id])+' in total'}}
  S.plots.forEach(p=>{if(p&&p.h<need(p.k))p.h++});
  toast(msg);save();lists();ui()}
 function plant(i,k){if(S.plots[i])return;if(k=='g'){if(!S.gseed)return;S.gseed--}else{if(!S.seed)return;S.seed--}S.plots[i]={k,h:0};lists();ui();save()}
@@ -130,6 +132,7 @@ function prestige(){if(S.run<UNL)return;
  if(!parm){parm=1;$('pb').textContent='Tap again: resets acorns, farm, upgrades and finds';setTimeout(()=>{parm=0;lists()},4000);return}
  const x=pgain(),k={g:S.g,slot:S.slot,skins:S.skins,skin:S.skin,P:S.P,mus:S.mus,vol:S.vol,T:S.T,pf:S.pf};S=Object.assign(def(),k);S.P.hw+=x;S.P.n++;parm=0;save();lists();ui();toast('🪵 Prestiged! +'+x+' Heartwood. A fresh forest awaits.')}
 function lists(){
+ odds();
  const nd=need('n'),gd=need('g');
  $('fi').innerHTML=`🌱 ${S.seed} seeds · ${AC(1)}🌱 ${S.gseed} golden seeds<br>Acorn seed: ${nd} hunts to grow, harvests ${fmt(yld())} acorns. Golden seed: ${gd} hunts, harvests 1 golden acorn.`;
  $('fl').innerHTML=S.plots.map((p,i)=>{
@@ -138,7 +141,7 @@ function lists(){
   return `<div class="it"><span class="em">${d?'🧺':p.k=='g'?'🌟':'🌱'}</span><span class="tx"><b>Plot ${i+1}</b><small>${d?'Ready to harvest':(p.k=='g'?'Golden seed':'Acorn seed')+' · '+p.h+'/'+q+' hunts'}</small><div class="bar"><i style="width:${Math.min(100,100*p.h/q)}%"></i></div></span>${d?`<button class="mini" onclick="harvest(${i})">Harvest</button>`:''}</div>`}).join('')
   +(S.plots.length<PMAX?`<button class="it" data-k="a" data-c="${pc()}" onclick="buyPlot()"><span class="em">🟩</span><span class="tx"><b>Buy land</b><small>Plot ${S.plots.length+1}</small></span><span class="pr">${AC()} ${fmt(pc())}</span></button>`:'');
  $('ul').innerHTML=U.map((u,i)=>{const l=lv(u.id),mx=l>=u.max;return `<button class="it" data-k="a" data-c="${mx?1e99:uc(u)}" onclick="buyU(${i})"><span class="em">${u.e}</span><span class="tx"><b>${u.n}</b> Lv ${l}<small>${u.d}</small></span><span class="pr">${mx?'Max':AC()+' '+fmt(uc(u))}</span></button>`}).join('');
- $('sl').innerHTML=`<div class="sub" style="margin:-4px 0 8px">${(0.1+0.05*pl('keen')).toFixed(2)}% chance per hunt. Lost on prestige.</div>`+SP.map(x=>{const n=S.sp[x.id];return `<div class="it"><span class="em">${x.e}</span><span class="tx"><b>${x.n}</b> ${n}/${lim()}<small>${n?x.d(n):'Rare drop · '+x.d(1)+' each'}</small></span></div>`}).join('');
+ $('sl').innerHTML=`<div class="sub" style="margin:-4px 0 8px">${(1+0.25*pl('keen')).toFixed(2)}% chance per hunt. Lost on prestige.</div>`+SP.map(x=>{const n=S.sp[x.id];return `<div class="it"><span class="em">${x.e}</span><span class="tx"><b>${x.n}</b> ${n}/${lim()}<small>${n?x.d(n):'Rare drop · '+x.d(1)+' each'}</small></span></div>`}).join('');
  $('gl').innerHTML=G.map((x,i)=>`<button class="it gi" data-k="g" data-c="${gcst(x)}" onclick="buyG(${i})"><span class="em">${x.e}</span><span class="tx"><b>${x.n}</b><small>${x.d}</small></span><span class="pr">${AC(1)} ${gcst(x)}</span></button>`).join('');
  $('sk').innerHTML=pl('mkt')?'<h2>Skin market</h2>'+SK.map((x,i)=>{const o=S.skins.includes(x.id);return `<button class="it gi" ${o?'':'data-k="g" data-c="4"'} onclick="skin(${i})"><span class="em">${x.e}</span><span class="tx"><b>${x.n}</b><small>${o?(S.skin==x.id?'Equipped':'Tap to equip'):'Colour skin'}</small></span><span class="pr">${o?'':AC(1)+' 4'}</span></button>`}).join(''):'';
  $('pl').innerHTML=`<div class="sub" style="margin-bottom:8px">Heartwood 🪵 ${S.P.hw} · prestiges ${S.P.n}<br>Resets acorns, farm, upgrades and special finds. Heartwood upgrades and things bought with golden acorns are kept.</div><button class="it" id="pb" onclick="prestige()"><span class="em">🪵</span><span class="tx"><b>Prestige for ${pgain()} Heartwood</b><small>Unlocks at ${fmt(UNL)} acorns earned this run (${fmt(S.run)} so far)</small></span></button>`+PU.map((x,i)=>{const l=pl(x.id),mx=l>=x.max;return `<button class="it" data-k="h" data-c="${mx?1e99:x.c(l)}" onclick="buyP(${i})"><span class="em">${x.e}</span><span class="tx"><b>${x.n}</b> Lv ${l}/${x.max}<small>${x.d}</small></span><span class="pr">${mx?'Max':'🪵 '+x.c(l)}</span></button>`}).join('')}
@@ -183,6 +186,15 @@ document.addEventListener('pointerdown',()=>{if(S.mus&&(!AX||AX.state!='running'
 document.addEventListener('visibilitychange',()=>{if(!AX)return;if(document.hidden)AX.suspend();else if(S.mus)AX.resume()});
 sndUI();
 const maxH=()=>3+lv('burrow');
+function odds(){
+ const m=1+.5*lv('claws')+.05*S.sp.feather,gc=.03+.005*lv('whisk')+.005*S.sp.clover+.0025*pl('luck'),big=.25,sm=1-gc-big;
+ const p=x=>(+(x*100).toFixed(2))+'%',row=(a,b)=>`<div class="row"><span>${a}</span><b>${b}</b></div>`;
+ $('od').innerHTML='<div class="sub" style="margin-top:0">Each hunt gives one of:</div>'
+  +row('Small haul · '+fmt(Math.round(5*m))+'–'+fmt(Math.round(15*m))+' acorns',p(sm))
+  +row('Big stash · '+fmt(Math.round(25*m))+'–'+fmt(Math.round(50*m))+' acorns',p(big))
+  +row(AC(1)+' Golden acorn',p(gc))
+  +'<div class="sub">Plus bonus rolls on any hunt:</div>'
+  +row('🌱 Acorn seeds (1–3)',p(.1+.01*S.sp.satchel))+row(AC(1)+'🌱 Golden seed',p(.05))+row('✨ Special find',p(.01+.0025*pl('keen')))}
 function accrue(){const n=Date.now(),m=maxH();
  if(S.ht>n)S.ht=n;
  if(S.hc>=m){S.ht=n;return}
