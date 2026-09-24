@@ -83,7 +83,9 @@ div.it{cursor:default}
 <button class="link" id="rs" onclick="reset()">Reset save</button>
 <div class="foot">Ad space · <button class="link" style="margin:0" onclick="toast('Ad removal is coming soon.')">Remove ads</button></div>
 </main><aside id="st"></aside></div>
-<div class="ov" id="ov" hidden><div class="card"><h2 id="ovt" style="margin-top:0">Create your profile</h2><div class="sub" style="margin-bottom:4px">Username</div><input id="un" maxlength="16" placeholder="e.g. NuttyNora" autocomplete="off"><div class="sub" style="margin:14px 0 6px">Choose your squirrel</div><div id="ag" class="ag"></div><button class="mini" id="ovs" style="margin:0" onclick="saveProfile()">Start hunting</button><button class="link" id="ovc" style="margin-left:14px" onclick="closeProfile()" hidden>Cancel</button></div></div>
+<div class="ov" id="ov" hidden><div class="card"><h2 id="ovt" style="margin-top:0">Create your profile</h2><div class="sub" style="margin-bottom:4px">Username</div><input id="un" maxlength="16" placeholder="e.g. NuttyNora" autocomplete="off"><div class="sub" style="margin:14px 0 6px">Choose your squirrel</div><div id="ag" class="ag"></div><button class="mini" id="ovs" style="margin:0" onclick="saveProfile()">Start hunting</button><button class="link" id="ovc" style="margin-left:14px" onclick="closeProfile()" hidden>Cancel</button><div style="margin-top:12px"><button class="link" id="ovi" style="margin:0" onclick="loginUI()">Already have an account? Sign in</button></div></div></div>
+<div class="ov" id="ov2" hidden><div class="card" id="mc"></div></div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
 const $=id=>document.getElementById(id),KEY='acornhunt2',HUNT=300000,UNL=25000,PMAX=12;
 const AC=g=>{const b=g?'#f5c02a':'#b9793b',c=g?'#b8800a':'#5b3a1e';return `<svg viewBox="0 0 24 24" width="1.1em" height="1.1em" style="vertical-align:-.2em" aria-hidden="true"><rect x="11" y="2.5" width="2" height="4.5" rx="1" fill="${c}"/><path d="M12 22.5c-4.2 0-6.7-3.6-6.7-8.2h13.4c0 4.6-2.5 8.2-6.7 8.2z" fill="${b}"/><path d="M4.3 14c0-4.7 3.4-7.5 7.7-7.5s7.7 2.8 7.7 7.5z" fill="${c}"/>${g?'<path d="M8.5 16.5c.3 1.6 1.3 2.9 2.6 3.5" stroke="#fff3b8" stroke-width="1.4" fill="none" stroke-linecap="round"/>':''}</svg>`};
@@ -130,7 +132,7 @@ function skin(i){const x=SK[i];if(!S.skins.includes(x.id)){if(S.g<4)return;S.g-=
 let parm=0;
 function prestige(){if(S.run<UNL)return;
  if(!parm){parm=1;$('pb').textContent='Tap again: resets acorns, farm, upgrades and finds';setTimeout(()=>{parm=0;lists()},4000);return}
- const x=pgain(),k={g:S.g,slot:S.slot,skins:S.skins,skin:S.skin,P:S.P,mus:S.mus,vol:S.vol,T:S.T,pf:S.pf};S=Object.assign(def(),k);S.P.hw+=x;S.P.n++;parm=0;save();lists();ui();toast('🪵 Prestiged! +'+x+' Heartwood. A fresh forest awaits.')}
+ const x=pgain(),k={g:S.g,slot:S.slot,skins:S.skins,skin:S.skin,P:S.P,mus:S.mus,vol:S.vol,T:S.T,pf:S.pf,cloudAt:S.cloudAt,cloudUid:S.cloudUid};S=Object.assign(def(),k);S.P.hw+=x;S.P.n++;parm=0;save();lists();ui();toast('🪵 Prestiged! +'+x+' Heartwood. A fresh forest awaits.')}
 function lists(){
  odds();
  const nd=need('n'),gd=need('g');
@@ -206,17 +208,60 @@ const esc=t=>t.replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&q
 let pick='red';
 function drawAg(){$('ag').innerHTML=SQ.map(x=>`<button class="${x.id==pick?'on':''}" onclick="pickAv('${x.id}')">${sq(x,52)}${x.n.replace(' squirrel','')}</button>`).join('')}
 function pickAv(id){pick=id;drawAg()}
-function openProfile(first){pick=S.pf.av||'red';$('un').value=S.pf.name;$('ovt').textContent=first?'Create your profile':'Edit profile';$('ovs').textContent=first?'Start hunting':'Save';$('ovc').hidden=!!first;drawAg();$('ov').hidden=false}
+function openProfile(first){pick=S.pf.av||'red';$('un').value=S.pf.name;$('ovt').textContent=first?'Create your profile':'Edit profile';$('ovs').textContent=first?'Start hunting':'Save';$('ovc').hidden=!!first;$('ovi').hidden=!first;drawAg();$('ov').hidden=false}
 function closeProfile(){$('ov').hidden=true}
 function saveProfile(){const n=$('un').value.trim().replace(/\s+/g,' ');if(n.length<2){$('un').focus();return}S.pf={name:n.slice(0,16),av:pick};$('ov').hidden=true;profile();save()}
 function profile(){const x=SQ.find(a=>a.id==S.pf.av)||SQ[0];
- $('pf').innerHTML=`<div class="hd">${sq(x,72)}<div><h2>${esc(S.pf.name||'Squirrel')}</h2><div class="sub">${x.n}</div></div></div><button class="mini" style="margin:10px 0 0" onclick="openProfile(0)">Edit profile</button><div id="pfr" style="margin-top:8px"></div>`;pfRows()}
+ $('pf').innerHTML=`<div class="hd">${sq(x,72)}<div><h2>${esc(S.pf.name||'Squirrel')}</h2><div class="sub">${x.n}</div></div></div><button class="mini" style="margin:10px 0 0" onclick="openProfile(0)">Edit profile</button><div id="ac" style="margin-top:10px"></div><div id="pfr" style="margin-top:8px"></div>`;acct();pfRows()}
 function pfRows(){const e=$('pfr');if(!e)return;const row=(a,b)=>`<div class="row"><span>${a}</span><b>${b}</b></div>`;
  e.innerHTML=row('Playing since',new Date(S.T.since).toLocaleDateString())+row('Prestiges',S.P.n)+row('Hunts',fmt(S.T.hunts))+row('Plots',S.plots.length)}
+const SBU='https://yqmopirxnwldtkhfodov.supabase.co',SBK='sb_publishable_am4tu9fCzpDGu-vNZhP_xA_riORcEHD';
+let sb=null,user=null,syncMsg='',pend=null;
+try{sb=window.supabase.createClient(SBU,SBK)}catch(e){}
+const modal=h=>{$('mc').innerHTML=h;$('ov2').hidden=false},closeModal=()=>{$('ov2').hidden=true};
+const hasProg=()=>S.T.hunts>0||S.run>0;
+const cnt=d=>(d.pf&&d.pf.name?esc(d.pf.name)+' · ':'')+fmt((d.T&&d.T.earned)||0)+' acorns earned · '+((d.P&&d.P.n)||0)+' prestiges';
+function setMsg(t){syncMsg=t;const e=$('sm');if(e)e.textContent=t}
+function acct(){const e=$('ac');if(!e)return;
+ if(!sb){e.innerHTML='<div class="sub">Online saving unavailable</div>';return}
+ e.innerHTML=user?`<div class="sub">☁️ ${esc(user.email||'')}</div><div class="sub" id="sm">${esc(syncMsg)}</div><button class="mini" style="margin:4px 4px 0 0" onclick="cloudSync()">Sync now</button><button class="link" style="margin-top:4px" onclick="signOut()">Sign out</button>`
+ :`<button class="mini" style="margin:0" onclick="loginUI()">☁️ Sign in / create account</button><div class="sub" style="margin-top:4px">Saved on this device only</div>`}
+function loginUI(msg){if(!sb){modal('<p>Online saving is unavailable right now.</p><button class="mini" style="margin:0" onclick="closeModal()">Close</button>');return}
+ modal(`<h2 style="margin-top:0">Online save</h2><div class="sub" style="margin-bottom:8px">Sign in to keep your progress on every device.</div><input id="em" type="email" placeholder="Email" autocomplete="email"><div style="height:8px"></div><input id="pw" type="password" placeholder="Password (6+ characters)" autocomplete="current-password"><div id="lm" class="sub" style="margin:8px 0;color:var(--gold)">${msg||''}</div><button class="mini" style="margin:0" onclick="authGo('in')">Sign in</button><button class="mini" onclick="authGo('up')">Create account</button><button class="link" style="margin-left:12px" onclick="closeModal()">Close</button>`)}
+async function authGo(k){const em=$('em').value.trim(),pw=$('pw').value;
+ if(!em||pw.length<6){$('lm').textContent='Enter an email and a password of 6+ characters.';return}
+ $('lm').textContent='Working…';
+ const r=k=='in'?await sb.auth.signInWithPassword({email:em,password:pw}):await sb.auth.signUp({email:em,password:pw});
+ if(r.error){$('lm').textContent=r.error.message;return}
+ if(k=='up'&&!r.data.session){$('lm').textContent='Check your email to confirm your account, then tap Sign in.';return}
+ closeModal()}
+async function signOut(){if(sb)await sb.auth.signOut();user=null;setMsg('');acct()}
+async function push(){if(!sb||!user)return;
+ const t=Date.now(),old=[S.cloudAt,S.cloudUid];S.cloudAt=t;S.cloudUid=user.id;
+ const r=await sb.from('saves').upsert({user_id:user.id,data:S,updated_at:new Date(t).toISOString()});
+ if(r.error){S.cloudAt=old[0];S.cloudUid=old[1];setMsg('Sync failed: '+r.error.message)}
+ else{save();setMsg('Saved online · '+new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'}))}}
+async function cloudSync(){if(!sb||!user)return;
+ const r=await sb.from('saves').select('data,updated_at').eq('user_id',user.id).maybeSingle();
+ if(r.error){setMsg('Sync failed: '+r.error.message);return}
+ const c=r.data;if(!c){await push();return}
+ const ct=Date.parse(c.updated_at),last=S.cloudUid==user.id?(S.cloudAt||0):0;
+ if(ct<=last+2000){await push();return}
+ if(!hasProg()){applyCloud(c.data,ct);return}
+ pend={d:c.data,t:ct};
+ modal(`<h2 style="margin-top:0">Which save do you want?</h2><div class="sub" style="margin-bottom:10px">Your online save and this device are different.</div><p><b>☁️ Online save</b><br><span class="sub">${cnt(c.data)}</span></p><p><b>📱 This device</b><br><span class="sub">${cnt(S)}</span></p><button class="mini" style="margin:0" onclick="useCloud()">Use online save</button><button class="mini" onclick="useLocal()">Keep this device</button>`)}
+function applyCloud(d,ct){S=Object.assign(def(),d);S.cloudAt=ct;S.cloudUid=user.id;save();
+ document.documentElement.dataset.skin=S.skin||'';if(S.pf.name)$('ov').hidden=true;
+ sndUI();profile();lists();ui();closeModal();setMsg('Loaded your online save')}
+const useCloud=()=>applyCloud(pend.d,pend.t),useLocal=()=>{closeModal();push()};
+async function cloudInit(){if(!sb)return;
+ const g=await sb.auth.getSession();user=g.data.session?g.data.session.user:null;acct();if(user)cloudSync();
+ sb.auth.onAuthStateChange((ev,ses)=>{const u=ses?ses.user:null;if((u&&u.id)!==(user&&user.id)){user=u;acct();if(u)cloudSync()}})}
+document.addEventListener('visibilitychange',()=>{if(document.hidden&&user&&$('ov2').hidden)cloudSync()});
 let armed=0,lastUi=Date.now();
-function reset(){const b=$('rs');if(!armed){armed=1;b.textContent='Tap again to erase everything';setTimeout(()=>{armed=0;b.textContent='Reset save'},4000);return}
- S=def();if(AX)AX.suspend();sndUI();save();armed=0;b.textContent='Reset save';document.documentElement.dataset.skin='';lists();ui();toast('Save erased. Fresh start!')}
+function reset(){const b=$('rs');if(!armed){armed=1;b.textContent=user?'Tap again: erases this device and your online save':'Tap again to erase everything';setTimeout(()=>{armed=0;b.textContent='Reset save'},4000);return}
+ S=def();if(AX)AX.suspend();sndUI();save();if(user)push();armed=0;b.textContent='Reset save';document.documentElement.dataset.skin='';lists();ui();toast('Save erased. Fresh start!')}
 document.documentElement.dataset.skin=S.skin||'';
 $('la').innerHTML=AC()+' Acorns';$('lg').innerHTML=AC(1)+' Golden';
-profile();if(!S.pf.name)openProfile(1);lists();ui();setInterval(ui,1000);setInterval(save,5000);
+profile();if(!S.pf.name)openProfile(1);lists();ui();setInterval(ui,1000);setInterval(save,5000);cloudInit();setInterval(()=>{if(user&&!document.hidden&&$('ov2').hidden)cloudSync()},60000);
 </script></body></html>
