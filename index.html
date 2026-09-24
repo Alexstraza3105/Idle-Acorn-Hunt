@@ -34,11 +34,10 @@ main{max-width:520px;margin:0 auto;padding:16px}
 h1{font:800 28px/1 Fraunces,Georgia,serif;margin:0}
 h2{font:600 19px Fraunces,Georgia,serif;margin:26px 0 8px}
 .top{display:flex;justify-content:space-between;align-items:center;gap:10px}.snd{display:flex;align-items:center;gap:8px}.snd input{width:90px;accent-color:var(--acc)}.snd button{font-size:18px;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:5px 10px;cursor:pointer;color:var(--ink)}
-.wrap{display:flex;flex-direction:column}
-aside{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px 16px;margin:0 16px 20px;width:calc(100% - 32px);max-width:520px;align-self:center}
+aside{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px 16px;margin:0 auto 20px;width:calc(100% - 32px);max-width:520px}
 aside h2{font-size:17px;margin:0 0 6px}aside h3{font:600 14px Fraunces,Georgia,serif;margin:14px 0 4px;color:var(--mute)}
 .row{display:flex;justify-content:space-between;gap:10px;font-size:14px;padding:3px 0;border-bottom:1px solid var(--line)}
-@media(min-width:900px){.wrap{flex-direction:row;justify-content:center;align-items:flex-start}main{flex:0 1 520px;margin:0}aside{position:sticky;top:16px;width:300px;flex:none;margin:16px 16px 0 0;align-self:flex-start}}
+@media(min-width:1000px){aside{position:fixed;top:12px;right:12px;width:220px;max-width:none;margin:0;padding:10px 12px;max-height:calc(100vh - 24px);overflow-y:auto}aside h2{font-size:15px}aside h3{font-size:12px;margin:10px 0 3px}.row{font-size:12px;padding:2px 0}}
 .sub{color:var(--mute);font-size:13px}
 .bank{display:flex;gap:10px;margin:16px 0}
 .bank div{flex:1;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:10px 14px}
