@@ -102,7 +102,7 @@ const fmt=n=>{n=Math.floor(n);return n>=1e6?(n/1e6).toFixed(2)+'M':n.toLocaleStr
 const lv=id=>S.up[id]||0,pl=id=>S.P.lv[id]||0,lim=()=>5+5*S.slot;
 const need=k=>k=='g'?Math.max(15,30-3*pl('gfarm')):Math.max(5,12-pl('farm'));
 const yld=()=>Math.round(150*(1+.05*S.sp.oak)*(1+.25*lv('soil')));
-const uc=u=>Math.ceil(u.c*Math.pow(u.g,lv(u.id))),pc=()=>Math.ceil(200*Math.pow(3,S.plots.length-1));
+const uc=u=>u.id=='store'?S.cap:Math.ceil(u.c*Math.pow(u.g,lv(u.id))),pc=()=>Math.ceil(200*Math.pow(3,S.plots.length-1));
 const gcst=x=>x.id=='pouch'?5*(S.slot+1):x.c,pgain=()=>Math.floor(Math.sqrt(S.run/1000));
 function toast(t){$('msg').innerHTML=t}
 function gain(n){n=Math.floor(n);const t=Math.max(0,Math.min(n,S.cap-S.a));S.a+=t;S.run+=t;S.T.earned+=t;return t}
