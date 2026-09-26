@@ -37,8 +37,11 @@ h2{font:600 19px Fraunces,Georgia,serif;margin:26px 0 8px}
 aside{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px 16px;margin:0 auto 20px;width:calc(100% - 32px);max-width:520px}
 aside h2{font-size:17px;margin:0 0 6px}aside h3{font:600 14px Fraunces,Georgia,serif;margin:14px 0 4px;color:var(--mute)}
 .row{display:flex;justify-content:space-between;gap:10px;font-size:14px;padding:3px 0;border-bottom:1px solid var(--line)}
-#pf{margin:16px auto 0}.lc{display:contents}#od2{display:none}#lb2card{display:none}#pfr{display:none}.hd{display:flex;align-items:center;gap:12px}.hd h2{margin:0}
-@media(min-width:1000px){#pf{margin:0}#pf #pfr{display:block}.hd{flex-direction:column;text-align:center;gap:4px}#od{display:none}#od2{display:block;margin:0;padding:8px 10px}#od2 .row{font-size:11px}#lb2card{display:block}[data-s="lb"]{display:none}.lc{display:flex;flex-direction:column;gap:12px;position:fixed;top:12px;left:12px;width:220px;max-height:calc(100vh - 24px);overflow-y:auto}#st{position:fixed;top:12px;right:12px}aside{width:220px;max-width:none;margin:0;padding:10px 12px;max-height:calc(100vh - 24px);overflow-y:auto}aside h2{font-size:15px}aside h3{font-size:12px;margin:10px 0 3px}.row{font-size:12px;padding:2px 0}}
+#pf{margin:16px auto 0}.lc{display:contents}.rc{display:contents}#od2{display:none}#lb2card{display:none}#pfr{display:none}.hd{display:flex;align-items:center;gap:12px}.hd h2{margin:0}
+.lbsel{width:100%;padding:8px;border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--ink);font:inherit;margin-bottom:10px}
+.row.me{border:2px solid var(--acc);border-radius:8px;padding:4px 8px;margin:2px 0}
+aside .sec{margin:0}aside .sec>summary h2{margin:0 0 6px}
+@media(min-width:1000px){#pf{margin:0}#pf #pfr{display:block}.hd{flex-direction:column;text-align:center;gap:4px}#od{display:none}#od2{display:block;margin:0;padding:8px 10px}#od2 .row{font-size:11px}#lb2card{display:block}[data-s="lb"]{display:none}.lc{display:flex;flex-direction:column;gap:12px;position:fixed;top:12px;left:12px;width:220px;max-height:calc(100vh - 24px);overflow-y:auto}.rc{display:flex;flex-direction:column;gap:12px;position:fixed;top:12px;right:12px;width:220px;max-height:calc(100vh - 24px);overflow-y:auto}aside{width:220px;max-width:none;margin:0;padding:10px 12px;max-height:none;overflow-y:visible}aside h2{font-size:15px}aside h3{font-size:12px;margin:10px 0 3px}.row{font-size:12px;padding:2px 0}}
 .ov{position:fixed;inset:0;background:rgba(0,0,0,.55);display:flex;align-items:center;justify-content:center;padding:16px;z-index:10}.ov[hidden]{display:none}
 .ov .card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:18px;max-width:380px;width:100%;max-height:100%;overflow-y:auto}
 .ov input{width:100%;font:inherit;font-size:16px;padding:10px;border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--ink)}
@@ -85,8 +88,8 @@ div.it{cursor:default}
 .foot{margin-top:26px;padding:10px;text-align:center;font-size:13px;color:var(--mute);border:1px dashed var(--line);border-radius:10px}
 </style></head><body><div class="ann" id="annb" hidden><span id="annt"></span><button onclick="dismissAnn()" aria-label="Dismiss">✕</button></div>
 <button class="fab" onclick="openFeedback()" aria-label="Send feedback">💬</button>
-<div class="wrap"><div class="lc"><aside id="pf"></aside><div class="odds" id="od2"></div><aside id="lb2card"><h2>Leaderboard</h2><div style="display:flex;gap:6px;margin-bottom:10px"><button class="mini lbtab" data-t="acorns" onclick="lbTabSel('acorns')" style="margin:0">Acorns</button><button class="mini lbtab" data-t="gold" onclick="lbTabSel('gold')" style="margin:0">Golden acorns</button><button class="mini lbtab" data-t="prestige" onclick="lbTabSel('prestige')" style="margin:0">Prestige</button></div><div id="lb2"></div></aside></div><main>
-<div class="top"><h1>Acorn Hunt</h1><div class="snd"><button id="mb" onclick="music()" aria-label="Toggle music">🔇</button><input type="range" id="vol" min="0" max="100" oninput="setVol(this.value)" aria-label="Volume"></div></div>
+<div class="wrap"><div class="lc"><aside id="pf"></aside><div class="odds" id="od2"></div></div><main>
+<div class="top"><h1>Acorn Hunt</h1></div>
 <div class="bank"><div><span id="la"></span><b id="a">0</b><span class="sub" id="cap"></span></div><div class="gold"><span id="lg"></span><b id="g">0</b></div></div>
 <button id="hunt" onclick="hunt()">Hunt 🐿️</button>
 <div class="sub" id="hs" style="text-align:center;margin-top:8px"></div>
@@ -100,9 +103,9 @@ div.it{cursor:default}
 <div id="sk"></div>
 <details class="sec" data-s="pres" open ontoggle="secT(this)"><summary><h2>Prestige</h2></summary><div id="pl"></div></details>
 <details class="sec" data-s="ach" open ontoggle="secT(this)"><summary><h2>Achievements</h2></summary><div class="sub" id="ai" style="margin-bottom:8px"></div><div id="al"></div></details>
-<details class="sec" data-s="lb" open ontoggle="secT(this)"><summary><h2>Leaderboard</h2></summary><div id="lbtabs" style="display:flex;gap:6px;margin-bottom:10px"><button class="mini lbtab" data-t="acorns" onclick="lbTabSel('acorns')" style="margin:0">Acorns</button><button class="mini lbtab" data-t="gold" onclick="lbTabSel('gold')" style="margin:0">Golden acorns</button><button class="mini lbtab" data-t="prestige" onclick="lbTabSel('prestige')" style="margin:0">Prestige</button></div><div id="lb"></div></details>
+<details class="sec" data-s="lb" open ontoggle="secT(this)"><summary><h2>Leaderboard</h2></summary><select class="lbsel" onchange="lbTabSel(this.value)"><option value="acorns">Acorns</option><option value="gold">Golden acorns</option><option value="prestige">Prestige</option></select><div id="lb"></div></details>
 <button class="link" id="rs" onclick="reset()">Reset save</button>
-</main><aside id="st"></aside><div class="foot">Ad space · <button class="link" style="margin:0" onclick="toast('Ad removal is coming soon.')">Remove ads</button> · <a href="privacy.html" style="color:inherit">Privacy</a> · <button class="link" style="margin:0" onclick="showChangelog(1)">What's new</button></div></div>
+</main><div class="rc"><aside id="st"><details class="sec" data-s="statP" open ontoggle="secT(this)"><summary><h2>Your stats</h2></summary><div id="stBody"></div></details></aside><aside id="lb2card"><details class="sec" data-s="lbP" open ontoggle="secT(this)"><summary><h2>Leaderboard</h2></summary><select class="lbsel" onchange="lbTabSel(this.value)"><option value="acorns">Acorns</option><option value="gold">Golden acorns</option><option value="prestige">Prestige</option></select><div id="lb2"></div></details></aside></div><div class="foot">Ad space · <button class="link" style="margin:0" onclick="toast('Ad removal is coming soon.')">Remove ads</button> · <a href="privacy.html" style="color:inherit">Privacy</a> · <button class="link" style="margin:0" onclick="showChangelog(1)">What's new</button></div></div>
 <div class="ov" id="ov" hidden><div class="card"><h2 id="ovt" style="margin-top:0">Create your profile</h2><div class="sub" style="margin-bottom:4px">Username</div><input id="un" maxlength="16" placeholder="e.g. NuttyNora" autocomplete="off"><div class="sub" id="unm" style="margin-top:6px;color:var(--gold)"></div><div class="sub" style="margin:14px 0 6px">Choose your squirrel</div><div id="ag" class="ag"></div><button class="mini" id="ovs" style="margin:0" onclick="saveProfile()">Start hunting</button><button class="link" id="ovc" style="margin-left:14px" onclick="closeProfile()" hidden>Cancel</button><div style="margin-top:12px"><button class="link" id="ovi" style="margin:0" onclick="loginUI()">Already have an account? Sign in</button></div></div></div>
 <div class="ab" id="ab" hidden></div>
 <div class="ov" id="ov2" hidden><div class="card" id="mc"></div></div>
@@ -115,7 +118,7 @@ const SP=[{id:'oak',n:'Oak Charm',e:'🌳',d:n=>'+'+5*n+'% harvest yield'},{id:'
 const G=[{id:'sack',n:'Acorn Sack',d:d=>'Instantly get '+fmt(Math.round(S.cap*.5))+' acorns',e:'🎒',c:3},{id:'tonic',n:'Miracle Grow',d:'Every growing plot advances 5 hunts',e:'🧪',c:2},{id:'pouch',n:'Trinket Pouch',d:'+5 stack limit on every special find',e:'👜',c:5}];
 const PU=[{id:'keen',n:'Keen Nose',e:'👃',d:'+0.25% special find chance',max:10,c:l=>3+2*l},{id:'luck',n:'Golden Instinct',e:'💫',d:'+0.25% golden acorn chance',max:8,c:l=>4+2*l},{id:'farm',n:'Farmhand',e:'🧑‍🌾',d:'Acorn seeds grow 1 hunt faster (min 5)',max:7,c:l=>2*(l+1)},{id:'gfarm',n:'Golden Farmhand',e:'👩‍🌾',d:'Golden seeds grow 3 hunts faster (min 15)',max:5,c:l=>3*(l+1)},{id:'mkt',n:'Skin Market',e:'🏪',d:'Unlocks colour skins in the golden shop',max:1,c:l=>5}];
 const SK=[{id:'',n:'Forest',e:'🌲'},{id:'autumn',n:'Autumn',e:'🍁'},{id:'frost',n:'Frost',e:'❄️'},{id:'plum',n:'Plum',e:'🫐'}];
-const def=()=>({a:0,g:0,hc:1,ht:Date.now(),pf:{name:'',av:'red'},ach:{},col:{},cap:5000,run:0,seed:1,gseed:0,plots:[null],up:{},sp:{oak:0,feather:0,clover:0,satchel:0},slot:0,mus:0,vol:50,T:{since:Date.now(),time:0,earned:0,hunts:0,seeds:0,gseeds:0,harv:0,gfound:0,sp:{oak:0,feather:0,clover:0,satchel:0}},P:{hw:0,n:0,lv:{}},skins:[''],skin:'',lastVer:''});
+const def=()=>({a:0,g:0,hc:1,ht:Date.now(),pf:{name:'',av:'red'},ach:{},col:{},cap:5000,run:0,seed:1,gseed:0,plots:[null],up:{},sp:{oak:0,feather:0,clover:0,satchel:0},slot:0,mus:0,vol:50,T:{since:Date.now(),time:0,earned:0,hunts:0,seeds:0,gseeds:0,harv:0,gfound:0,sp:{oak:0,feather:0,clover:0,satchel:0}},P:{hw:0,n:0,lv:{}},skins:[''],skin:'',lastVer:'',theme:''});
 let S;try{S=Object.assign(def(),JSON.parse(localStorage.getItem(KEY)||'{}'))}catch(e){S=def()}
 for(const k in S.sp)if(S.T.sp[k]<S.sp[k])S.T.sp[k]=S.sp[k];S.T.earned=Math.max(S.T.earned,S.run);if(!S.T.since)S.T.since=Date.now();
 const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}};
@@ -179,15 +182,15 @@ function ui(){
  const pb=$('pb');if(pb)pb.disabled=S.run<UNL;
  const nw=Date.now();if(!document.hidden)S.T.time+=Math.min((nw-lastUi)/1000,5);lastUi=nw;stats();pfRows();checkAch()}
 const ft=t=>{t=Math.floor(t);const h=Math.floor(t/3600),m=Math.floor(t%3600/60);return h?h+'h '+m+'m':m+'m '+t%60+'s'};
-function stats(){const T=S.T,row=(a,b)=>`<div class="row"><span>${a}</span><b>${b}</b></div>`;
- $('st').innerHTML='<h2>Your stats</h2>'+row('Time played',ft(T.time))+row('Hunts',fmt(T.hunts))
+function stats(){const T=S.T,row=(a,b)=>`<div class="row"><span>${a}</span><b>${b}</b></div>`,e=$('stBody');if(!e)return;
+ e.innerHTML=row('Time played',ft(T.time))+row('Hunts',fmt(T.hunts))
  +'<h3>Acorns</h3>'+row('Owned now',fmt(S.a))+row('Earned this run',fmt(S.run))+row('Earned all-time',fmt(T.earned))+row('Golden acorns owned',S.g)+row('Golden acorns found',fmt(T.gfound))
  +'<h3>Farm</h3>'+row('Seeds owned',S.seed+' + '+S.gseed+' golden')+row('Seeds found',fmt(T.seeds)+' + '+T.gseeds+' golden')+row('Harvests',fmt(T.harv))
  +'<h3>Special finds</h3>'+SP.map(x=>row(x.e+' '+x.n,S.sp[x.id]+' now · '+T.sp[x.id]+' all-time')).join('')
  +'<h3>Prestige</h3>'+row('Prestiges',S.P.n)+row('Heartwood',S.P.hw)}
 let AX,MG,birdT;
 const gainOf=()=>Math.pow(S.vol/100,2)*.8;
-function sndUI(){$('mb').textContent=S.mus?'🔊':'🔇';$('vol').value=S.vol}
+function sndUI(){const b=$('mb'),v=$('vol');if(b)b.textContent=S.mus?'🔊':'🔇';if(v)v.value=S.vol}
 function startAudio(){
  if(AX){AX.resume();return}
  const C=window.AudioContext||window.webkitAudioContext;if(!C)return;
@@ -238,7 +241,7 @@ async function saveProfile(){const n=$('un').value.trim().replace(/\s+/g,' ');if
   if(!r.error&&r.data&&r.data.length){$('unm').style.color='var(--gold)';$('unm').textContent='That username is taken. Try another.';$('ovs').disabled=false;return}}
  $('unm').textContent='';S.pf={name:nm,av:pick};$('ov').hidden=true;profile();save();$('ovs').disabled=false;if(user)push()}
 function profile(){const x=SQ.find(a=>a.id==S.pf.av)||SQ[0];
- $('pf').innerHTML=`<div class="hd">${sq(x,72)}<div><h2>${esc(S.pf.name||'Squirrel')}</h2><div class="sub">${x.n}</div></div></div><button class="mini" style="margin:10px 0 0" onclick="openProfile(0)">Edit profile</button><div id="ac" style="margin-top:10px"></div><div id="pfr" style="margin-top:8px"></div>`;acct();pfRows()}
+ $('pf').innerHTML=`<div class="hd">${sq(x,72)}<div><h2>${esc(S.pf.name||'Squirrel')}</h2><div class="sub">${x.n}</div></div></div><button class="mini" style="margin:10px 0 0" onclick="openSettings('profile')">Settings</button><div id="ac" style="margin-top:10px"></div><div id="pfr" style="margin-top:8px"></div>`;acct();pfRows()}
 function pfRows(){const e=$('pfr');if(!e)return;const row=(a,b)=>`<div class="row"><span>${a}</span><b>${b}</b></div>`;
  e.innerHTML=row('Playing since',new Date(S.T.since).toLocaleDateString())+row('Prestiges',S.P.n)+row('Hunts',fmt(S.T.hunts))+row('Plots',S.plots.length)+row('Achievements',Object.keys(S.ach).length+'/'+ATOT)}
 const SBU='https://yqmopirxnwldtkhfodov.supabase.co',SBK='sb_publishable_am4tu9fCzpDGu-vNZhP_xA_riORcEHD';
@@ -278,7 +281,7 @@ async function cloudSync(){if(!sb||!user)return;
  pend={d:c.data,t:ct};
  modal(`<h2 style="margin-top:0">Which save do you want?</h2><div class="sub" style="margin-bottom:10px">Your online save and this device are different.</div><p><b>☁️ Online save</b><br><span class="sub">${cnt(c.data)}</span></p><p><b>📱 This device</b><br><span class="sub">${cnt(S)}</span></p><button class="mini" style="margin:0" onclick="useCloud()">Use online save</button><button class="mini" onclick="useLocal()">Keep this device</button>`)}
 function applyCloud(d,ct){S=Object.assign(def(),d);S.cloudAt=ct;S.cloudUid=user.id;save();
- document.documentElement.dataset.skin=S.skin||'';if(S.pf.name)$('ov').hidden=true;
+ document.documentElement.dataset.skin=S.skin||'';if(S.theme)document.documentElement.dataset.theme=S.theme;if(S.pf.name)$('ov').hidden=true;
  sndUI();profile();lists();applyCol();ui();closeModal();setMsg('Loaded your online save')}
 const useCloud=()=>applyCloud(pend.d,pend.t),useLocal=()=>{closeModal();push()};
 async function cloudInit(){if(!sb)return;
@@ -306,14 +309,14 @@ const pcf=x=>(+(x*100).toFixed(2))+'%',bl=b=>'+'+pcf(BN[b].v)+' '+BN[b].t;
 function ab(t){let n=0;for(const c of AG)if(c.b==t)for(const x of c.t)if(S.ach[c.k+x[0]])n++;return n*BN[t].v}
 const applyCol=()=>document.querySelectorAll('details.sec[data-s]').forEach(d=>{d.open=!S.col[d.dataset.s]});
 let lbTab='acorns';
-function lbTabSel(t){lbTab=t;document.querySelectorAll('.lbtab').forEach(b=>b.classList.toggle('on',b.dataset.t==t));loadLB()}
+function lbTabSel(t){lbTab=t;document.querySelectorAll('.lbsel').forEach(s=>{if(s.value!==t)s.value=t});loadLB()}
 async function loadLB(){const els=['lb','lb2'].map($).filter(Boolean);if(!els.length)return;
  if(!sb){els.forEach(e=>e.innerHTML='<div class="sub">Leaderboard unavailable</div>');return}
  els.forEach(e=>e.innerHTML='<div class="sub">Loading…</div>');
- const r=await sb.from('leaderboard').select('username,acorns,gold,prestige').order(lbTab,{ascending:false}).limit(20);
+ const r=await sb.from('leaderboard').select('user_id,username,acorns,gold,prestige').order(lbTab,{ascending:false}).limit(20);
  if(r.error){els.forEach(e=>e.innerHTML='<div class="sub">Leaderboard unavailable</div>');return}
  const rows=r.data||[];
- const h=rows.length?rows.map((x,i)=>`<div class="row"><span>${i+1}. ${esc(x.username||'Squirrel')}${user&&S.pf.name&&x.username==S.pf.name?' (you)':''}</span><b>${fmt(x[lbTab])}</b></div>`).join(''):'<div class="sub">No entries yet — be the first!</div>';
+ const h=rows.length?rows.map((x,i)=>{const mine=!!(user&&x.user_id===user.id);return `<div class="row${mine?' me':''}"><span>${i+1}. ${esc(x.username||'Squirrel')}${mine?' (you)':''}</span><b>${fmt(x[lbTab])}</b></div>`}).join(''):'<div class="sub">No entries yet — be the first!</div>';
  els.forEach(e=>e.innerHTML=h)}
 function secT(d){if(d.open){if(S.col[d.dataset.s]){delete S.col[d.dataset.s];save()}}else if(!S.col[d.dataset.s]){S.col[d.dataset.s]=1;save()}}
 const ATOT=AG.reduce((a,c)=>a+c.t.length,0),opn=new Set(),fv=(c,x)=>c.f?c.f(x):fmt(x);
@@ -332,6 +335,7 @@ function achList(){let got=0;
   return `<details ${opn.has(c.k)?'open':''} ontoggle="tg('${c.k}',this.open)"><summary>${c.n} <span class="sub">${done}/${c.t.length}</span></summary><div class="sub" style="margin-bottom:4px">Each: ${bl(c.b)} · Now: +${pcf(done*BN[c.b].v)}</div>${rows}</details>`}).join('');
  $('ai').textContent=got+' of '+ATOT+' unlocked'}
 const CHANGELOG=[
+ {v:'2026-09-26c',t:'Dashboard & settings',items:['Leaderboard now sits under your stats on the right (desktop), with a dropdown instead of tabs','Your stats and leaderboard panels can now be collapsed','Your own row on the leaderboard is now outlined so you can spot it fast','Replaced "Edit profile" with a full Settings screen: change your username, password, email, or squirrel','Sound controls moved into Settings, under Audio','Added a Light / Dark / Auto background colour toggle in Settings']},
  {v:'2026-09-26b',t:'Feedback & announcements',items:['Added an in-game feedback button (bottom right) for gameplay notes, bugs, questions, and praise','Added a live announcement banner for game-wide notices','Farm plots are now compact square tiles, so more fit on screen','Acorn Sack now gives 50% of your current max storage instead of a flat amount']},
  {v:'2026-09-26',t:"What's new",items:['Deeper Burrow now stores up to 10 hunts at max level','Added a "What\'s new" changelog, right here!']},
  {v:'2026-09-25',t:'Leaderboard & unique names',items:['Added a live leaderboard with Acorns, Golden acorns and Prestige tabs','Usernames are now unique across all players','On wide screens the leaderboard now sits in the left column','New Sharp Nose upgrade for special find chance','Acorn Sack now gives 3,000 acorns instead of 5,000','Achievements moved below Prestige, and the ad banner now sits below the stats panel on mobile']},
@@ -372,11 +376,50 @@ async function loadAnn(){if(!sb)return;
  annId=key;$('annt').textContent=r.data.message;$('annb').hidden=false}
 function dismissAnn(){if(annId)try{localStorage.setItem('acornhunt_ann',annId)}catch(e){}
  $('annb').hidden=true}
+function settingsHTML(tab){
+ const tabs=[['profile','Profile'],['audio','Audio'],['gameplay','Gameplay']];
+ const nav=tabs.map(([k,l])=>`<button class="mini${tab==k?' on':''}" style="margin:0 6px 10px 0" onclick="openSettings('${k}')">${l}</button>`).join('');
+ const body=tab=='audio'?audioTabHTML():tab=='gameplay'?gameplayTabHTML():profileTabHTML();
+ return `<h2 style="margin-top:0">Settings</h2><div>${nav}</div>${body}<div style="margin-top:14px"><button class="link" style="margin:0" onclick="closeModal()">Close</button></div>`}
+function openSettings(tab){modal(settingsHTML(tab||'profile'))}
+function profileTabHTML(){const av=S.pf.av||'red';
+ return `<div class="sub" style="margin:10px 0 4px">Username</div>
+<input id="sUn" maxlength="16" value="${esc(S.pf.name)}" style="width:100%;padding:10px;border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--ink);font:inherit">
+<div id="sUnm" class="sub" style="margin:4px 0 8px"></div>
+<button class="mini" style="margin:0 0 14px" onclick="settingsChangeUsername()">Save username</button>
+<div class="sub" style="margin:0 0 6px">Squirrel</div>
+<div class="ag">${SQ.map(x=>`<button class="${x.id==av?'on':''}" onclick="settingsPickAv('${x.id}')">${sq(x,52)}${x.n.replace(' squirrel','')}</button>`).join('')}</div>
+${user?`<div class="sub" style="margin:16px 0 6px">Account · signed in as ${esc(user.email||'')}</div>
+<input id="sPw" type="password" placeholder="New password (6+ characters)" autocomplete="new-password" style="width:100%;padding:10px;border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--ink);font:inherit">
+<button class="mini" style="margin:8px 0 0" onclick="settingsChangePassword()">Change password</button>
+<input id="sEm" type="email" placeholder="New email address" autocomplete="email" style="width:100%;margin-top:12px;padding:10px;border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--ink);font:inherit">
+<button class="mini" style="margin:8px 0 0" onclick="settingsChangeEmail()">Change email</button>
+<div id="sAm" class="sub" style="margin-top:8px"></div>`:`<div class="sub" style="margin-top:16px">Sign in to change your password or email.</div>`}
+<div class="sub" style="margin-top:18px">🎨 Equip skins — unlock the Skin Market in Prestige, then equip owned skins from the Golden shop section. Choosing them here is coming soon.</div>`}
+async function settingsChangeUsername(){const el=$('sUn'),n=el.value.trim().replace(/\s+/g,' ');
+ if(n.length<2){el.focus();return}
+ const nm=n.slice(0,16);$('sUnm').style.color='var(--mute)';$('sUnm').textContent='Checking availability…';
+ if(sb){let q=sb.from('leaderboard').select('user_id').ilike('username',nm);if(user)q=q.neq('user_id',user.id);
+  const r=await q.limit(1);
+  if(!r.error&&r.data&&r.data.length){$('sUnm').style.color='var(--gold)';$('sUnm').textContent='That username is taken. Try another.';return}}
+ S.pf.name=nm;$('sUnm').style.color='var(--acc)';$('sUnm').textContent='Saved!';profile();save();if(user)push()}
+function settingsPickAv(id){S.pf.av=id;pick=id;profile();save();if(user)push();openSettings('profile')}
+function audioTabHTML(){return `<div class="sub" style="margin:10px 0 8px">Background sound</div>
+<div class="snd" style="justify-content:flex-start;gap:12px;margin:0">
+<button id="mb" onclick="music()" aria-label="Toggle music">${S.mus?'🔊':'🔇'}</button>
+<input type="range" id="vol" min="0" max="100" value="${S.vol}" oninput="setVol(this.value)" aria-label="Volume" style="width:150px">
+</div>`}
+function gameplayTabHTML(){const cur=S.theme||'system';
+ const opt=(v,l)=>`<button class="mini${cur==v?' on':''}" style="margin:0 6px 0 0" onclick="setTheme('${v}')">${l}</button>`;
+ return `<div class="sub" style="margin:10px 0 8px">Background colours</div>
+<div>${opt('system','Auto')}${opt('light','Light')}${opt('dark','Dark')}</div>
+<div class="sub" style="margin-top:18px">🎨 More themes — unlockable and purchasable colour palettes are coming soon.</div>`}
+function setTheme(t){S.theme=t=='system'?'':t;if(S.theme)document.documentElement.dataset.theme=S.theme;else delete document.documentElement.dataset.theme;save();openSettings('gameplay')}
 let armed=0,lastUi=Date.now();
 function reset(){const b=$('rs');if(!armed){armed=1;b.textContent=user?'Tap again: erases this device and your online save':'Tap again to erase everything';setTimeout(()=>{armed=0;b.textContent='Reset save'},4000);return}
- S=def();if(AX)AX.suspend();sndUI();save();if(user)push();armed=0;b.textContent='Reset save';document.documentElement.dataset.skin='';lists();ui();toast('Save erased. Fresh start!')}
-document.documentElement.dataset.skin=S.skin||'';
+ S=def();if(AX)AX.suspend();sndUI();save();if(user)push();armed=0;b.textContent='Reset save';document.documentElement.dataset.skin='';delete document.documentElement.dataset.theme;lists();ui();toast('Save erased. Fresh start!')}
+document.documentElement.dataset.skin=S.skin||'';if(S.theme)document.documentElement.dataset.theme=S.theme;
 $('la').innerHTML=AC()+' Acorns';$('lg').innerHTML=AC(1)+' Golden';
 profile();if(!S.pf.name)openProfile(1);else if(S.lastVer&&S.lastVer!==CHANGELOG[0].v)showChangelog(0);else if(!S.lastVer){S.lastVer=CHANGELOG[0].v;save()}
-lists();applyCol();ui();document.querySelectorAll('.lbtab[data-t="acorns"]').forEach(b=>b.classList.add('on'));loadLB();setInterval(ui,1000);setInterval(save,5000);cloudInit();setInterval(()=>{if(user&&!document.hidden&&$('ov2').hidden)cloudSync()},60000);loadAnn();setInterval(loadAnn,120000);
+lists();applyCol();ui();loadLB();setInterval(ui,1000);setInterval(save,5000);cloudInit();setInterval(()=>{if(user&&!document.hidden&&$('ov2').hidden)cloudSync()},60000);loadAnn();setInterval(loadAnn,120000);
 </script></body></html>
