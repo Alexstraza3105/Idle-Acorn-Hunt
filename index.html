@@ -404,6 +404,16 @@ async function settingsChangeUsername(){const el=$('sUn'),n=el.value.trim().repl
   if(!r.error&&r.data&&r.data.length){$('sUnm').style.color='var(--gold)';$('sUnm').textContent='That username is taken. Try another.';return}}
  S.pf.name=nm;$('sUnm').style.color='var(--acc)';$('sUnm').textContent='Saved!';profile();save();if(user)push()}
 function settingsPickAv(id){S.pf.av=id;pick=id;profile();save();if(user)push();openSettings('profile')}
+async function settingsChangePassword(){if(!sb||!user)return;const p=$('sPw').value;
+ if(p.length<6){$('sAm').style.color='var(--gold)';$('sAm').textContent='Password must be 6+ characters.';return}
+ $('sAm').style.color='var(--mute)';$('sAm').textContent='Updating…';
+ const r=await sb.auth.updateUser({password:p});
+ $('sAm').style.color=r.error?'var(--gold)':'var(--acc)';$('sAm').textContent=r.error?r.error.message:'Password updated.';if(!r.error)$('sPw').value=''}
+async function settingsChangeEmail(){if(!sb||!user)return;const e=$('sEm').value.trim();
+ if(!e){$('sAm').style.color='var(--gold)';$('sAm').textContent='Enter a new email.';return}
+ $('sAm').style.color='var(--mute)';$('sAm').textContent='Updating…';
+ const r=await sb.auth.updateUser({email:e});
+ $('sAm').style.color=r.error?'var(--gold)':'var(--acc)';$('sAm').textContent=r.error?r.error.message:'Check your new email to confirm the change.';if(!r.error)$('sEm').value=''}
 function audioTabHTML(){return `<div class="sub" style="margin:10px 0 8px">Background sound</div>
 <div class="snd" style="justify-content:flex-start;gap:12px;margin:0">
 <button id="mb" onclick="music()" aria-label="Toggle music">${S.mus?'🔊':'🔇'}</button>
