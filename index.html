@@ -43,7 +43,8 @@ aside h2{font-size:17px;margin:0 0 6px}aside h3{font:600 14px Fraunces,Georgia,s
 aside .sec{margin:0}aside .sec>summary h2{margin:0 0 6px}
 @media(min-width:1000px){#pf{margin:0}#pf #pfr{display:block}.hd{flex-direction:column;text-align:center;gap:4px}#od{display:none}#od2{display:block;margin:0;padding:8px 10px}#od2 .row{font-size:11px}#lb2card{display:block}[data-s="lb"]{display:none}.lc{display:flex;flex-direction:column;gap:12px;position:fixed;top:12px;left:12px;width:220px;max-height:calc(100vh - 24px);overflow-y:auto}.rc{display:flex;flex-direction:column;gap:12px;position:fixed;top:12px;right:12px;width:220px;max-height:calc(100vh - 24px);overflow-y:auto}aside{width:220px;max-width:none;margin:0;padding:10px 12px;max-height:none;overflow-y:visible}aside h2{font-size:15px}aside h3{font-size:12px;margin:10px 0 3px}.row{font-size:12px;padding:2px 0}}
 .ov{position:fixed;inset:0;background:rgba(0,0,0,.55);display:flex;align-items:center;justify-content:center;padding:16px;z-index:10}.ov[hidden]{display:none}
-.ov .card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:18px;max-width:380px;width:100%;max-height:100%;overflow-y:auto}
+.ov .card{position:relative;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:18px;max-width:380px;width:100%;max-height:100%;overflow-y:auto}
+.mx{position:absolute;top:10px;right:10px;background:none;border:0;font-size:20px;line-height:1;cursor:pointer;color:var(--mute);padding:6px}
 .ov input{width:100%;font:inherit;font-size:16px;padding:10px;border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--ink)}
 .ag{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:14px}
 .ag button{background:var(--bg);border:2px solid var(--line);border-radius:12px;padding:6px 2px;cursor:pointer;color:var(--ink);font:inherit;font-size:12px}.ag button.on{border-color:var(--acc)}
@@ -106,7 +107,7 @@ div.it{cursor:default}
 <details class="sec" data-s="lb" open ontoggle="secT(this)"><summary><h2>Leaderboard</h2></summary><select class="lbsel" onchange="lbTabSel(this.value)"><option value="acorns">Acorns</option><option value="gold">Golden acorns</option><option value="prestige">Prestige</option></select><div id="lb"></div></details>
 <button class="link" id="rs" onclick="reset()">Reset save</button>
 </main><div class="rc"><aside id="st"><details class="sec" data-s="statP" open ontoggle="secT(this)"><summary><h2>Your stats</h2></summary><div id="stBody"></div></details></aside><aside id="lb2card"><details class="sec" data-s="lbP" open ontoggle="secT(this)"><summary><h2>Leaderboard</h2></summary><select class="lbsel" onchange="lbTabSel(this.value)"><option value="acorns">Acorns</option><option value="gold">Golden acorns</option><option value="prestige">Prestige</option></select><div id="lb2"></div></details></aside></div><div class="foot">Ad space · <button class="link" style="margin:0" onclick="toast('Ad removal is coming soon.')">Remove ads</button> · <a href="privacy.html" style="color:inherit">Privacy</a> · <button class="link" style="margin:0" onclick="showChangelog(1)">What's new</button></div></div>
-<div class="ov" id="ov" hidden><div class="card"><h2 id="ovt" style="margin-top:0">Create your profile</h2><div class="sub" style="margin-bottom:4px">Username</div><input id="un" maxlength="16" placeholder="e.g. NuttyNora" autocomplete="off"><div class="sub" id="unm" style="margin-top:6px;color:var(--gold)"></div><div class="sub" style="margin:14px 0 6px">Choose your squirrel</div><div id="ag" class="ag"></div><button class="mini" id="ovs" style="margin:0" onclick="saveProfile()">Start hunting</button><button class="link" id="ovc" style="margin-left:14px" onclick="closeProfile()" hidden>Cancel</button><div style="margin-top:12px"><button class="link" id="ovi" style="margin:0" onclick="loginUI()">Already have an account? Sign in</button></div></div></div>
+<div class="ov" id="ov" hidden><div class="card"><button class="mx" id="ovc" onclick="closeProfile()" hidden aria-label="Close">✕</button><h2 id="ovt" style="margin-top:0">Create your profile</h2><div class="sub" style="margin-bottom:4px">Username</div><input id="un" maxlength="16" placeholder="e.g. NuttyNora" autocomplete="off"><div class="sub" id="unm" style="margin-top:6px;color:var(--gold)"></div><div class="sub" style="margin:14px 0 6px">Choose your squirrel</div><div id="ag" class="ag"></div><button class="mini" id="ovs" style="margin:0" onclick="saveProfile()">Start hunting</button><div style="margin-top:12px"><button class="link" id="ovi" style="margin:0" onclick="loginUI()">Already have an account? Sign in</button></div></div></div>
 <div class="ab" id="ab" hidden></div>
 <div class="ov" id="ov2" hidden><div class="card" id="mc"></div></div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -247,7 +248,7 @@ function pfRows(){const e=$('pfr');if(!e)return;const row=(a,b)=>`<div class="ro
 const SBU='https://yqmopirxnwldtkhfodov.supabase.co',SBK='sb_publishable_am4tu9fCzpDGu-vNZhP_xA_riORcEHD';
 let sb=null,user=null,syncMsg='',pend=null;
 try{sb=window.supabase.createClient(SBU,SBK)}catch(e){}
-const modal=h=>{$('mc').innerHTML=h;$('ov2').hidden=false},closeModal=()=>{$('ov2').hidden=true};
+const modal=h=>{$('mc').innerHTML='<button class="mx" onclick="closeModal()" aria-label="Close">✕</button>'+h;$('ov2').hidden=false},closeModal=()=>{$('ov2').hidden=true};
 const hasProg=()=>S.T.hunts>0||S.run>0;
 const cnt=d=>(d.pf&&d.pf.name?esc(d.pf.name)+' · ':'')+fmt((d.T&&d.T.earned)||0)+' acorns earned · '+((d.P&&d.P.n)||0)+' prestiges';
 function setMsg(t){syncMsg=t;const e=$('sm');if(e)e.textContent=t}
@@ -255,8 +256,8 @@ function acct(){const e=$('ac');if(!e)return;
  if(!sb){e.innerHTML='<div class="sub">Online saving unavailable</div>';return}
  e.innerHTML=user?`<div class="sub">☁️ ${esc(user.email||'')}</div><div class="sub" id="sm">${esc(syncMsg)}</div><button class="mini" style="margin:4px 4px 0 0" onclick="cloudSync()">Sync now</button><button class="link" style="margin-top:4px" onclick="signOut()">Sign out</button>`
  :`<button class="mini" style="margin:0" onclick="loginUI()">☁️ Sign in / create account</button><div class="sub" style="margin-top:4px">Saved on this device only</div>`}
-function loginUI(msg){if(!sb){modal('<p>Online saving is unavailable right now.</p><button class="mini" style="margin:0" onclick="closeModal()">Close</button>');return}
- modal(`<h2 style="margin-top:0">Online save</h2><div class="sub" style="margin-bottom:8px">Sign in to keep your progress on every device.</div><input id="em" type="email" placeholder="Email" autocomplete="email"><div style="height:8px"></div><input id="pw" type="password" placeholder="Password (6+ characters)" autocomplete="current-password"><div class="sub" style="margin-top:8px">By creating an account you agree to our <a href="privacy.html" target="_blank" style="color:inherit">privacy notice</a>.</div><div id="lm" class="sub" style="margin:8px 0;color:var(--gold)">${msg||''}</div><button class="mini" style="margin:0" onclick="authGo('in')">Sign in</button><button class="mini" onclick="authGo('up')">Create account</button><button class="link" style="margin-left:12px" onclick="closeModal()">Close</button>`)}
+function loginUI(msg){if(!sb){modal('<p>Online saving is unavailable right now.</p>');return}
+ modal(`<h2 style="margin-top:0">Online save</h2><div class="sub" style="margin-bottom:8px">Sign in to keep your progress on every device.</div><input id="em" type="email" placeholder="Email" autocomplete="email"><div style="height:8px"></div><input id="pw" type="password" placeholder="Password (6+ characters)" autocomplete="current-password"><div class="sub" style="margin-top:8px">By creating an account you agree to our <a href="privacy.html" target="_blank" style="color:inherit">privacy notice</a>.</div><div id="lm" class="sub" style="margin:8px 0;color:var(--gold)">${msg||''}</div><button class="mini" style="margin:0" onclick="authGo('in')">Sign in</button><button class="mini" onclick="authGo('up')">Create account</button>`)}
 async function authGo(k){const em=$('em').value.trim(),pw=$('pw').value;
  if(!em||pw.length<6){$('lm').textContent='Enter an email and a password of 6+ characters.';return}
  $('lm').textContent='Working…';
@@ -357,8 +358,7 @@ function openFeedback(){modal(`<h2 style="margin-top:0">Send feedback</h2>
 <div style="height:8px"></div>
 <textarea id="fbMsg" rows="4" maxlength="2000" placeholder="Tell us what's on your mind…" style="width:100%;padding:10px;border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--ink);font:inherit;resize:vertical"></textarea>
 <div id="fbm" class="sub" style="margin:8px 0"></div>
-<button class="mini" id="fbs" style="margin:0" onclick="sendFeedback()">Send</button>
-<button class="link" style="margin-left:12px" onclick="closeModal()">Cancel</button>`)}
+<button class="mini" id="fbs" style="margin:0" onclick="sendFeedback()">Send</button>`)}
 async function sendFeedback(){const t=$('fbType').value,m=$('fbMsg').value.trim();
  if(!m){$('fbm').style.color='var(--gold)';$('fbm').textContent='Write a message first.';return}
  if(!sb){$('fbm').style.color='var(--gold)';$('fbm').textContent='Feedback is unavailable right now.';return}
@@ -380,7 +380,7 @@ function settingsHTML(tab){
  const tabs=[['profile','Profile'],['audio','Audio'],['gameplay','Gameplay']];
  const nav=tabs.map(([k,l])=>`<button class="mini${tab==k?' on':''}" style="margin:0 6px 10px 0" onclick="openSettings('${k}')">${l}</button>`).join('');
  const body=tab=='audio'?audioTabHTML():tab=='gameplay'?gameplayTabHTML():profileTabHTML();
- return `<h2 style="margin-top:0">Settings</h2><div>${nav}</div>${body}<div style="margin-top:14px"><button class="link" style="margin:0" onclick="closeModal()">Close</button></div>`}
+ return `<h2 style="margin-top:0">Settings</h2><div>${nav}</div>${body}`}
 function openSettings(tab){modal(settingsHTML(tab||'profile'))}
 function profileTabHTML(){const av=S.pf.av||'red';
  return `<div class="sub" style="margin:10px 0 4px">Username</div>
