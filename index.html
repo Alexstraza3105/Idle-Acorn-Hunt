@@ -87,7 +87,7 @@ div.it{cursor:default}
 .link{font:inherit;font-size:13px;background:none;border:0;color:var(--mute);text-decoration:underline;padding:0;margin-top:20px;cursor:pointer}
 .pay{width:100%;font:inherit;font-size:13px;color:var(--mute);border:1px dashed var(--line);border-radius:10px;padding:8px;margin-top:6px;background:none}
 .foot{margin-top:26px;padding:10px;text-align:center;font-size:13px;color:var(--mute);border:1px dashed var(--line);border-radius:10px}
-</style></head><body><div class="ann" id="annb" hidden><span id="annt"></span><button onclick="dismissAnn()" aria-label="Dismiss">✕</button></div>
+</style></head><body><div class="ann" id="annb" hidden><span id="annt"></span></div>
 <button class="fab" onclick="openFeedback()" aria-label="Send feedback">💬</button>
 <div class="wrap"><div class="lc"><aside id="pf"></aside><div class="odds" id="od2"></div></div><main>
 <div class="top"><h1>Acorn Hunt</h1></div>
@@ -336,6 +336,7 @@ function achList(){let got=0;
   return `<details ${opn.has(c.k)?'open':''} ontoggle="tg('${c.k}',this.open)"><summary>${c.n} <span class="sub">${done}/${c.t.length}</span></summary><div class="sub" style="margin-bottom:4px">Each: ${bl(c.b)} · Now: +${pcf(done*BN[c.b].v)}</div>${rows}</details>`}).join('');
  $('ai').textContent=got+' of '+ATOT+' unlocked'}
 const CHANGELOG=[
+ {v:'2026-09-27a',t:'Announcement fixes',items:['The announcement banner can no longer be dismissed — it now only turns off when set to inactive in Supabase','Fixed a bug where re-activating an announcement wouldn\'t bring it back for players who had already seen it','The game now checks for announcement changes every 30 seconds instead of every 2 minutes','You can now pre-fill several announcement rows in Supabase and switch which one is live by toggling its "active" checkbox']},
  {v:'2026-09-26d',t:'Bug fixes',items:['Pop-up panels now close with a ✕ in the top right instead of a button at the bottom','Fixed the special find % shown in the Special Finds section, which was overstated','Fixed "Change password" and "Change email" in Settings, which previously did nothing when tapped']},
  {v:'2026-09-26c',t:'Dashboard & settings',items:['Leaderboard now sits under your stats on the right (desktop), with a dropdown instead of tabs','Your stats and leaderboard panels can now be collapsed','Your own row on the leaderboard is now outlined so you can spot it fast','Replaced "Edit profile" with a full Settings screen: change your username, password, email, or squirrel','Sound controls moved into Settings, under Audio','Added a Light / Dark / Auto background colour toggle in Settings']},
  {v:'2026-09-26b',t:'Feedback & announcements',items:['Added an in-game feedback button (bottom right) for gameplay notes, bugs, questions, and praise','Added a live announcement banner for game-wide notices','Farm plots are now compact square tiles, so more fit on screen','Acorn Sack now gives 50% of your current max storage instead of a flat amount']},
@@ -367,16 +368,10 @@ async function sendFeedback(){const t=$('fbType').value,m=$('fbMsg').value.trim(
  const r=await sb.from('feedback').insert({user_id:user?user.id:null,username:S.pf.name||null,type:t,message:m.slice(0,2000)});
  if(r.error){$('fbm').style.color='var(--gold)';$('fbm').textContent='Could not send: '+r.error.message;$('fbs').disabled=false;return}
  closeModal();toast('💬 Thanks for the feedback!')}
-let annId=null;
 async function loadAnn(){if(!sb)return;
- const r=await sb.from('announcement').select('message,active,updated_at').eq('id',1).maybeSingle();
+ const r=await sb.from('announcement').select('message,active,updated_at').eq('active',true).order('updated_at',{ascending:false}).limit(1).maybeSingle();
  if(r.error||!r.data||!r.data.active||!r.data.message){$('annb').hidden=true;return}
- const key='ann'+Date.parse(r.data.updated_at);
- let seen=null;try{seen=localStorage.getItem('acornhunt_ann')}catch(e){}
- if(seen===key){$('annb').hidden=true;return}
- annId=key;$('annt').textContent=r.data.message;$('annb').hidden=false}
-function dismissAnn(){if(annId)try{localStorage.setItem('acornhunt_ann',annId)}catch(e){}
- $('annb').hidden=true}
+ $('annt').textContent=r.data.message;$('annb').hidden=false}
 function settingsHTML(tab){
  const tabs=[['profile','Profile'],['audio','Audio'],['gameplay','Gameplay']];
  const nav=tabs.map(([k,l])=>`<button class="mini${tab==k?' on':''}" style="margin:0 6px 10px 0" onclick="openSettings('${k}')">${l}</button>`).join('');
@@ -432,5 +427,5 @@ function reset(){const b=$('rs');if(!armed){armed=1;b.textContent=user?'Tap agai
 document.documentElement.dataset.skin=S.skin||'';if(S.theme)document.documentElement.dataset.theme=S.theme;
 $('la').innerHTML=AC()+' Acorns';$('lg').innerHTML=AC(1)+' Golden';
 profile();if(!S.pf.name)openProfile(1);else if(S.lastVer&&S.lastVer!==CHANGELOG[0].v)showChangelog(0);else if(!S.lastVer){S.lastVer=CHANGELOG[0].v;save()}
-lists();applyCol();ui();loadLB();setInterval(ui,1000);setInterval(save,5000);cloudInit();setInterval(()=>{if(user&&!document.hidden&&$('ov2').hidden)cloudSync()},60000);loadAnn();setInterval(loadAnn,120000);
+lists();applyCol();ui();loadLB();setInterval(ui,1000);setInterval(save,5000);cloudInit();setInterval(()=>{if(user&&!document.hidden&&$('ov2').hidden)cloudSync()},60000);loadAnn();setInterval(loadAnn,30000);
 </script></body></html>
