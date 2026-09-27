@@ -57,7 +57,7 @@ summary{cursor:pointer;font-weight:600;padding:10px 0}
 .ann[hidden]{display:none}.ann button{background:none;border:0;color:inherit;font-size:16px;cursor:pointer;line-height:1;padding:0}
 .fab{position:fixed;right:16px;bottom:calc(16px + env(safe-area-inset-bottom,0px));z-index:15;width:48px;height:48px;border-radius:50%;background:var(--acc);color:var(--onacc);border:0;font-size:20px;box-shadow:0 4px 14px rgba(0,0,0,.3);cursor:pointer}
 .fab.jp{bottom:calc(72px + env(safe-area-inset-bottom,0px));background:var(--gold);color:#3a2a06}
-.badge-dot{position:absolute;top:-4px;right:-4px;background:var(--acc);color:var(--onacc);font-size:11px;font-weight:800;min-width:17px;height:17px;border-radius:9px;display:flex;align-items:center;justify-content:center;padding:0 3px}
+.badge-dot{position:absolute;top:1px;right:1px;width:13px;height:13px;border-radius:50%;background:#22c55e;border:2px solid var(--bg)}
 .reels{display:flex;gap:8px;justify-content:center;margin:14px 0}
 .reel{width:64px;height:64px;background:var(--bg);border:1px solid var(--line);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:30px;overflow:hidden}
 .jptable{margin:14px 0;font-size:13px;color:var(--mute)}
@@ -186,7 +186,7 @@ function ui(){
  accrue();const mx=maxH(),rem=S.ht+HUNT-Date.now(),h=$('hunt'),mm=x=>Math.floor(x/60000)+':'+String(Math.floor(x/1000)%60).padStart(2,'0');
  h.disabled=S.hc<1;h.textContent=S.hc>0?'Hunt 🐿️':'Back in '+mm(rem);
  $('hs').textContent='Stored hunts: '+S.hc+'/'+mx+(S.hc<mx?' · next in '+mm(rem):' · full');
- const jb=$('jpBadge');if(jb){if(S.freeSpins>0){jb.hidden=false;jb.textContent=S.freeSpins}else jb.hidden=true}
+ const jb=$('jpBadge');if(jb)jb.hidden=!(S.freeSpins>0);
  const bal={a:S.a,g:S.g,h:S.P.hw};
  document.querySelectorAll('.it[data-c]').forEach(el=>{el.disabled=bal[el.dataset.k]<+el.dataset.c});
  const pb=$('pb');if(pb)pb.disabled=S.run<UNL;
@@ -346,6 +346,7 @@ function achList(){let got=0;
   return `<details ${opn.has(c.k)?'open':''} ontoggle="tg('${c.k}',this.open)"><summary>${c.n} <span class="sub">${done}/${c.t.length}</span></summary><div class="sub" style="margin-bottom:4px">Each: ${bl(c.b)} · Now: +${pcf(done*BN[c.b].v)}</div>${rows}</details>`}).join('');
  $('ai').textContent=got+' of '+ATOT+' unlocked'}
 const CHANGELOG=[
+ {v:'2026-09-27e',t:'Badge tweak',items:['The jackpot button now shows a simple green dot when a free spin is ready, instead of a number']},
  {v:'2026-09-27d',t:'Jackpot polish & version tag',items:['Fixed the jackpot reels to use the same acorn and golden acorn icons as the rest of the game','Added a countdown to your next free spin, right in the jackpot panel','A small badge now shows on the 🎰 button whenever a free spin is ready','New achievements for jackpot spins, plus a Slot spins and Jackpots hit row in Your Stats','Jackpots are now tracked on the leaderboard as a fourth category','Added a version number next to the game title — starting at v2.7']},
  {v:'2026-09-27c',t:'Free spins & tuning',items:['Earn a free jackpot spin every 10 hunts, shown and spent right in the jackpot panel','Slot odds retuned: 500 acorns is now 40% (up from 25%), and nothing is now 40% (down from 55%)','Skin Market in Prestige is marked WIP and can no longer be purchased for now']},
  {v:'2026-09-27b',t:'Acorn Jackpot',items:["Because it's me, off course there's gonna be Gamba","New 🎰 jackpot minigame — spin for 1,000 acorns a go, with a shot at 500 or 5,000 acorns, or 2 or 5 golden acorns"]},
