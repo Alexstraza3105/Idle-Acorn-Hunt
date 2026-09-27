@@ -98,7 +98,7 @@ div.it{cursor:default}
 <button class="fab jp" onclick="openJackpot()" aria-label="Play the jackpot">🎰<span id="jpBadge" class="badge-dot" hidden></span></button>
 <button class="fab" onclick="openFeedback()" aria-label="Send feedback">💬</button>
 <div class="wrap"><div class="lc"><aside id="pf"></aside><div class="odds" id="od2"></div></div><main>
-<div class="top"><h1>Acorn Hunt <span class="ver">v2.7.1</span></h1></div>
+<div class="top"><h1>Acorn Hunt <span class="ver">v2.7.2</span></h1></div>
 <div class="bank"><div><span id="la"></span><b id="a">0</b><span class="sub" id="cap"></span></div><div class="gold"><span id="lg"></span><b id="g">0</b></div></div>
 <button id="hunt" onclick="hunt()">Hunt 🐿️</button>
 <div class="sub" id="hs" style="text-align:center;margin-top:8px"></div>
@@ -129,7 +129,7 @@ const PU=[{id:'keen',n:'Keen Nose',e:'👃',d:'+0.25% special find chance',max:1
 const SK=[{id:'',n:'Forest',e:'🌲'},{id:'autumn',n:'Autumn',e:'🍁'},{id:'frost',n:'Frost',e:'❄️'},{id:'plum',n:'Plum',e:'🫐'}];
 const def=()=>({a:0,g:0,hc:1,ht:Date.now(),pf:{name:'',av:'red'},ach:{},col:{},cap:5000,run:0,seed:1,gseed:0,plots:[null],up:{},sp:{oak:0,feather:0,clover:0,satchel:0},slot:0,mus:0,vol:50,T:{since:Date.now(),time:0,earned:0,hunts:0,seeds:0,gseeds:0,harv:0,gfound:0,spins:0,jackpots:0,sp:{oak:0,feather:0,clover:0,satchel:0}},P:{hw:0,n:0,lv:{}},skins:[''],skin:'',lastVer:'',theme:'',freeSpins:0});
 let S;try{S=Object.assign(def(),JSON.parse(localStorage.getItem(KEY)||'{}'))}catch(e){S=def()}
-S.T=Object.assign(def().T,S.T);for(const k in S.sp)if(S.T.sp[k]<S.sp[k])S.T.sp[k]=S.sp[k];S.T.earned=Math.max(S.T.earned,S.run);if(!S.T.since)S.T.since=Date.now();
+S.T=Object.assign(def().T,S.T);for(const k in S.sp)if(S.T.sp[k]<S.sp[k])S.T.sp[k]=S.sp[k];S.T.earned=Math.max(S.T.earned,S.run);if(!S.T.since)S.T.since=Date.now();if(S.P.n===0&&S.run<S.T.earned)S.run=S.T.earned;
 const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}};
 const fmt=n=>{n=Math.floor(n);return n>=1e6?(n/1e6).toFixed(2)+'M':n.toLocaleString()};
 const lv=id=>S.up[id]||0,pl=id=>S.P.lv[id]||0,lim=()=>5+5*S.slot;
@@ -346,6 +346,7 @@ function achList(){let got=0;
   return `<details ${opn.has(c.k)?'open':''} ontoggle="tg('${c.k}',this.open)"><summary>${c.n} <span class="sub">${done}/${c.t.length}</span></summary><div class="sub" style="margin-bottom:4px">Each: ${bl(c.b)} · Now: +${pcf(done*BN[c.b].v)}</div>${rows}</details>`}).join('');
  $('ai').textContent=got+' of '+ATOT+' unlocked'}
 const CHANGELOG=[
+ {v:'2026-09-28b',t:'Retroactive fix',items:["This run\'s progress is now automatically corrected to match your all-time acorns if you've never prestiged — fixes the Acorn Sack bug for existing saves too, not just new ones"]},
  {v:'2026-09-28a',t:'Save bugs fixed',items:['Fixed "Slot spins" and "Jackpots hit" showing as NaN on saves made before those stats existed','Fixed Acorn Sack not counting toward this run\'s progress, which could make the 25,000 prestige goal take longer than it should have']},
  {v:'2026-09-27e',t:'Badge tweak',items:['The jackpot button now shows a simple green dot when a free spin is ready, instead of a number']},
  {v:'2026-09-27d',t:'Jackpot polish & version tag',items:['Fixed the jackpot reels to use the same acorn and golden acorn icons as the rest of the game','Added a countdown to your next free spin, right in the jackpot panel','A small badge now shows on the 🎰 button whenever a free spin is ready','New achievements for jackpot spins, plus a Slot spins and Jackpots hit row in Your Stats','Jackpots are now tracked on the leaderboard as a fourth category','Added a version number next to the game title — starting at v2.7']},
