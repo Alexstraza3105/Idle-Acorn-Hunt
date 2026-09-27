@@ -123,9 +123,9 @@ const AC=g=>{const b=g?'#f5c02a':'#b9793b',c=g?'#b8800a':'#5b3a1e';return `<svg 
 const U=[{id:'claws',n:'Sharp Claws',d:'+50% acorns per hunt',e:'🐾',c:150,g:1.8,max:99},{id:'soil',n:'Rich Soil',d:'+25% harvest yield',e:'🪱',c:300,g:1.9,max:99},{id:'burrow',n:'Deeper Burrow',d:'+1 stored hunt',e:'🕳️',c:300,g:1.9,max:7},{id:'nose',n:'Sharp Nose',d:'+0.1% special find chance',e:'👃',c:800,g:2,max:10},{id:'whisk',n:'Lucky Whiskers',d:'+0.5% golden acorn chance',e:'✨',c:500,g:1.8,max:10},{id:'store',n:'Bigger Cheeks',d:'Doubles acorn storage',e:'🐿️',c:2000,g:2.2,max:99}];
 const SP=[{id:'oak',n:'Oak Charm',e:'🌳',d:n=>'+'+5*n+'% harvest yield'},{id:'feather',n:"Hunter's Feather",e:'🪶',d:n=>'+'+5*n+'% acorns per hunt'},{id:'clover',n:'Four-leaf Clover',e:'🍀',d:n=>'+'+0.5*n+'% golden acorn chance'},{id:'satchel',n:'Seed Satchel',e:'🧺',d:n=>'+'+n+'% seed drop chance'}];
 const G=[{id:'sack',n:'Acorn Sack',d:d=>'Instantly get '+fmt(Math.round(S.cap*.5))+' acorns',e:'🎒',c:3},{id:'tonic',n:'Miracle Grow',d:'Every growing plot advances 5 hunts',e:'🧪',c:2},{id:'pouch',n:'Trinket Pouch',d:'+5 stack limit on every special find',e:'👜',c:5}];
-const PU=[{id:'keen',n:'Keen Nose',e:'👃',d:'+0.25% special find chance',max:10,c:l=>3+2*l},{id:'luck',n:'Golden Instinct',e:'💫',d:'+0.25% golden acorn chance',max:8,c:l=>4+2*l},{id:'farm',n:'Farmhand',e:'🧑‍🌾',d:'Acorn seeds grow 1 hunt faster (min 5)',max:7,c:l=>2*(l+1)},{id:'gfarm',n:'Golden Farmhand',e:'👩‍🌾',d:'Golden seeds grow 3 hunts faster (min 15)',max:5,c:l=>3*(l+1)},{id:'mkt',n:'Skin Market',e:'🏪',d:'Unlocks colour skins in the golden shop',max:1,c:l=>5}];
+const PU=[{id:'keen',n:'Keen Nose',e:'👃',d:'+0.25% special find chance',max:10,c:l=>3+2*l},{id:'luck',n:'Golden Instinct',e:'💫',d:'+0.25% golden acorn chance',max:8,c:l=>4+2*l},{id:'farm',n:'Farmhand',e:'🧑‍🌾',d:'Acorn seeds grow 1 hunt faster (min 5)',max:7,c:l=>2*(l+1)},{id:'gfarm',n:'Golden Farmhand',e:'👩‍🌾',d:'Golden seeds grow 3 hunts faster (min 15)',max:5,c:l=>3*(l+1)},{id:'mkt',n:'Skin Market',e:'🏪',d:'Unlocks colour skins in the golden shop (WIP — coming soon)',max:1,c:l=>5,wip:true}];
 const SK=[{id:'',n:'Forest',e:'🌲'},{id:'autumn',n:'Autumn',e:'🍁'},{id:'frost',n:'Frost',e:'❄️'},{id:'plum',n:'Plum',e:'🫐'}];
-const def=()=>({a:0,g:0,hc:1,ht:Date.now(),pf:{name:'',av:'red'},ach:{},col:{},cap:5000,run:0,seed:1,gseed:0,plots:[null],up:{},sp:{oak:0,feather:0,clover:0,satchel:0},slot:0,mus:0,vol:50,T:{since:Date.now(),time:0,earned:0,hunts:0,seeds:0,gseeds:0,harv:0,gfound:0,sp:{oak:0,feather:0,clover:0,satchel:0}},P:{hw:0,n:0,lv:{}},skins:[''],skin:'',lastVer:'',theme:''});
+const def=()=>({a:0,g:0,hc:1,ht:Date.now(),pf:{name:'',av:'red'},ach:{},col:{},cap:5000,run:0,seed:1,gseed:0,plots:[null],up:{},sp:{oak:0,feather:0,clover:0,satchel:0},slot:0,mus:0,vol:50,T:{since:Date.now(),time:0,earned:0,hunts:0,seeds:0,gseeds:0,harv:0,gfound:0,sp:{oak:0,feather:0,clover:0,satchel:0}},P:{hw:0,n:0,lv:{}},skins:[''],skin:'',lastVer:'',theme:'',freeSpins:0});
 let S;try{S=Object.assign(def(),JSON.parse(localStorage.getItem(KEY)||'{}'))}catch(e){S=def()}
 for(const k in S.sp)if(S.T.sp[k]<S.sp[k])S.T.sp[k]=S.sp[k];S.T.earned=Math.max(S.T.earned,S.run);if(!S.T.since)S.T.since=Date.now();
 const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}};
@@ -138,7 +138,7 @@ const gcst=x=>x.id=='pouch'?5*(S.slot+1):x.c,pgain=()=>Math.floor(Math.sqrt(S.ru
 function toast(t){$('msg').innerHTML=t}
 function gain(n){n=Math.floor(n);const t=Math.max(0,Math.min(n,S.cap-S.a));S.a+=t;S.run+=t;S.T.earned+=t;return t}
 function hunt(){
- accrue();if(S.hc<1)return;S.hc--;S.T.hunts++;
+ accrue();if(S.hc<1)return;S.hc--;S.T.hunts++;if(S.T.hunts%10===0)S.freeSpins++;
  const m=1+.5*lv('claws')+.05*S.sp.feather+ab('hauls'),gc=.03+.005*lv('whisk')+.005*S.sp.clover+.0025*pl('luck')+ab('gold'),r=Math.random();let msg,n=0;
  if(r<gc){S.g++;S.T.gfound++;msg=AC(1)+' A golden acorn glinting in the roots!'}
  else if(r<gc+.25){n=Math.round((25+Math.random()*25)*m);msg='🍂 Big stash: +'+fmt(n)+' acorns!'}
@@ -158,12 +158,12 @@ function buyU(i){const u=U[i],c=uc(u);if(S.a<c||lv(u.id)>=u.max)return;S.a-=c;S.
 function buyG(i){const x=G[i],c=gcst(x);if(S.g<c)return;S.g-=c;
  if(x.id=='sack'){const n=Math.round(S.cap*.5);S.a+=n;S.T.earned+=n}if(x.id=='tonic')S.plots.forEach(p=>{if(p)p.h=Math.min(need(p.k),p.h+5)});if(x.id=='pouch')S.slot++;
  lists();ui();save()}
-function buyP(i){const x=PU[i],l=pl(x.id),c=x.c(l);if(S.P.hw<c||l>=x.max)return;S.P.hw-=c;S.P.lv[x.id]=l+1;lists();ui();save()}
+function buyP(i){const x=PU[i],l=pl(x.id),c=x.c(l);if(x.wip||S.P.hw<c||l>=x.max)return;S.P.hw-=c;S.P.lv[x.id]=l+1;lists();ui();save()}
 function skin(i){const x=SK[i];if(!S.skins.includes(x.id)){if(S.g<4)return;S.g-=4;S.skins.push(x.id)}S.skin=x.id;document.documentElement.dataset.skin=x.id;lists();ui();save()}
 let parm=0;
 function prestige(){if(S.run<UNL)return;
  if(!parm){parm=1;$('pb').textContent='Tap again: resets acorns, farm, upgrades and finds';setTimeout(()=>{parm=0;lists()},4000);return}
- const x=pgain(),k={g:S.g,slot:S.slot,skins:S.skins,skin:S.skin,P:S.P,mus:S.mus,vol:S.vol,T:S.T,pf:S.pf,cloudAt:S.cloudAt,cloudUid:S.cloudUid,ach:S.ach,col:S.col,lastVer:S.lastVer};S=Object.assign(def(),k);S.P.hw+=x;S.P.n++;parm=0;save();lists();ui();toast('🪵 Prestiged! +'+x+' Heartwood. A fresh forest awaits.')}
+ const x=pgain(),k={g:S.g,slot:S.slot,skins:S.skins,skin:S.skin,P:S.P,mus:S.mus,vol:S.vol,T:S.T,pf:S.pf,cloudAt:S.cloudAt,cloudUid:S.cloudUid,ach:S.ach,col:S.col,lastVer:S.lastVer,freeSpins:S.freeSpins};S=Object.assign(def(),k);S.P.hw+=x;S.P.n++;parm=0;save();lists();ui();toast('🪵 Prestiged! +'+x+' Heartwood. A fresh forest awaits.')}
 function lists(){
  odds();achList();
  const nd=need('n'),gd=need('g');
@@ -177,7 +177,7 @@ function lists(){
  $('sl').innerHTML=`<div class="sub" style="margin:-4px 0 8px">${(1+0.25*pl('keen')+0.1*lv('nose')+100*ab('special')).toFixed(2)}% chance per hunt. Lost on prestige.</div>`+SP.map(x=>{const n=S.sp[x.id];return `<div class="it"><span class="em">${x.e}</span><span class="tx"><b>${x.n}</b> ${n}/${lim()}<small>${n?x.d(n):'Rare drop · '+x.d(1)+' each'}</small></span></div>`}).join('');
  $('gl').innerHTML=G.map((x,i)=>`<button class="it gi" data-k="g" data-c="${gcst(x)}" onclick="buyG(${i})"><span class="em">${x.e}</span><span class="tx"><b>${x.n}</b><small>${typeof x.d=='function'?x.d():x.d}</small></span><span class="pr">${AC(1)} ${gcst(x)}</span></button>`).join('');
  $('sk').innerHTML=pl('mkt')?`<details class="sec" data-s="skins" ${S.col.skins?'':'open'} ontoggle="secT(this)"><summary><h2>Skin market</h2></summary>`+SK.map((x,i)=>{const o=S.skins.includes(x.id);return `<button class="it gi" ${o?'':'data-k="g" data-c="4"'} onclick="skin(${i})"><span class="em">${x.e}</span><span class="tx"><b>${x.n}</b><small>${o?(S.skin==x.id?'Equipped':'Tap to equip'):'Colour skin'}</small></span><span class="pr">${o?'':AC(1)+' 4'}</span></button>`}).join('')+'</details>':'';
- $('pl').innerHTML=`<div class="sub" style="margin-bottom:8px">Heartwood 🪵 ${S.P.hw} · prestiges ${S.P.n}<br>Resets acorns, farm, upgrades and special finds. Heartwood upgrades and things bought with golden acorns are kept.</div><button class="it" id="pb" onclick="prestige()"><span class="em">🪵</span><span class="tx"><b>Prestige for ${pgain()} Heartwood</b><small>Unlocks at ${fmt(UNL)} acorns earned this run (${fmt(S.run)} so far)</small></span></button>`+PU.map((x,i)=>{const l=pl(x.id),mx=l>=x.max;return `<button class="it" data-k="h" data-c="${mx?1e99:x.c(l)}" onclick="buyP(${i})"><span class="em">${x.e}</span><span class="tx"><b>${x.n}</b> Lv ${l}/${x.max}<small>${x.d}</small></span><span class="pr">${mx?'Max':'🪵 '+x.c(l)}</span></button>`}).join('')}
+ $('pl').innerHTML=`<div class="sub" style="margin-bottom:8px">Heartwood 🪵 ${S.P.hw} · prestiges ${S.P.n}<br>Resets acorns, farm, upgrades and special finds. Heartwood upgrades and things bought with golden acorns are kept.</div><button class="it" id="pb" onclick="prestige()"><span class="em">🪵</span><span class="tx"><b>Prestige for ${pgain()} Heartwood</b><small>Unlocks at ${fmt(UNL)} acorns earned this run (${fmt(S.run)} so far)</small></span></button>`+PU.map((x,i)=>{const l=pl(x.id),mx=l>=x.max;return `<button class="it" data-k="h" data-c="${x.wip?1e99:mx?1e99:x.c(l)}" ${x.wip?'disabled':''} onclick="buyP(${i})"><span class="em">${x.e}</span><span class="tx"><b>${x.n}</b> Lv ${l}/${x.max}<small>${x.d}</small></span><span class="pr">${x.wip?'WIP':mx?'Max':'🪵 '+x.c(l)}</span></button>`}).join('')}
 function ui(){
  $('a').textContent=fmt(S.a);$('g').textContent=S.g;
  $('cap').textContent='of '+fmt(S.cap)+' storage';
@@ -342,6 +342,7 @@ function achList(){let got=0;
   return `<details ${opn.has(c.k)?'open':''} ontoggle="tg('${c.k}',this.open)"><summary>${c.n} <span class="sub">${done}/${c.t.length}</span></summary><div class="sub" style="margin-bottom:4px">Each: ${bl(c.b)} · Now: +${pcf(done*BN[c.b].v)}</div>${rows}</details>`}).join('');
  $('ai').textContent=got+' of '+ATOT+' unlocked'}
 const CHANGELOG=[
+ {v:'2026-09-27c',t:'Free spins & tuning',items:['Earn a free jackpot spin every 10 hunts, shown and spent right in the jackpot panel','Slot odds retuned: 500 acorns is now 40% (up from 25%), and nothing is now 40% (down from 55%)','Skin Market in Prestige is marked WIP and can no longer be purchased for now']},
  {v:'2026-09-27b',t:'Acorn Jackpot',items:["Because it's me, off course there's gonna be Gamba","New 🎰 jackpot minigame — spin for 1,000 acorns a go, with a shot at 500 or 5,000 acorns, or 2 or 5 golden acorns"]},
  {v:'2026-09-27a',t:'Announcement fixes',items:['The announcement banner can no longer be dismissed — it now only turns off when set to inactive in Supabase','Fixed a bug where re-activating an announcement wouldn\'t bring it back for players who had already seen it','The game now checks for announcement changes every 30 seconds instead of every 2 minutes','You can now pre-fill several announcement rows in Supabase and switch which one is live by toggling its "active" checkbox']},
  {v:'2026-09-26d',t:'Bug fixes',items:['Pop-up panels now close with a ✕ in the top right instead of a button at the bottom','Fixed the special find % shown in the Special Finds section, which was overstated','Fixed "Change password" and "Change email" in Settings, which previously did nothing when tapped']},
@@ -432,26 +433,32 @@ const TW='<svg viewBox="0 0 24 24" width="1.1em" height="1.1em" style="vertical-
 const JP_A='🌰',JP_G=AC(1),JP_T=TW;
 function shuf(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
 const JP_TIERS=[
- {p:.55,label:'Nothing this time',g:0,a:0,syms:()=>{const o=Math.random()<.5?JP_A:JP_G;return shuf([JP_T,JP_T,o])}},
- {p:.25,label:'+500 acorns',g:0,a:500,syms:()=>shuf([JP_A,JP_A,JP_T])},
+ {p:.4,label:'Nothing this time',g:0,a:0,syms:()=>{const o=Math.random()<.5?JP_A:JP_G;return shuf([JP_T,JP_T,o])}},
+ {p:.4,label:'+500 acorns',g:0,a:500,syms:()=>shuf([JP_A,JP_A,JP_T])},
  {p:.12,label:'+5,000 acorns',g:0,a:5000,syms:()=>[JP_A,JP_A,JP_A]},
  {p:.06,label:'+2 golden acorns',g:2,a:0,syms:()=>shuf([JP_G,JP_G,JP_A])},
  {p:.02,label:'JACKPOT! +5 golden acorns',g:5,a:0,syms:()=>[JP_G,JP_G,JP_G]}
 ];
 const JP_COST=1000;
 function jpTierPick(){let r=Math.random(),acc=0;for(const t of JP_TIERS){acc+=t.p;if(r<acc)return t}return JP_TIERS[0]}
-function jackpotHTML(){return `<h2 style="margin-top:0">🎰 Acorn Jackpot</h2>
-<div class="sub">${JP_COST} acorns per spin</div>
+function jackpotHTML(){const fs=S.freeSpins||0;return `<h2 style="margin-top:0">🎰 Acorn Jackpot</h2>
+<div class="sub" id="jpfs">${JP_COST} acorns per spin${fs?' · '+fs+' free spin'+(fs>1?'s':'')+' banked':''}</div>
+<div class="sub">Earn a free spin every 10 hunts</div>
 <div class="reels"><div class="reel" id="r0">${JP_T}</div><div class="reel" id="r1">${JP_T}</div><div class="reel" id="r2">${JP_T}</div></div>
 <div id="jpm" class="sub" style="text-align:center;min-height:20px"></div>
-<button class="mini" id="jps" style="margin:10px auto 0;display:block" onclick="jpSpin()">Spin (${JP_COST} ${'🌰'})</button>
+<button class="mini" id="jps" style="margin:10px auto 0;display:block" onclick="jpSpin()">${fs?'Spin (Free)':'Spin ('+JP_COST+' 🌰)'}</button>
 <div class="jptable"><div><span>${JP_G}${JP_G}${JP_G}</span><b>5 golden acorns</b></div><div><span>${JP_G}${JP_G}·</span><b>2 golden acorns</b></div><div><span>${JP_A}${JP_A}${JP_A}</span><b>5,000 acorns</b></div><div><span>${JP_A}${JP_A}·</span><b>500 acorns</b></div><div><span>${JP_T}${JP_T}·</span><b>Nothing</b></div></div>`}
 function openJackpot(){modal(jackpotHTML())}
 let jpSpinning=false;
 function jpSpin(){if(jpSpinning)return;
- if(S.a<JP_COST){$('jpm').style.color='var(--gold)';$('jpm').textContent='Not enough acorns.';return}
+ const free=S.freeSpins>0;
+ if(!free&&S.a<JP_COST){$('jpm').style.color='var(--gold)';$('jpm').textContent='Not enough acorns.';return}
  jpSpinning=true;$('jps').disabled=true;$('jpm').style.color='var(--mute)';$('jpm').textContent='Spinning…';
- S.a-=JP_COST;save();ui();
+ if(free)S.freeSpins--;else S.a-=JP_COST;
+ const jpsEl=$('jps'),jpfsEl=$('jpfs'),fsNow=S.freeSpins||0;
+ if(jpsEl)jpsEl.textContent=fsNow>0?'Spin (Free)':'Spin ('+JP_COST+' 🌰)';
+ if(jpfsEl)jpfsEl.textContent=JP_COST+' acorns per spin'+(fsNow?' · '+fsNow+' free spin'+(fsNow>1?'s':'')+' banked':'');
+ save();ui();
  const tier=jpTierPick(),final=tier.syms(),pool=[JP_A,JP_G,JP_T];
  let n=0;const spin=setInterval(()=>{
   for(let i=0;i<3;i++)$('r'+i).textContent!==undefined&&($('r'+i).innerHTML=pool[Math.floor(Math.random()*3)]);
