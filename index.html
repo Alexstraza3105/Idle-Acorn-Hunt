@@ -57,6 +57,7 @@ summary{cursor:pointer;font-weight:600;padding:10px 0}
 .ann[hidden]{display:none}.ann button{background:none;border:0;color:inherit;font-size:16px;cursor:pointer;line-height:1;padding:0}
 .fab{position:fixed;right:16px;bottom:calc(16px + env(safe-area-inset-bottom,0px));z-index:15;width:48px;height:48px;border-radius:50%;background:var(--acc);color:var(--onacc);border:0;font-size:20px;box-shadow:0 4px 14px rgba(0,0,0,.3);cursor:pointer}
 .fab.jp{bottom:calc(72px + env(safe-area-inset-bottom,0px));background:var(--gold);color:#3a2a06}
+.badge-dot{position:absolute;top:-4px;right:-4px;background:var(--acc);color:var(--onacc);font-size:11px;font-weight:800;min-width:17px;height:17px;border-radius:9px;display:flex;align-items:center;justify-content:center;padding:0 3px}
 .reels{display:flex;gap:8px;justify-content:center;margin:14px 0}
 .reel{width:64px;height:64px;background:var(--bg);border:1px solid var(--line);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:30px;overflow:hidden}
 .jptable{margin:14px 0;font-size:13px;color:var(--mute)}
@@ -73,6 +74,7 @@ details.sec{background:none;border:0;border-radius:0;padding:0;margin:0}
 .sec>summary{list-style:none;display:flex;align-items:center;padding:0}.sec>summary::-webkit-details-marker{display:none}
 .sec>summary h2{margin:22px 0 8px}.sec>summary::after{content:'▾';margin-left:auto;color:var(--mute);font-size:18px}.sec:not([open])>summary::after{content:'▸'}details .it{background:none;border:0;padding:6px 0;margin:0;cursor:default}
 .sub{color:var(--mute);font-size:13px}
+.ver{font-size:12px;font-weight:400;color:var(--mute);vertical-align:middle;margin-left:6px}
 .bank{display:flex;gap:10px;margin:16px 0}
 .bank div{flex:1;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:10px 14px}
 .bank b{display:block;font:800 26px Fraunces,Georgia,serif}
@@ -93,10 +95,10 @@ div.it{cursor:default}
 .pay{width:100%;font:inherit;font-size:13px;color:var(--mute);border:1px dashed var(--line);border-radius:10px;padding:8px;margin-top:6px;background:none}
 .foot{margin-top:26px;padding:10px;text-align:center;font-size:13px;color:var(--mute);border:1px dashed var(--line);border-radius:10px}
 </style></head><body><div class="ann" id="annb" hidden><span id="annt"></span></div>
-<button class="fab jp" onclick="openJackpot()" aria-label="Play the jackpot">🎰</button>
+<button class="fab jp" onclick="openJackpot()" aria-label="Play the jackpot">🎰<span id="jpBadge" class="badge-dot" hidden></span></button>
 <button class="fab" onclick="openFeedback()" aria-label="Send feedback">💬</button>
 <div class="wrap"><div class="lc"><aside id="pf"></aside><div class="odds" id="od2"></div></div><main>
-<div class="top"><h1>Acorn Hunt</h1></div>
+<div class="top"><h1>Acorn Hunt <span class="ver">v2.7</span></h1></div>
 <div class="bank"><div><span id="la"></span><b id="a">0</b><span class="sub" id="cap"></span></div><div class="gold"><span id="lg"></span><b id="g">0</b></div></div>
 <button id="hunt" onclick="hunt()">Hunt 🐿️</button>
 <div class="sub" id="hs" style="text-align:center;margin-top:8px"></div>
@@ -110,9 +112,9 @@ div.it{cursor:default}
 <div id="sk"></div>
 <details class="sec" data-s="pres" open ontoggle="secT(this)"><summary><h2>Prestige</h2></summary><div id="pl"></div></details>
 <details class="sec" data-s="ach" open ontoggle="secT(this)"><summary><h2>Achievements</h2></summary><div class="sub" id="ai" style="margin-bottom:8px"></div><div id="al"></div></details>
-<details class="sec" data-s="lb" open ontoggle="secT(this)"><summary><h2>Leaderboard</h2></summary><select class="lbsel" onchange="lbTabSel(this.value)"><option value="acorns">Acorns</option><option value="gold">Golden acorns</option><option value="prestige">Prestige</option></select><div id="lb"></div></details>
+<details class="sec" data-s="lb" open ontoggle="secT(this)"><summary><h2>Leaderboard</h2></summary><select class="lbsel" onchange="lbTabSel(this.value)"><option value="acorns">Acorns</option><option value="gold">Golden acorns</option><option value="prestige">Prestige</option><option value="jackpots">Jackpots</option></select><div id="lb"></div></details>
 <button class="link" id="rs" onclick="reset()">Reset save</button>
-</main><div class="rc"><aside id="st"><details class="sec" data-s="statP" open ontoggle="secT(this)"><summary><h2>Your stats</h2></summary><div id="stBody"></div></details></aside><aside id="lb2card"><details class="sec" data-s="lbP" open ontoggle="secT(this)"><summary><h2>Leaderboard</h2></summary><select class="lbsel" onchange="lbTabSel(this.value)"><option value="acorns">Acorns</option><option value="gold">Golden acorns</option><option value="prestige">Prestige</option></select><div id="lb2"></div></details></aside></div><div class="foot">Ad space · <button class="link" style="margin:0" onclick="toast('Ad removal is coming soon.')">Remove ads</button> · <a href="privacy.html" style="color:inherit">Privacy</a> · <button class="link" style="margin:0" onclick="showChangelog(1)">What's new</button></div></div>
+</main><div class="rc"><aside id="st"><details class="sec" data-s="statP" open ontoggle="secT(this)"><summary><h2>Your stats</h2></summary><div id="stBody"></div></details></aside><aside id="lb2card"><details class="sec" data-s="lbP" open ontoggle="secT(this)"><summary><h2>Leaderboard</h2></summary><select class="lbsel" onchange="lbTabSel(this.value)"><option value="acorns">Acorns</option><option value="gold">Golden acorns</option><option value="prestige">Prestige</option><option value="jackpots">Jackpots</option></select><div id="lb2"></div></details></aside></div><div class="foot">Ad space · <button class="link" style="margin:0" onclick="toast('Ad removal is coming soon.')">Remove ads</button> · <a href="privacy.html" style="color:inherit">Privacy</a> · <button class="link" style="margin:0" onclick="showChangelog(1)">What's new</button></div></div>
 <div class="ov" id="ov" hidden><div class="card"><button class="mx" id="ovc" onclick="closeProfile()" hidden aria-label="Close">✕</button><h2 id="ovt" style="margin-top:0">Create your profile</h2><div class="sub" style="margin-bottom:4px">Username</div><input id="un" maxlength="16" placeholder="e.g. NuttyNora" autocomplete="off"><div class="sub" id="unm" style="margin-top:6px;color:var(--gold)"></div><div class="sub" style="margin:14px 0 6px">Choose your squirrel</div><div id="ag" class="ag"></div><button class="mini" id="ovs" style="margin:0" onclick="saveProfile()">Start hunting</button><div style="margin-top:12px"><button class="link" id="ovi" style="margin:0" onclick="loginUI()">Already have an account? Sign in</button></div></div></div>
 <div class="ab" id="ab" hidden></div>
 <div class="ov" id="ov2" hidden><div class="card" id="mc"></div></div>
@@ -125,7 +127,7 @@ const SP=[{id:'oak',n:'Oak Charm',e:'🌳',d:n=>'+'+5*n+'% harvest yield'},{id:'
 const G=[{id:'sack',n:'Acorn Sack',d:d=>'Instantly get '+fmt(Math.round(S.cap*.5))+' acorns',e:'🎒',c:3},{id:'tonic',n:'Miracle Grow',d:'Every growing plot advances 5 hunts',e:'🧪',c:2},{id:'pouch',n:'Trinket Pouch',d:'+5 stack limit on every special find',e:'👜',c:5}];
 const PU=[{id:'keen',n:'Keen Nose',e:'👃',d:'+0.25% special find chance',max:10,c:l=>3+2*l},{id:'luck',n:'Golden Instinct',e:'💫',d:'+0.25% golden acorn chance',max:8,c:l=>4+2*l},{id:'farm',n:'Farmhand',e:'🧑‍🌾',d:'Acorn seeds grow 1 hunt faster (min 5)',max:7,c:l=>2*(l+1)},{id:'gfarm',n:'Golden Farmhand',e:'👩‍🌾',d:'Golden seeds grow 3 hunts faster (min 15)',max:5,c:l=>3*(l+1)},{id:'mkt',n:'Skin Market',e:'🏪',d:'Unlocks colour skins in the golden shop (WIP — coming soon)',max:1,c:l=>5,wip:true}];
 const SK=[{id:'',n:'Forest',e:'🌲'},{id:'autumn',n:'Autumn',e:'🍁'},{id:'frost',n:'Frost',e:'❄️'},{id:'plum',n:'Plum',e:'🫐'}];
-const def=()=>({a:0,g:0,hc:1,ht:Date.now(),pf:{name:'',av:'red'},ach:{},col:{},cap:5000,run:0,seed:1,gseed:0,plots:[null],up:{},sp:{oak:0,feather:0,clover:0,satchel:0},slot:0,mus:0,vol:50,T:{since:Date.now(),time:0,earned:0,hunts:0,seeds:0,gseeds:0,harv:0,gfound:0,sp:{oak:0,feather:0,clover:0,satchel:0}},P:{hw:0,n:0,lv:{}},skins:[''],skin:'',lastVer:'',theme:'',freeSpins:0});
+const def=()=>({a:0,g:0,hc:1,ht:Date.now(),pf:{name:'',av:'red'},ach:{},col:{},cap:5000,run:0,seed:1,gseed:0,plots:[null],up:{},sp:{oak:0,feather:0,clover:0,satchel:0},slot:0,mus:0,vol:50,T:{since:Date.now(),time:0,earned:0,hunts:0,seeds:0,gseeds:0,harv:0,gfound:0,spins:0,jackpots:0,sp:{oak:0,feather:0,clover:0,satchel:0}},P:{hw:0,n:0,lv:{}},skins:[''],skin:'',lastVer:'',theme:'',freeSpins:0});
 let S;try{S=Object.assign(def(),JSON.parse(localStorage.getItem(KEY)||'{}'))}catch(e){S=def()}
 for(const k in S.sp)if(S.T.sp[k]<S.sp[k])S.T.sp[k]=S.sp[k];S.T.earned=Math.max(S.T.earned,S.run);if(!S.T.since)S.T.since=Date.now();
 const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}};
@@ -184,13 +186,14 @@ function ui(){
  accrue();const mx=maxH(),rem=S.ht+HUNT-Date.now(),h=$('hunt'),mm=x=>Math.floor(x/60000)+':'+String(Math.floor(x/1000)%60).padStart(2,'0');
  h.disabled=S.hc<1;h.textContent=S.hc>0?'Hunt 🐿️':'Back in '+mm(rem);
  $('hs').textContent='Stored hunts: '+S.hc+'/'+mx+(S.hc<mx?' · next in '+mm(rem):' · full');
+ const jb=$('jpBadge');if(jb){if(S.freeSpins>0){jb.hidden=false;jb.textContent=S.freeSpins}else jb.hidden=true}
  const bal={a:S.a,g:S.g,h:S.P.hw};
  document.querySelectorAll('.it[data-c]').forEach(el=>{el.disabled=bal[el.dataset.k]<+el.dataset.c});
  const pb=$('pb');if(pb)pb.disabled=S.run<UNL;
  const nw=Date.now();if(!document.hidden)S.T.time+=Math.min((nw-lastUi)/1000,5);lastUi=nw;stats();pfRows();checkAch()}
 const ft=t=>{t=Math.floor(t);const h=Math.floor(t/3600),m=Math.floor(t%3600/60);return h?h+'h '+m+'m':m+'m '+t%60+'s'};
 function stats(){const T=S.T,row=(a,b)=>`<div class="row"><span>${a}</span><b>${b}</b></div>`,e=$('stBody');if(!e)return;
- e.innerHTML=row('Time played',ft(T.time))+row('Hunts',fmt(T.hunts))
+ e.innerHTML=row('Time played',ft(T.time))+row('Hunts',fmt(T.hunts))+row('Slot spins',fmt(T.spins))+row('Jackpots hit',fmt(T.jackpots))
  +'<h3>Acorns</h3>'+row('Owned now',fmt(S.a))+row('Earned this run',fmt(S.run))+row('Earned all-time',fmt(T.earned))+row('Golden acorns owned',S.g)+row('Golden acorns found',fmt(T.gfound))
  +'<h3>Farm</h3>'+row('Seeds owned',S.seed+' + '+S.gseed+' golden')+row('Seeds found',fmt(T.seeds)+' + '+T.gseeds+' golden')+row('Harvests',fmt(T.harv))
  +'<h3>Special finds</h3>'+SP.map(x=>row(x.e+' '+x.n,S.sp[x.id]+' now · '+T.sp[x.id]+' all-time')).join('')
@@ -277,7 +280,7 @@ async function push(){if(!sb||!user)return;
  const r=await sb.from('saves').upsert({user_id:user.id,data:S,updated_at:new Date(t).toISOString()});
  if(r.error){S.cloudAt=old[0];S.cloudUid=old[1];setMsg('Sync failed: '+r.error.message)}
  else{save();setMsg('Saved online · '+new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'}));
-  if(S.pf.name)sb.from('leaderboard').upsert({user_id:user.id,username:S.pf.name,acorns:S.T.earned,gold:S.T.gfound,prestige:S.P.n,updated_at:new Date(t).toISOString()}).then(res=>{if(res.error)setMsg('Saved, but leaderboard update failed: '+res.error.message);else loadLB()})}}
+  if(S.pf.name)sb.from('leaderboard').upsert({user_id:user.id,username:S.pf.name,acorns:S.T.earned,gold:S.T.gfound,prestige:S.P.n,jackpots:S.T.jackpots,updated_at:new Date(t).toISOString()}).then(res=>{if(res.error)setMsg('Saved, but leaderboard update failed: '+res.error.message);else loadLB()})}}
 async function cloudSync(){if(!sb||!user)return;
  const r=await sb.from('saves').select('data,updated_at').eq('user_id',user.id).maybeSingle();
  if(r.error){setMsg('Sync failed: '+r.error.message);return}
@@ -308,8 +311,9 @@ const AG=[
 {k:'coll',n:'Collection',v:()=>Object.values(S.T.sp).filter(x=>x>0).length,t:[[2,'Matching Pair','Find 2 different kinds of special item'],[4,'Complete Collection','Find all 4 kinds of special item']]},
 {k:'time',n:'Time played',v:()=>S.T.time,f:ft,t:[[3600,'Settling In','Play for 1 hour'],[36000,'Regular Visitor','Play for 10 hours'],[360000,'Dedicated Squirrel','Play for 100 hours']]},
 {k:'prof',n:'Profile',v:()=>S.pf.name?1:0,t:[[1,'Say Hello','Create your profile']]},
+{k:'spin',n:'Acorn Jackpot',v:()=>S.T.spins,t:[[1,'First Pull','Play the jackpot for the first time'],[10,'Feeling Lucky','Spin the jackpot 10 times'],[50,'High Roller','Spin the jackpot 50 times'],[200,'Jackpot Junkie','Spin the jackpot 200 times']]},
 {k:'acct',n:'Account',v:()=>user?1:0,t:[[1,'Cloud Squirrel','Sign in to an online account']]}];
-const CB={hunt:'hauls',acorn:'hauls',gold:'gold',harv:'yield',seed:'seed',gseed:'gseed',land:'yield',pres:'heart',spec:'special',coll:'special',time:'hauls',prof:'hauls',acct:'hauls'};
+const CB={hunt:'hauls',acorn:'hauls',gold:'gold',harv:'yield',seed:'seed',gseed:'gseed',land:'yield',pres:'heart',spec:'special',coll:'special',time:'hauls',prof:'hauls',acct:'hauls',spin:'hauls'};
 AG.forEach(c=>c.b=CB[c.k]);
 const BN={hauls:{v:.005,t:'acorns per hunt'},yield:{v:.005,t:'harvest yield'},gold:{v:.001,t:'golden acorn chance'},seed:{v:.0025,t:'seed drop chance'},gseed:{v:.001,t:'golden seed chance'},special:{v:.0005,t:'special find chance'},heart:{v:.01,t:'Heartwood from prestige'}};
 const pcf=x=>(+(x*100).toFixed(2))+'%',bl=b=>'+'+pcf(BN[b].v)+' '+BN[b].t;
@@ -320,7 +324,7 @@ function lbTabSel(t){lbTab=t;document.querySelectorAll('.lbsel').forEach(s=>{if(
 async function loadLB(){const els=['lb','lb2'].map($).filter(Boolean);if(!els.length)return;
  if(!sb){els.forEach(e=>e.innerHTML='<div class="sub">Leaderboard unavailable</div>');return}
  els.forEach(e=>e.innerHTML='<div class="sub">Loading…</div>');
- const r=await sb.from('leaderboard').select('user_id,username,acorns,gold,prestige').order(lbTab,{ascending:false}).limit(20);
+ const r=await sb.from('leaderboard').select('user_id,username,acorns,gold,prestige,jackpots').order(lbTab,{ascending:false}).limit(20);
  if(r.error){els.forEach(e=>e.innerHTML='<div class="sub">Leaderboard unavailable</div>');return}
  const rows=r.data||[];
  const h=rows.length?rows.map((x,i)=>{const mine=!!(user&&x.user_id===user.id);return `<div class="row${mine?' me':''}"><span>${i+1}. ${esc(x.username||'Squirrel')}${mine?' (you)':''}</span><b>${fmt(x[lbTab])}</b></div>`}).join(''):'<div class="sub">No entries yet — be the first!</div>';
@@ -342,6 +346,7 @@ function achList(){let got=0;
   return `<details ${opn.has(c.k)?'open':''} ontoggle="tg('${c.k}',this.open)"><summary>${c.n} <span class="sub">${done}/${c.t.length}</span></summary><div class="sub" style="margin-bottom:4px">Each: ${bl(c.b)} · Now: +${pcf(done*BN[c.b].v)}</div>${rows}</details>`}).join('');
  $('ai').textContent=got+' of '+ATOT+' unlocked'}
 const CHANGELOG=[
+ {v:'2026-09-27d',t:'Jackpot polish & version tag',items:['Fixed the jackpot reels to use the same acorn and golden acorn icons as the rest of the game','Added a countdown to your next free spin, right in the jackpot panel','A small badge now shows on the 🎰 button whenever a free spin is ready','New achievements for jackpot spins, plus a Slot spins and Jackpots hit row in Your Stats','Jackpots are now tracked on the leaderboard as a fourth category','Added a version number next to the game title — starting at v2.7']},
  {v:'2026-09-27c',t:'Free spins & tuning',items:['Earn a free jackpot spin every 10 hunts, shown and spent right in the jackpot panel','Slot odds retuned: 500 acorns is now 40% (up from 25%), and nothing is now 40% (down from 55%)','Skin Market in Prestige is marked WIP and can no longer be purchased for now']},
  {v:'2026-09-27b',t:'Acorn Jackpot',items:["Because it's me, off course there's gonna be Gamba","New 🎰 jackpot minigame — spin for 1,000 acorns a go, with a shot at 500 or 5,000 acorns, or 2 or 5 golden acorns"]},
  {v:'2026-09-27a',t:'Announcement fixes',items:['The announcement banner can no longer be dismissed — it now only turns off when set to inactive in Supabase','Fixed a bug where re-activating an announcement wouldn\'t bring it back for players who had already seen it','The game now checks for announcement changes every 30 seconds instead of every 2 minutes','You can now pre-fill several announcement rows in Supabase and switch which one is live by toggling its "active" checkbox']},
@@ -430,7 +435,7 @@ function gameplayTabHTML(){const cur=S.theme||'system';
 <div class="sub" style="margin-top:18px">🎨 More themes — unlockable and purchasable colour palettes are coming soon.</div>`}
 function setTheme(t){S.theme=t=='system'?'':t;if(S.theme)document.documentElement.dataset.theme=S.theme;else delete document.documentElement.dataset.theme;save();openSettings('gameplay')}
 const TW='<svg viewBox="0 0 24 24" width="1.1em" height="1.1em" style="vertical-align:-.2em" aria-hidden="true"><path d="M4 20 L18 6" stroke="#8a6a43" stroke-width="2.6" stroke-linecap="round"/><path d="M9 15l-4 1M13 11l-3.5 3.5M16 8l-3 1" stroke="#6b4f30" stroke-width="1.8" stroke-linecap="round"/></svg>';
-const JP_A='🌰',JP_G=AC(1),JP_T=TW;
+const JP_A=AC(),JP_G=AC(1),JP_T=TW;
 function shuf(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
 const JP_TIERS=[
  {p:.4,label:'Nothing this time',g:0,a:0,syms:()=>{const o=Math.random()<.5?JP_A:JP_G;return shuf([JP_T,JP_T,o])}},
@@ -441,12 +446,12 @@ const JP_TIERS=[
 ];
 const JP_COST=1000;
 function jpTierPick(){let r=Math.random(),acc=0;for(const t of JP_TIERS){acc+=t.p;if(r<acc)return t}return JP_TIERS[0]}
-function jackpotHTML(){const fs=S.freeSpins||0;return `<h2 style="margin-top:0">🎰 Acorn Jackpot</h2>
+function jackpotHTML(){const fs=S.freeSpins||0,cd=S.T.hunts%10;return `<h2 style="margin-top:0">🎰 Acorn Jackpot</h2>
 <div class="sub" id="jpfs">${JP_COST} acorns per spin${fs?' · '+fs+' free spin'+(fs>1?'s':'')+' banked':''}</div>
-<div class="sub">Earn a free spin every 10 hunts</div>
+<div class="sub">${cd}/10 hunts to next free spin<div class="bar" style="margin-top:4px"><i style="width:${cd*10}%"></i></div></div>
 <div class="reels"><div class="reel" id="r0">${JP_T}</div><div class="reel" id="r1">${JP_T}</div><div class="reel" id="r2">${JP_T}</div></div>
 <div id="jpm" class="sub" style="text-align:center;min-height:20px"></div>
-<button class="mini" id="jps" style="margin:10px auto 0;display:block" onclick="jpSpin()">${fs?'Spin (Free)':'Spin ('+JP_COST+' 🌰)'}</button>
+<button class="mini" id="jps" style="margin:10px auto 0;display:block" onclick="jpSpin()">${fs?'Spin (Free)':'Spin ('+JP_COST+' '+AC()+')'}</button>
 <div class="jptable"><div><span>${JP_G}${JP_G}${JP_G}</span><b>5 golden acorns</b></div><div><span>${JP_G}${JP_G}·</span><b>2 golden acorns</b></div><div><span>${JP_A}${JP_A}${JP_A}</span><b>5,000 acorns</b></div><div><span>${JP_A}${JP_A}·</span><b>500 acorns</b></div><div><span>${JP_T}${JP_T}·</span><b>Nothing</b></div></div>`}
 function openJackpot(){modal(jackpotHTML())}
 let jpSpinning=false;
@@ -455,8 +460,9 @@ function jpSpin(){if(jpSpinning)return;
  if(!free&&S.a<JP_COST){$('jpm').style.color='var(--gold)';$('jpm').textContent='Not enough acorns.';return}
  jpSpinning=true;$('jps').disabled=true;$('jpm').style.color='var(--mute)';$('jpm').textContent='Spinning…';
  if(free)S.freeSpins--;else S.a-=JP_COST;
+ S.T.spins++;
  const jpsEl=$('jps'),jpfsEl=$('jpfs'),fsNow=S.freeSpins||0;
- if(jpsEl)jpsEl.textContent=fsNow>0?'Spin (Free)':'Spin ('+JP_COST+' 🌰)';
+ if(jpsEl)jpsEl.innerHTML=fsNow>0?'Spin (Free)':'Spin ('+JP_COST+' '+AC()+')';
  if(jpfsEl)jpfsEl.textContent=JP_COST+' acorns per spin'+(fsNow?' · '+fsNow+' free spin'+(fsNow>1?'s':'')+' banked':'');
  save();ui();
  const tier=jpTierPick(),final=tier.syms(),pool=[JP_A,JP_G,JP_T];
@@ -467,6 +473,7 @@ function jpSpin(){if(jpSpinning)return;
    setTimeout(()=>{
     if(tier.a){gain(tier.a)}
     if(tier.g){S.g+=tier.g;S.T.gfound+=tier.g}
+    if(tier.g===5)S.T.jackpots++;
     $('jpm').style.color=tier.p<=.02?'var(--gold)':tier.a||tier.g?'var(--acc)':'var(--mute)';
     $('jpm').textContent=tier.label;
     save();lists();ui();jpSpinning=false;$('jps').disabled=false
