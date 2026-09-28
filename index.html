@@ -29,76 +29,92 @@
 :root[data-skin="plum"]{--acc:#7a3b8f;--onacc:#fbeeff}
 *{box-sizing:border-box}
 html,body{margin:0}
-body{background:var(--bg);color:var(--ink);font:16px/1.4 system-ui,sans-serif;padding-bottom:20px}
+body{background:var(--bg);color:var(--ink);font-size:calc(16px*var(--fs,1));line-height:1.4;font-family:system-ui,sans-serif;padding-bottom:20px}
 main{max-width:520px;margin:0 auto;padding:16px}
-h1{font:800 28px/1 Fraunces,Georgia,serif;margin:0}
-h2{font:600 19px Fraunces,Georgia,serif;margin:26px 0 8px}
-.top{display:flex;justify-content:space-between;align-items:center;gap:10px}.snd{display:flex;align-items:center;gap:8px}.snd input{width:90px;accent-color:var(--acc)}.snd button{font-size:18px;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:5px 10px;cursor:pointer;color:var(--ink)}
+h1{font-weight:800;font-size:calc(28px*var(--fs,1));line-height:1;font-family:Fraunces,Georgia,serif;margin:0}
+h2{font-weight:600;font-size:calc(19px*var(--fs,1));line-height:normal;font-family:Fraunces,Georgia,serif;margin:26px 0 8px}
+.top{display:flex;justify-content:space-between;align-items:center;gap:10px}.snd{display:flex;align-items:center;gap:8px}.snd input{width:90px;accent-color:var(--acc)}.snd button{font-size:calc(18px*var(--fs,1));background:var(--card);border:1px solid var(--line);border-radius:10px;padding:5px 10px;cursor:pointer;color:var(--ink)}
 aside{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px 16px;margin:0 auto 20px;width:calc(100% - 32px);max-width:520px}
-aside h2{font-size:17px;margin:0 0 6px}aside h3{font:600 14px Fraunces,Georgia,serif;margin:14px 0 4px;color:var(--mute)}
-.row{display:flex;justify-content:space-between;gap:10px;font-size:14px;padding:3px 0;border-bottom:1px solid var(--line)}
+aside h2{font-size:calc(17px*var(--fs,1));margin:0 0 6px}aside h3{font-weight:600;font-size:calc(14px*var(--fs,1));line-height:normal;font-family:Fraunces,Georgia,serif;margin:14px 0 4px;color:var(--mute)}
+.row{display:flex;justify-content:space-between;gap:10px;font-size:calc(14px*var(--fs,1));padding:3px 0;border-bottom:1px solid var(--line)}
 #pf{margin:16px auto 0}.lc{display:contents}.rc{display:contents}#od2{display:none}#lb2card{display:none}#pfr{display:none}.hd{display:flex;align-items:center;gap:12px}.hd h2{margin:0}
 .lbsel{width:100%;padding:8px;border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--ink);font:inherit;margin-bottom:10px}
 .row.me{border:2px solid var(--acc);border-radius:8px;padding:4px 8px;margin:2px 0}
 aside .sec{margin:0}aside .sec>summary h2{margin:0 0 6px}
-@media(min-width:1000px){#pf{margin:0}#pf #pfr{display:block}.hd{flex-direction:column;text-align:center;gap:4px}#od{display:none}#od2{display:block;margin:0;padding:8px 10px}#od2 .row{font-size:11px}#lb2card{display:block}[data-s="lb"]{display:none}.lc{display:flex;flex-direction:column;gap:12px;position:fixed;top:12px;left:12px;width:220px;max-height:calc(100vh - 24px);overflow-y:auto}.rc{display:flex;flex-direction:column;gap:12px;position:fixed;top:12px;right:12px;width:220px;max-height:calc(100vh - 24px);overflow-y:auto}aside{width:220px;max-width:none;margin:0;padding:10px 12px;max-height:none;overflow-y:visible}aside h2{font-size:15px}aside h3{font-size:12px;margin:10px 0 3px}.row{font-size:12px;padding:2px 0}}
+html.sb #pf{margin:0}html.sb #pf #pfr{display:block}html.sb .hd{flex-direction:column;text-align:center;gap:4px}html.sb #od{display:none}html.sb #od2{display:block;margin:0;padding:8px 10px}html.sb #od2 .row{font-size:calc(11px*var(--fs,1))}html.sb #lb2card{display:block}html.sb [data-s="lb"]{display:none}html.sb .lc{display:flex;flex-direction:column;gap:12px;position:fixed;top:12px;left:12px;width:220px;max-height:calc((100vh - 24px)/var(--z,1));overflow-y:auto}html.sb .rc{display:flex;flex-direction:column;gap:12px;position:fixed;top:12px;right:12px;width:220px;max-height:calc((100vh - 24px)/var(--z,1));overflow-y:auto}html.sb aside{width:220px;max-width:none;margin:0;padding:10px 12px;max-height:none;overflow-y:visible}html.sb aside h2{font-size:calc(15px*var(--fs,1))}html.sb aside h3{font-size:calc(12px*var(--fs,1));margin:10px 0 3px}html.sb .row{font-size:calc(12px*var(--fs,1));padding:2px 0}html.sb .row.me{padding:4px 8px}
 .ov{position:fixed;inset:0;background:rgba(0,0,0,.55);display:flex;align-items:center;justify-content:center;padding:16px;z-index:10}.ov[hidden]{display:none}
 .ov .card{position:relative;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:18px;max-width:380px;width:100%;max-height:100%;overflow-y:auto}
-.mx{position:absolute;top:10px;right:10px;background:none;border:0;font-size:20px;line-height:1;cursor:pointer;color:var(--mute);padding:6px}
-.ov input{width:100%;font:inherit;font-size:16px;padding:10px;border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--ink)}
+.mx{position:absolute;top:10px;right:10px;background:none;border:0;font-size:calc(20px*var(--fs,1));line-height:1;cursor:pointer;color:var(--mute);padding:6px}
+.ov input{width:100%;font:inherit;font-size:calc(16px*var(--fs,1));padding:10px;border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--ink)}
 .ag{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:14px}
-.ag button{background:var(--bg);border:2px solid var(--line);border-radius:12px;padding:6px 2px;cursor:pointer;color:var(--ink);font:inherit;font-size:12px}.ag button.on{border-color:var(--acc)}
+.ag button{background:var(--bg);border:2px solid var(--line);border-radius:12px;padding:6px 2px;cursor:pointer;color:var(--ink);font:inherit;font-size:calc(12px*var(--fs,1))}.ag button.on{border-color:var(--acc)}
 .ag svg{width:52px;height:52px;display:block;margin:0 auto 2px}
 .odds{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:8px 12px;margin-top:10px}.odds .sub{margin:6px 0 2px}
-.ab{position:fixed;top:calc(12px + env(safe-area-inset-top,0px));left:50%;transform:translateX(-50%);z-index:20;background:var(--acc);color:var(--onacc);padding:10px 16px;border-radius:14px;box-shadow:0 6px 20px rgba(0,0,0,.3);text-align:center;max-width:min(320px,90vw)}.ab[hidden]{display:none}.ab .sub{color:inherit;opacity:.85}
+.ab{position:fixed;top:calc(12px + env(safe-area-inset-top,0px));left:50%;transform:translateX(-50%);z-index:20;background:var(--acc);color:var(--onacc);padding:10px 16px;border-radius:14px;box-shadow:0 6px 20px rgba(0,0,0,.3);text-align:center;max-width:min(320px,calc(90vw/var(--z,1)))}.ab[hidden]{display:none}.ab .sub{color:inherit;opacity:.85}
 details{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:0 12px;margin-bottom:8px}
 summary{cursor:pointer;font-weight:600;padding:10px 0}
-.ann{background:var(--gold);color:#3a2a06;padding:10px 16px;text-align:center;font-size:14px;display:flex;align-items:center;justify-content:center;gap:10px}
-.ann[hidden]{display:none}.ann button{background:none;border:0;color:inherit;font-size:16px;cursor:pointer;line-height:1;padding:0}
-.fab{position:fixed;right:16px;bottom:calc(16px + env(safe-area-inset-bottom,0px));z-index:15;width:48px;height:48px;border-radius:50%;background:var(--acc);color:var(--onacc);border:0;font-size:20px;box-shadow:0 4px 14px rgba(0,0,0,.3);cursor:pointer}
+.ann{background:var(--gold);color:#3a2a06;padding:10px 16px;text-align:center;font-size:calc(14px*var(--fs,1));display:flex;align-items:center;justify-content:center;gap:10px}
+.ann[hidden]{display:none}.ann button{background:none;border:0;color:inherit;font-size:calc(16px*var(--fs,1));cursor:pointer;line-height:1;padding:0}
+.fab{position:fixed;right:16px;bottom:calc(16px + env(safe-area-inset-bottom,0px));z-index:15;width:48px;height:48px;border-radius:50%;background:var(--acc);color:var(--onacc);border:0;font-size:calc(20px*var(--fs,1));box-shadow:0 4px 14px rgba(0,0,0,.3);cursor:pointer}
 .fab.jp{bottom:calc(72px + env(safe-area-inset-bottom,0px));background:var(--gold);color:#3a2a06}
 .badge-dot{position:absolute;top:1px;right:1px;width:13px;height:13px;border-radius:50%;background:#22c55e;border:2px solid var(--bg)}
 .reels{display:flex;gap:8px;justify-content:center;margin:14px 0}
-.reel{width:64px;height:64px;background:var(--bg);border:1px solid var(--line);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:30px;overflow:hidden}
-.jptable{margin:14px 0;font-size:13px;color:var(--mute)}
+.reel{width:64px;height:64px;background:var(--bg);border:1px solid var(--line);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:calc(30px*var(--fs,1));overflow:hidden}
+.jptable{margin:14px 0;font-size:calc(13px*var(--fs,1));color:var(--mute)}
 .jptable div{display:flex;justify-content:space-between;padding:2px 0}
 #fl{display:grid;grid-template-columns:repeat(auto-fill,minmax(100px,1fr));gap:8px}
 .plot{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:8px;display:flex;flex-direction:column;align-items:center;text-align:center;gap:3px;min-height:100px;justify-content:center;cursor:default;color:var(--ink);font:inherit}
 .plot.buy{cursor:pointer;border-style:dashed}
-.plot .em{font-size:22px}
-.plot b{font-size:12px}
-.plot small{font-size:10px;color:var(--mute);line-height:1.25;display:block}
+.plot .em{font-size:calc(22px*var(--fs,1))}
+.plot b{font-size:calc(12px*var(--fs,1))}
+.plot small{font-size:calc(10px*var(--fs,1));color:var(--mute);line-height:1.25;display:block}
 .plot .bar{width:100%;margin:2px 0}
-.plot .mini{width:100%;margin:2px 0 0;padding:5px 4px;font-size:11px}
+.plot .mini{width:100%;margin:2px 0 0;padding:5px 4px;font-size:calc(11px*var(--fs,1))}
 details.sec{background:none;border:0;border-radius:0;padding:0;margin:0}
 .sec>summary{list-style:none;display:flex;align-items:center;padding:0}.sec>summary::-webkit-details-marker{display:none}
-.sec>summary h2{margin:22px 0 8px}.sec>summary::after{content:'▾';margin-left:auto;color:var(--mute);font-size:18px}.sec:not([open])>summary::after{content:'▸'}details .it{background:none;border:0;padding:6px 0;margin:0;cursor:default}
-.sub{color:var(--mute);font-size:13px}
-.ver{font-size:12px;font-weight:400;color:var(--mute);vertical-align:middle;margin-left:6px}
+.sec>summary h2{margin:22px 0 8px}.sec>summary::after{content:'▾';margin-left:auto;color:var(--mute);font-size:calc(18px*var(--fs,1))}.sec:not([open])>summary::after{content:'▸'}details .it{background:none;border:0;padding:6px 0;margin:0;cursor:default}
+.sub{color:var(--mute);font-size:calc(13px*var(--fs,1))}
+.col1,.col2{min-width:0}
+html.two main{max-width:1064px;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);column-gap:24px;align-items:start}
+html.two #rs{grid-column:1/-1;justify-self:start}
+html.two .foot{max-width:1032px;margin-left:auto;margin-right:auto}
+html.two .col2>details.sec:first-child>summary h2{margin-top:8px}
+.ver{font-size:calc(12px*var(--fs,1));font-weight:400;color:var(--mute);vertical-align:middle;margin-left:6px}
 .bank{display:flex;gap:10px;margin:16px 0}
 .bank div{flex:1;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:10px 14px}
-.bank b{display:block;font:800 26px Fraunces,Georgia,serif}
+.bank b{display:block;font-weight:800;font-size:calc(26px*var(--fs,1));line-height:normal;font-family:Fraunces,Georgia,serif}
 .gold b{color:var(--gold)}
-#hunt{width:100%;font:800 24px Fraunces,Georgia,serif;padding:22px;border:0;border-radius:20px;background:var(--acc);color:var(--onacc);cursor:pointer}
+#hunt{width:100%;font-weight:800;font-size:calc(24px*var(--fs,1));line-height:normal;font-family:Fraunces,Georgia,serif;padding:22px;border:0;border-radius:20px;background:var(--acc);color:var(--onacc);cursor:pointer}
 #hunt:disabled{background:var(--dis);color:var(--mute);cursor:default}
 #hunt:active:not(:disabled){transform:scale(.98)}
-#msg{min-height:44px;margin:10px 2px 0;font-size:15px}
+#msg{min-height:44px;margin:10px 2px 0;font-size:calc(15px*var(--fs,1))}
 .it{display:flex;align-items:center;gap:12px;width:100%;text-align:left;background:var(--card);color:var(--ink);border:1px solid var(--line);border-radius:12px;padding:11px 12px;margin-bottom:8px;font:inherit;cursor:pointer}
 .it:disabled{opacity:.5;cursor:default}
 div.it{cursor:default}
-.em{font-size:26px}.tx{flex:1}.tx small{display:block;color:var(--mute);font-size:13px}
+.em{font-size:calc(26px*var(--fs,1))}.tx{flex:1}.tx small{display:block;color:var(--mute);font-size:calc(13px*var(--fs,1))}
 .pr{font-weight:700;white-space:nowrap}
 .gi .pr{color:var(--gold)}
 .bar{height:6px;background:var(--dis);border-radius:3px;margin-top:5px;overflow:hidden}.bar i{display:block;height:100%;background:var(--acc)}
-.mini{font:inherit;font-size:13px;background:var(--acc);color:var(--onacc);border:0;border-radius:8px;padding:7px 10px;margin-left:4px;cursor:pointer}.mini.on{box-shadow:inset 0 0 0 2px var(--onacc)}
-.link{font:inherit;font-size:13px;background:none;border:0;color:var(--mute);text-decoration:underline;padding:0;margin-top:20px;cursor:pointer}
-.pay{width:100%;font:inherit;font-size:13px;color:var(--mute);border:1px dashed var(--line);border-radius:10px;padding:8px;margin-top:6px;background:none}
-.foot{margin-top:26px;padding:10px;text-align:center;font-size:13px;color:var(--mute);border:1px dashed var(--line);border-radius:10px}
-</style></head><body><div class="ann" id="annb" hidden><span id="annt"></span></div>
+.mini{font:inherit;font-size:calc(13px*var(--fs,1));background:var(--acc);color:var(--onacc);border:0;border-radius:8px;padding:7px 10px;margin-left:4px;cursor:pointer}.mini.on{box-shadow:inset 0 0 0 2px var(--onacc)}
+.link{font:inherit;font-size:calc(13px*var(--fs,1));background:none;border:0;color:var(--mute);text-decoration:underline;padding:0;margin-top:20px;cursor:pointer}
+.pay{width:100%;font:inherit;font-size:calc(13px*var(--fs,1));color:var(--mute);border:1px dashed var(--line);border-radius:10px;padding:8px;margin-top:6px;background:none}
+.foot{margin-top:26px;padding:10px;text-align:center;font-size:calc(13px*var(--fs,1));color:var(--mute);border:1px dashed var(--line);border-radius:10px}
+</style>
+<script>
+var VKEY='acornhunt_view',VIEW=null;
+function getView(){if(!VIEW){var v={};try{v=JSON.parse(localStorage.getItem(VKEY)||'{}')}catch(e){}VIEW={zoom:v.zoom==null?'auto':v.zoom,fs:v.fs||100}}return{zoom:VIEW.zoom,fs:VIEW.fs}}
+function autoZoom(W){return W<1500?1:Math.min(2,Math.max(1,Math.round(W/1700*20)/20))}
+function applyView(){var v=getView(),W=window.innerWidth,z=v.zoom==='auto'?autoZoom(W):((+v.zoom/100)||1),el=document.documentElement,eff=W/z;
+ el.style.setProperty('--fs',v.fs/100);el.style.setProperty('--z',z);
+ if(z===1)el.style.removeProperty('zoom');else el.style.zoom=z;
+ el.classList.toggle('sb',eff>=1000);el.classList.toggle('two',eff>=1520)}
+applyView();window.addEventListener('resize',applyView);
+</script>
+</head><body><div class="ann" id="annb" hidden><span id="annt"></span></div>
 <button class="fab jp" onclick="openJackpot()" aria-label="Play the jackpot">🎰<span id="jpBadge" class="badge-dot" hidden></span></button>
 <button class="fab" onclick="openFeedback()" aria-label="Send feedback">💬</button>
-<div class="wrap"><div class="lc"><aside id="pf"></aside><div class="odds" id="od2"></div></div><main>
-<div class="top"><h1>Acorn Hunt <span class="ver">v2.7.2</span></h1></div>
+<div class="wrap"><div class="lc"><aside id="pf"></aside><div class="odds" id="od2"></div></div><main><div class="col1">
+<div class="top"><h1>Acorn Hunt <span class="ver">v2.8</span></h1></div>
 <div class="bank"><div><span id="la"></span><b id="a">0</b><span class="sub" id="cap"></span></div><div class="gold"><span id="lg"></span><b id="g">0</b></div></div>
 <button id="hunt" onclick="hunt()">Hunt 🐿️</button>
 <div class="sub" id="hs" style="text-align:center;margin-top:8px"></div>
@@ -107,12 +123,14 @@ div.it{cursor:default}
 <details class="sec" data-s="farm" open ontoggle="secT(this)"><summary><h2>Farm</h2></summary><div class="sub" id="fi" style="margin-bottom:8px"></div><div id="fl"></div></details>
 <details class="sec" data-s="up" open ontoggle="secT(this)"><summary><h2>Upgrades</h2></summary><div id="ul"></div></details>
 <details class="sec" data-s="sp" open ontoggle="secT(this)"><summary><h2>Special finds</h2></summary><div id="sl"></div></details>
+</div><div class="col2">
 <details class="sec" data-s="gold" open ontoggle="secT(this)"><summary><h2>Golden shop</h2></summary><div id="gl"></div>
 <button class="pay" onclick="toast('Buying golden acorns is coming soon.')">💳 Get golden acorns (coming soon)</button></details>
 <div id="sk"></div>
 <details class="sec" data-s="pres" open ontoggle="secT(this)"><summary><h2>Prestige</h2></summary><div id="pl"></div></details>
 <details class="sec" data-s="ach" open ontoggle="secT(this)"><summary><h2>Achievements</h2></summary><div class="sub" id="ai" style="margin-bottom:8px"></div><div id="al"></div></details>
 <details class="sec" data-s="lb" open ontoggle="secT(this)"><summary><h2>Leaderboard</h2></summary><select class="lbsel" onchange="lbTabSel(this.value)"><option value="acorns">Acorns</option><option value="gold">Golden acorns</option><option value="prestige">Prestige</option><option value="jackpots">Jackpots</option></select><div id="lb"></div></details>
+</div>
 <button class="link" id="rs" onclick="reset()">Reset save</button>
 </main><div class="rc"><aside id="st"><details class="sec" data-s="statP" open ontoggle="secT(this)"><summary><h2>Your stats</h2></summary><div id="stBody"></div></details></aside><aside id="lb2card"><details class="sec" data-s="lbP" open ontoggle="secT(this)"><summary><h2>Leaderboard</h2></summary><select class="lbsel" onchange="lbTabSel(this.value)"><option value="acorns">Acorns</option><option value="gold">Golden acorns</option><option value="prestige">Prestige</option><option value="jackpots">Jackpots</option></select><div id="lb2"></div></details></aside></div><div class="foot">Ad space · <button class="link" style="margin:0" onclick="toast('Ad removal is coming soon.')">Remove ads</button> · <a href="privacy.html" style="color:inherit">Privacy</a> · <button class="link" style="margin:0" onclick="showChangelog(1)">What's new</button></div></div>
 <div class="ov" id="ov" hidden><div class="card"><button class="mx" id="ovc" onclick="closeProfile()" hidden aria-label="Close">✕</button><h2 id="ovt" style="margin-top:0">Create your profile</h2><div class="sub" style="margin-bottom:4px">Username</div><input id="un" maxlength="16" placeholder="e.g. NuttyNora" autocomplete="off"><div class="sub" id="unm" style="margin-top:6px;color:var(--gold)"></div><div class="sub" style="margin:14px 0 6px">Choose your squirrel</div><div id="ag" class="ag"></div><button class="mini" id="ovs" style="margin:0" onclick="saveProfile()">Start hunting</button><div style="margin-top:12px"><button class="link" id="ovi" style="margin:0" onclick="loginUI()">Already have an account? Sign in</button></div></div></div>
@@ -125,9 +143,9 @@ const AC=g=>{const b=g?'#f5c02a':'#b9793b',c=g?'#b8800a':'#5b3a1e';return `<svg 
 const U=[{id:'claws',n:'Sharp Claws',d:'+50% acorns per hunt',e:'🐾',c:150,g:1.8,max:99},{id:'soil',n:'Rich Soil',d:'+25% harvest yield',e:'🪱',c:300,g:1.9,max:99},{id:'burrow',n:'Deeper Burrow',d:'+1 stored hunt',e:'🕳️',c:300,g:1.9,max:7},{id:'nose',n:'Sharp Nose',d:'+0.1% special find chance',e:'👃',c:800,g:2,max:10},{id:'whisk',n:'Lucky Whiskers',d:'+0.5% golden acorn chance',e:'✨',c:500,g:1.8,max:10},{id:'store',n:'Bigger Cheeks',d:'Doubles acorn storage',e:'🐿️',c:2000,g:2.2,max:99}];
 const SP=[{id:'oak',n:'Oak Charm',e:'🌳',d:n=>'+'+5*n+'% harvest yield'},{id:'feather',n:"Hunter's Feather",e:'🪶',d:n=>'+'+5*n+'% acorns per hunt'},{id:'clover',n:'Four-leaf Clover',e:'🍀',d:n=>'+'+0.5*n+'% golden acorn chance'},{id:'satchel',n:'Seed Satchel',e:'🧺',d:n=>'+'+n+'% seed drop chance'}];
 const G=[{id:'sack',n:'Acorn Sack',d:d=>'Instantly get '+fmt(Math.round(S.cap*.5))+' acorns',e:'🎒',c:3},{id:'tonic',n:'Miracle Grow',d:'Every growing plot advances 5 hunts',e:'🧪',c:2},{id:'pouch',n:'Trinket Pouch',d:'+5 stack limit on every special find',e:'👜',c:5}];
-const PU=[{id:'keen',n:'Keen Nose',e:'👃',d:'+0.25% special find chance',max:10,c:l=>3+2*l},{id:'luck',n:'Golden Instinct',e:'💫',d:'+0.25% golden acorn chance',max:8,c:l=>4+2*l},{id:'farm',n:'Farmhand',e:'🧑‍🌾',d:'Acorn seeds grow 1 hunt faster (min 5)',max:7,c:l=>2*(l+1)},{id:'gfarm',n:'Golden Farmhand',e:'👩‍🌾',d:'Golden seeds grow 3 hunts faster (min 15)',max:5,c:l=>3*(l+1)},{id:'mkt',n:'Skin Market',e:'🏪',d:'Unlocks colour skins in the golden shop (WIP — coming soon)',max:1,c:l=>5,wip:true}];
+const PU=[{id:'keen',n:'Keen Nose',e:'👃',d:'+0.5% special find chance',max:10,c:l=>3+2*l},{id:'luck',n:'Golden Instinct',e:'💫',d:'+0.5% golden acorn chance',max:8,c:l=>4+2*l},{id:'farm',n:'Farmhand',e:'🧑‍🌾',d:'Acorn seeds grow 1 hunt faster (min 5)',max:7,c:l=>2*(l+1)},{id:'gfarm',n:'Golden Farmhand',e:'👩‍🌾',d:'Golden seeds grow 3 hunts faster (min 15)',max:5,c:l=>3*(l+1)},{id:'mkt',n:'Skin Market',e:'🏪',d:'Unlocks colour skins in the golden shop (WIP — coming soon)',max:1,c:l=>5,wip:true}];
 const SK=[{id:'',n:'Forest',e:'🌲'},{id:'autumn',n:'Autumn',e:'🍁'},{id:'frost',n:'Frost',e:'❄️'},{id:'plum',n:'Plum',e:'🫐'}];
-const def=()=>({a:0,g:0,hc:1,ht:Date.now(),pf:{name:'',av:'red'},ach:{},col:{},cap:5000,run:0,seed:1,gseed:0,plots:[null],up:{},sp:{oak:0,feather:0,clover:0,satchel:0},slot:0,mus:0,vol:50,T:{since:Date.now(),time:0,earned:0,hunts:0,seeds:0,gseeds:0,harv:0,gfound:0,spins:0,jackpots:0,sp:{oak:0,feather:0,clover:0,satchel:0}},P:{hw:0,n:0,lv:{}},skins:[''],skin:'',lastVer:'',theme:'',freeSpins:0});
+const def=()=>({a:0,g:0,hc:1,ht:Date.now(),pf:{name:'',av:'red'},ach:{},col:{},cap:5000,run:0,seed:1,gseed:0,plots:[null],up:{},sp:{oak:0,feather:0,clover:0,satchel:0},slot:0,mus:0,vol:50,T:{since:Date.now(),time:0,earned:0,hunts:0,seeds:0,gseeds:0,harv:0,gfound:0,spins:0,jackpots:0,sp:{oak:0,feather:0,clover:0,satchel:0}},P:{hw:0,n:0,lv:{}},skins:[''],skin:'',lastVer:'',theme:'',freeSpins:0,hwMig1:0});
 let S;try{S=Object.assign(def(),JSON.parse(localStorage.getItem(KEY)||'{}'))}catch(e){S=def()}
 S.T=Object.assign(def().T,S.T);for(const k in S.sp)if(S.T.sp[k]<S.sp[k])S.T.sp[k]=S.sp[k];S.T.earned=Math.max(S.T.earned,S.run);if(!S.T.since)S.T.since=Date.now();if(S.P.n===0&&S.run<S.T.earned)S.run=S.T.earned;
 const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}};
@@ -136,19 +154,19 @@ const lv=id=>S.up[id]||0,pl=id=>S.P.lv[id]||0,lim=()=>5+5*S.slot;
 const need=k=>k=='g'?Math.max(15,30-3*pl('gfarm')):Math.max(5,12-pl('farm'));
 const yld=()=>Math.round(150*(1+.05*S.sp.oak)*(1+.25*lv('soil'))*(1+ab('yield')));
 const uc=u=>u.id=='store'?S.cap:Math.ceil(u.c*Math.pow(u.g,lv(u.id))),pc=()=>Math.ceil(200*Math.pow(3,S.plots.length-1));
-const gcst=x=>x.id=='pouch'?5*(S.slot+1):x.c,pgain=()=>Math.floor(Math.sqrt(S.run/1000)*(1+ab('heart')));
+const gcst=x=>x.id=='pouch'?5*(S.slot+1):x.c,pgain=()=>Math.floor(Math.sqrt(S.run/1000))+abN('heart');
 function toast(t){$('msg').innerHTML=t}
 function gain(n){n=Math.floor(n);const t=Math.max(0,Math.min(n,S.cap-S.a));S.a+=t;S.run+=t;S.T.earned+=t;return t}
 function hunt(){
  accrue();if(S.hc<1)return;S.hc--;S.T.hunts++;if(S.T.hunts%10===0)S.freeSpins++;
- const m=1+.5*lv('claws')+.05*S.sp.feather+ab('hauls'),gc=.03+.005*lv('whisk')+.005*S.sp.clover+.0025*pl('luck')+ab('gold'),r=Math.random();let msg,n=0;
+ const m=1+.5*lv('claws')+.05*S.sp.feather+ab('hauls')+.5*S.P.n,gc=.03+.005*lv('whisk')+.005*S.sp.clover+.005*pl('luck')+ab('gold'),r=Math.random();let msg,n=0;
  if(r<gc){S.g++;S.T.gfound++;msg=AC(1)+' A golden acorn glinting in the roots!'}
  else if(r<gc+.25){n=Math.round((25+Math.random()*25)*m);msg='🍂 Big stash: +'+fmt(n)+' acorns!'}
  else{n=Math.round((5+Math.random()*10)*m);msg=AC()+' Dug up +'+fmt(n)+' acorns'}
  if(n&&gain(n)<n)msg+=' (storage full!)';
  if(Math.random()<.1+.01*S.sp.satchel+ab('seed')){const k=1+Math.floor(Math.random()*3);S.seed+=k;S.T.seeds+=k;msg+='<br>🌱 Found '+k+' seed'+(k>1?'s':'')+'!'}
  if(Math.random()<.05+ab('gseed')){S.gseed++;S.T.gseeds++;msg+='<br>'+AC(1)+'🌱 Found a golden seed!'}
- if(Math.random()<.01+.0025*pl('keen')+.001*lv('nose')+ab('special')){const o=SP.filter(x=>S.sp[x.id]<lim());if(o.length){const x=o[Math.floor(Math.random()*o.length)];S.sp[x.id]++;S.T.sp[x.id]++;msg+='<br>'+x.e+' <b>Special find: '+x.n+'!</b> '+x.d(S.sp[x.id])+' in total'}}
+ if(Math.random()<.01+.005*pl('keen')+.001*lv('nose')+ab('special')){const o=SP.filter(x=>S.sp[x.id]<lim());if(o.length){const x=o[Math.floor(Math.random()*o.length)];S.sp[x.id]++;S.T.sp[x.id]++;msg+='<br>'+x.e+' <b>Special find: '+x.n+'!</b> '+x.d(S.sp[x.id])+' in total'}}
  S.plots.forEach(p=>{if(p&&p.h<need(p.k))p.h++});
  toast(msg);save();lists();ui()}
 function plant(i,k){if(S.plots[i])return;if(k=='g'){if(!S.gseed)return;S.gseed--}else{if(!S.seed)return;S.seed--}S.plots[i]={k,h:0};lists();ui();save()}
@@ -162,10 +180,13 @@ function buyG(i){const x=G[i],c=gcst(x);if(S.g<c)return;S.g-=c;
  lists();ui();save()}
 function buyP(i){const x=PU[i],l=pl(x.id),c=x.c(l);if(x.wip||S.P.hw<c||l>=x.max)return;S.P.hw-=c;S.P.lv[x.id]=l+1;lists();ui();save()}
 function skin(i){const x=SK[i];if(!S.skins.includes(x.id)){if(S.g<4)return;S.g-=4;S.skins.push(x.id)}S.skin=x.id;document.documentElement.dataset.skin=x.id;lists();ui();save()}
-let parm=0;
-function prestige(){if(S.run<UNL)return;
- if(!parm){parm=1;$('pb').textContent='Tap again: resets acorns, farm, upgrades and finds';setTimeout(()=>{parm=0;lists()},4000);return}
- const x=pgain(),k={g:S.g,slot:S.slot,skins:S.skins,skin:S.skin,P:S.P,mus:S.mus,vol:S.vol,T:S.T,pf:S.pf,cloudAt:S.cloudAt,cloudUid:S.cloudUid,ach:S.ach,col:S.col,lastVer:S.lastVer,freeSpins:S.freeSpins};S=Object.assign(def(),k);S.P.hw+=x;S.P.n++;parm=0;save();lists();ui();toast('🪵 Prestiged! +'+x+' Heartwood. A fresh forest awaits.')}
+function prestige(){if(S.run<UNL)return;const x=pgain();
+ modal(`<h2 style="margin-top:0">🪵 Prestige?</h2>
+<p style="margin:0 0 10px">You'll gain <b>${x} Heartwood</b> and +50% acorns per hunt, permanently.</p>
+<div class="sub"><b>Resets:</b> acorns, farm, upgrades, special finds.<br><b>Kept:</b> Heartwood upgrades, golden acorns, skins, achievements and stats.</div>
+<div style="margin-top:16px"><button class="mini" style="margin:0" onclick="doPrestige()">Confirm prestige</button><button class="link" style="margin:0 0 0 14px" onclick="closeModal()">Cancel</button></div>`)}
+function doPrestige(){closeModal();if(S.run<UNL)return;
+ const x=pgain(),k={g:S.g,slot:S.slot,skins:S.skins,skin:S.skin,P:S.P,mus:S.mus,vol:S.vol,T:S.T,pf:S.pf,cloudAt:S.cloudAt,cloudUid:S.cloudUid,ach:S.ach,col:S.col,lastVer:S.lastVer,freeSpins:S.freeSpins,hwMig1:S.hwMig1};S=Object.assign(def(),k);S.P.hw+=x;S.P.n++;save();lists();ui();toast('🪵 Prestiged! +'+x+' Heartwood. A fresh forest awaits.')}
 function lists(){
  odds();achList();
  const nd=need('n'),gd=need('g');
@@ -176,10 +197,10 @@ function lists(){
   return `<div class="plot"><span class="em">${d?'🧺':p.k=='g'?'🌟':'🌱'}</span><b>${i+1}</b><small>${d?'Ready!':(p.k=='g'?'Golden':'Acorn')+' · '+p.h+'/'+q}</small>${d?`<button class="mini" onclick="harvest(${i})">Harvest</button>`:`<div class="bar"><i style="width:${Math.min(100,100*p.h/q)}%"></i></div>`}</div>`}).join('')
   +(S.plots.length<PMAX?`<button class="plot buy" data-k="a" data-c="${pc()}" onclick="buyPlot()"><span class="em">🟩</span><b>Buy land</b><small>Plot ${S.plots.length+1}</small><small>${AC()} ${fmt(pc())}</small></button>`:'');
  $('ul').innerHTML=U.map((u,i)=>{const l=lv(u.id),mx=l>=u.max;return `<button class="it" data-k="a" data-c="${mx?1e99:uc(u)}" onclick="buyU(${i})"><span class="em">${u.e}</span><span class="tx"><b>${u.n}</b> Lv ${l}<small>${u.d}</small></span><span class="pr">${mx?'Max':AC()+' '+fmt(uc(u))}</span></button>`}).join('');
- $('sl').innerHTML=`<div class="sub" style="margin:-4px 0 8px">${(1+0.25*pl('keen')+0.1*lv('nose')+100*ab('special')).toFixed(2)}% chance per hunt. Lost on prestige.</div>`+SP.map(x=>{const n=S.sp[x.id];return `<div class="it"><span class="em">${x.e}</span><span class="tx"><b>${x.n}</b> ${n}/${lim()}<small>${n?x.d(n):'Rare drop · '+x.d(1)+' each'}</small></span></div>`}).join('');
+ $('sl').innerHTML=`<div class="sub" style="margin:-4px 0 8px">${(1+0.5*pl('keen')+0.1*lv('nose')+100*ab('special')).toFixed(2)}% chance per hunt. Lost on prestige.</div>`+SP.map(x=>{const n=S.sp[x.id];return `<div class="it"><span class="em">${x.e}</span><span class="tx"><b>${x.n}</b> ${n}/${lim()}<small>${n?x.d(n):'Rare drop · '+x.d(1)+' each'}</small></span></div>`}).join('');
  $('gl').innerHTML=G.map((x,i)=>`<button class="it gi" data-k="g" data-c="${gcst(x)}" onclick="buyG(${i})"><span class="em">${x.e}</span><span class="tx"><b>${x.n}</b><small>${typeof x.d=='function'?x.d():x.d}</small></span><span class="pr">${AC(1)} ${gcst(x)}</span></button>`).join('');
  $('sk').innerHTML=pl('mkt')?`<details class="sec" data-s="skins" ${S.col.skins?'':'open'} ontoggle="secT(this)"><summary><h2>Skin market</h2></summary>`+SK.map((x,i)=>{const o=S.skins.includes(x.id);return `<button class="it gi" ${o?'':'data-k="g" data-c="4"'} onclick="skin(${i})"><span class="em">${x.e}</span><span class="tx"><b>${x.n}</b><small>${o?(S.skin==x.id?'Equipped':'Tap to equip'):'Colour skin'}</small></span><span class="pr">${o?'':AC(1)+' 4'}</span></button>`}).join('')+'</details>':'';
- $('pl').innerHTML=`<div class="sub" style="margin-bottom:8px">Heartwood 🪵 ${S.P.hw} · prestiges ${S.P.n}<br>Resets acorns, farm, upgrades and special finds. Heartwood upgrades and things bought with golden acorns are kept.</div><button class="it" id="pb" onclick="prestige()"><span class="em">🪵</span><span class="tx"><b>Prestige for ${pgain()} Heartwood</b><small>Unlocks at ${fmt(UNL)} acorns earned this run (${fmt(S.run)} so far)</small></span></button>`+PU.map((x,i)=>{const l=pl(x.id),mx=l>=x.max;return `<button class="it" data-k="h" data-c="${x.wip?1e99:mx?1e99:x.c(l)}" ${x.wip?'disabled':''} onclick="buyP(${i})"><span class="em">${x.e}</span><span class="tx"><b>${x.n}</b> Lv ${l}/${x.max}<small>${x.d}</small></span><span class="pr">${x.wip?'WIP':mx?'Max':'🪵 '+x.c(l)}</span></button>`}).join('')}
+ $('pl').innerHTML=`<div class="sub" style="margin-bottom:8px">Heartwood 🪵 ${S.P.hw} · prestiges ${S.P.n}<br>Resets acorns, farm, upgrades and special finds. Heartwood upgrades and things bought with golden acorns are kept.<br>Each prestige permanently adds +50% acorns per hunt (currently +${S.P.n*50}%).</div><button class="it" id="pb" onclick="prestige()"><span class="em">🪵</span><span class="tx"><b>Prestige for ${pgain()} Heartwood</b><small>Unlocks at ${fmt(UNL)} acorns earned this run (${fmt(S.run)} so far)</small></span></button>`+PU.map((x,i)=>{const l=pl(x.id),mx=l>=x.max;return `<button class="it" data-k="h" data-c="${x.wip?1e99:mx?1e99:x.c(l)}" ${x.wip?'disabled':''} onclick="buyP(${i})"><span class="em">${x.e}</span><span class="tx"><b>${x.n}</b> Lv ${l}/${x.max}<small>${x.d}</small></span><span class="pr">${x.wip?'WIP':mx?'Max':'🪵 '+x.c(l)}</span></button>`}).join('')}
 function ui(){
  $('a').textContent=fmt(S.a);$('g').textContent=S.g;
  $('cap').textContent='of '+fmt(S.cap)+' storage';
@@ -223,14 +244,14 @@ document.addEventListener('visibilitychange',()=>{if(!AX)return;if(document.hidd
 sndUI();
 const maxH=()=>3+lv('burrow');
 function odds(){
- const m=1+.5*lv('claws')+.05*S.sp.feather+ab('hauls'),gc=.03+.005*lv('whisk')+.005*S.sp.clover+.0025*pl('luck')+ab('gold'),big=.25,sm=1-gc-big;
+ const m=1+.5*lv('claws')+.05*S.sp.feather+ab('hauls')+.5*S.P.n,gc=.03+.005*lv('whisk')+.005*S.sp.clover+.005*pl('luck')+ab('gold'),big=.25,sm=1-gc-big;
  const p=x=>(+(x*100).toFixed(2))+'%',row=(a,b)=>`<div class="row"><span>${a}</span><b>${b}</b></div>`;
  const h='<div class="sub" style="margin-top:0">Each hunt gives one of:</div>'
   +row('Small haul · '+fmt(Math.round(5*m))+'–'+fmt(Math.round(15*m))+' acorns',p(sm))
   +row('Big stash · '+fmt(Math.round(25*m))+'–'+fmt(Math.round(50*m))+' acorns',p(big))
   +row(AC(1)+' Golden acorn',p(gc))
   +'<div class="sub">Plus bonus rolls on any hunt:</div>'
-  +row('🌱 Acorn seeds (1–3)',p(.1+.01*S.sp.satchel+ab('seed')))+row(AC(1)+'🌱 Golden seed',p(.05+ab('gseed')))+row('✨ Special find',p(.01+.0025*pl('keen')+.001*lv('nose')+ab('special')));$('od').innerHTML=h;$('od2').innerHTML=h}
+  +row('🌱 Acorn seeds (1–3)',p(.1+.01*S.sp.satchel+ab('seed')))+row(AC(1)+'🌱 Golden seed',p(.05+ab('gseed')))+row('✨ Special find',p(.01+.005*pl('keen')+.001*lv('nose')+ab('special')));$('od').innerHTML=h;$('od2').innerHTML=h}
 function accrue(){const n=Date.now(),m=maxH();
  if(S.ht>n)S.ht=n;
  if(S.hc>=m){S.ht=n;return}
@@ -315,9 +336,10 @@ const AG=[
 {k:'acct',n:'Account',v:()=>user?1:0,t:[[1,'Cloud Squirrel','Sign in to an online account']]}];
 const CB={hunt:'hauls',acorn:'hauls',gold:'gold',harv:'yield',seed:'seed',gseed:'gseed',land:'yield',pres:'heart',spec:'special',coll:'special',time:'hauls',prof:'hauls',acct:'hauls',spin:'hauls'};
 AG.forEach(c=>c.b=CB[c.k]);
-const BN={hauls:{v:.005,t:'acorns per hunt'},yield:{v:.005,t:'harvest yield'},gold:{v:.001,t:'golden acorn chance'},seed:{v:.0025,t:'seed drop chance'},gseed:{v:.001,t:'golden seed chance'},special:{v:.0005,t:'special find chance'},heart:{v:.01,t:'Heartwood from prestige'}};
-const pcf=x=>(+(x*100).toFixed(2))+'%',bl=b=>'+'+pcf(BN[b].v)+' '+BN[b].t;
-function ab(t){let n=0;for(const c of AG)if(c.b==t)for(const x of c.t)if(S.ach[c.k+x[0]])n++;return n*BN[t].v}
+const BN={hauls:{v:.005,t:'acorns per hunt'},yield:{v:.005,t:'harvest yield'},gold:{v:.001,t:'golden acorn chance'},seed:{v:.0025,t:'seed drop chance'},gseed:{v:.001,t:'golden seed chance'},special:{v:.0005,t:'special find chance'},heart:{v:1,t:'Heartwood per prestige',flat:true}};
+const pcf=x=>(+(x*100).toFixed(2))+'%',bfmt=(b,n)=>BN[b].flat?'+'+(BN[b].v*n)+' '+BN[b].t:'+'+pcf(BN[b].v*n)+' '+BN[b].t,bl=b=>bfmt(b,1);
+function abN(t){let n=0;for(const c of AG)if(c.b==t)for(const x of c.t)if(S.ach[c.k+x[0]])n++;return n}
+function ab(t){return abN(t)*BN[t].v}
 const applyCol=()=>document.querySelectorAll('details.sec[data-s]').forEach(d=>{d.open=!S.col[d.dataset.s]});
 let lbTab='acorns';
 function lbTabSel(t){lbTab=t;document.querySelectorAll('.lbsel').forEach(s=>{if(s.value!==t)s.value=t});loadLB()}
@@ -343,9 +365,10 @@ function achList(){let got=0;
    const nx=!d&&first;if(!d)first=0;
    const pr=nx?`<div class="bar"><i style="width:${Math.min(100,100*v/t[0])}%"></i></div><small>${fv(c,Math.min(v,t[0]))} / ${fv(c,t[0])}</small>`:'';
    return `<div class="it" style="${d?'':'opacity:.65'}"><span class="em">${d?'🏆':'🔒'}</span><span class="tx"><b>${esc(t[1])}</b><small>${esc(t[2])}</small>${pr}</span></div>`}).join('');
-  return `<details ${opn.has(c.k)?'open':''} ontoggle="tg('${c.k}',this.open)"><summary>${c.n} <span class="sub">${done}/${c.t.length}</span></summary><div class="sub" style="margin-bottom:4px">Each: ${bl(c.b)} · Now: +${pcf(done*BN[c.b].v)}</div>${rows}</details>`}).join('');
+  return `<details ${opn.has(c.k)?'open':''} ontoggle="tg('${c.k}',this.open)"><summary>${c.n} <span class="sub">${done}/${c.t.length}</span></summary><div class="sub" style="margin-bottom:4px">Each: ${bl(c.b)} · Now: ${bfmt(c.b,done)}</div>${rows}</details>`}).join('');
  $('ai').textContent=got+' of '+ATOT+' unlocked'}
 const CHANGELOG=[
+ {v:'2026-09-28c',t:'v2.8 — Prestige & display update',items:['Prestige achievements now give +1 Heartwood each every time you prestige (instead of +1%). Past prestiges are paid out automatically, based on the achievements you had unlocked at the time','Prestige now opens a Confirm / Cancel pop-up instead of the double-tap','Keen Nose and Golden Instinct now give +0.5% per level (up from +0.25%)','Every prestige now permanently adds +50% acorns per hunt','New Visual tab in Settings: adjustable font size and display size (Auto, or 80%–200%)','Big screens now scale up automatically, and very wide screens switch to a two-column layout']},
  {v:'2026-09-28b',t:'Retroactive fix',items:["This run\'s progress is now automatically corrected to match your all-time acorns if you've never prestiged — fixes the Acorn Sack bug for existing saves too, not just new ones"]},
  {v:'2026-09-28a',t:'Save bugs fixed',items:['Fixed "Slot spins" and "Jackpots hit" showing as NaN on saves made before those stats existed','Fixed Acorn Sack not counting toward this run\'s progress, which could make the 25,000 prestige goal take longer than it should have']},
  {v:'2026-09-27e',t:'Badge tweak',items:['The jackpot button now shows a simple green dot when a free spin is ready, instead of a number']},
@@ -389,9 +412,9 @@ async function loadAnn(){if(!sb)return;
  if(r.error||!r.data||!r.data.active||!r.data.message){$('annb').hidden=true;return}
  $('annt').textContent=r.data.message;$('annb').hidden=false}
 function settingsHTML(tab){
- const tabs=[['profile','Profile'],['audio','Audio'],['gameplay','Gameplay']];
+ const tabs=[['profile','Profile'],['audio','Audio'],['visual','Visual']];
  const nav=tabs.map(([k,l])=>`<button class="mini${tab==k?' on':''}" style="margin:0 6px 10px 0" onclick="openSettings('${k}')">${l}</button>`).join('');
- const body=tab=='audio'?audioTabHTML():tab=='gameplay'?gameplayTabHTML():profileTabHTML();
+ const body=tab=='audio'?audioTabHTML():tab=='visual'?visualTabHTML():profileTabHTML();
  return `<h2 style="margin-top:0">Settings</h2><div>${nav}</div>${body}`}
 function openSettings(tab){modal(settingsHTML(tab||'profile'))}
 function profileTabHTML(){const av=S.pf.av||'red';
@@ -431,12 +454,21 @@ function audioTabHTML(){return `<div class="sub" style="margin:10px 0 8px">Backg
 <button id="mb" onclick="music()" aria-label="Toggle music">${S.mus?'🔊':'🔇'}</button>
 <input type="range" id="vol" min="0" max="100" value="${S.vol}" oninput="setVol(this.value)" aria-label="Volume" style="width:150px">
 </div>`}
-function gameplayTabHTML(){const cur=S.theme||'system';
- const opt=(v,l)=>`<button class="mini${cur==v?' on':''}" style="margin:0 6px 0 0" onclick="setTheme('${v}')">${l}</button>`;
- return `<div class="sub" style="margin:10px 0 8px">Background colours</div>
-<div>${opt('system','Auto')}${opt('light','Light')}${opt('dark','Dark')}</div>
+function visualTabHTML(){const v=getView(),cur=S.theme||'system',az=autoZoom(window.innerWidth);
+ const zopt=(val,l)=>`<button class="mini${String(v.zoom)===String(val)?' on':''}" style="margin:0 6px 6px 0" onclick="setZoom('${val}')">${l}</button>`;
+ const topt=(val,l)=>`<button class="mini${cur==val?' on':''}" style="margin:0 6px 0 0" onclick="setTheme('${val}')">${l}</button>`;
+ return `<div class="sub" style="margin:10px 0 6px">Display size</div>
+<div>${zopt('auto','Auto')}${zopt(80,'80%')}${zopt(100,'100%')}${zopt(125,'125%')}${zopt(150,'150%')}${zopt(175,'175%')}${zopt(200,'200%')}</div>
+<div class="sub" style="margin:2px 0 16px">${v.zoom==='auto'?'Auto is '+Math.round(az*100)+'% on this screen. ':''}Scales the whole game. Very wide screens also switch to two columns.</div>
+<div class="sub" style="margin:0 0 6px">Font size · <b id="fsv">${v.fs}%</b></div>
+<input type="range" min="80" max="150" step="5" value="${v.fs}" oninput="setFs(this.value)" aria-label="Font size" style="width:100%;accent-color:var(--acc)">
+<div class="sub" style="margin:16px 0 8px">Background colours</div>
+<div>${topt('system','Auto')}${topt('light','Light')}${topt('dark','Dark')}</div>
 <div class="sub" style="margin-top:18px">🎨 More themes — unlockable and purchasable colour palettes are coming soon.</div>`}
-function setTheme(t){S.theme=t=='system'?'':t;if(S.theme)document.documentElement.dataset.theme=S.theme;else delete document.documentElement.dataset.theme;save();openSettings('gameplay')}
+function setView(p){VIEW=Object.assign(getView(),p);try{localStorage.setItem(VKEY,JSON.stringify(VIEW))}catch(e){}applyView()}
+function setZoom(z){setView({zoom:z==='auto'?'auto':+z});openSettings('visual')}
+function setFs(n){setView({fs:+n});const l=$('fsv');if(l)l.textContent=(+n)+'%'}
+function setTheme(t){S.theme=t=='system'?'':t;if(S.theme)document.documentElement.dataset.theme=S.theme;else delete document.documentElement.dataset.theme;save();openSettings('visual')}
 const TW='<svg viewBox="0 0 24 24" width="1.1em" height="1.1em" style="vertical-align:-.2em" aria-hidden="true"><path d="M4 20 L18 6" stroke="#8a6a43" stroke-width="2.6" stroke-linecap="round"/><path d="M9 15l-4 1M13 11l-3.5 3.5M16 8l-3 1" stroke="#6b4f30" stroke-width="1.8" stroke-linecap="round"/></svg>';
 const JP_A=AC(),JP_G=AC(1),JP_T=TW;
 function shuf(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
@@ -487,6 +519,7 @@ function reset(){const b=$('rs');if(!armed){armed=1;b.textContent=user?'Tap agai
  S=def();if(AX)AX.suspend();sndUI();save();if(user)push();armed=0;b.textContent='Reset save';document.documentElement.dataset.skin='';delete document.documentElement.dataset.theme;lists();ui();toast('Save erased. Fresh start!')}
 document.documentElement.dataset.skin=S.skin||'';if(S.theme)document.documentElement.dataset.theme=S.theme;
 $('la').innerHTML=AC()+' Acorns';$('lg').innerHTML=AC(1)+' Golden';
+if(!S.hwMig1){const th=AG.find(c=>c.k==='pres').t.map(x=>x[0]);let bonus=0;for(let k=1;k<=S.P.n;k++)bonus+=th.filter(t=>t<=k-1).length;if(bonus>0){S.P.hw+=bonus;toast('🪵 Achievement bonus paid out: +'+bonus+' Heartwood for your past prestiges')}S.hwMig1=1;save()}
 profile();if(!S.pf.name)openProfile(1);else if(S.lastVer&&S.lastVer!==CHANGELOG[0].v)showChangelog(0);else if(!S.lastVer){S.lastVer=CHANGELOG[0].v;save()}
 lists();applyCol();ui();loadLB();setInterval(ui,1000);setInterval(save,5000);cloudInit();setInterval(()=>{if(user&&!document.hidden&&$('ov2').hidden)cloudSync()},60000);loadAnn();setInterval(loadAnn,30000);
 </script></body></html>
