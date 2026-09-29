@@ -114,9 +114,10 @@ applyView();window.addEventListener('resize',applyView);
 <button class="fab jp" onclick="openJackpot()" aria-label="Play the jackpot">🎰<span id="jpBadge" class="badge-dot" hidden></span></button>
 <button class="fab" onclick="openFeedback()" aria-label="Send feedback">💬</button>
 <div class="wrap"><div class="lc"><aside id="pf"></aside><div class="odds" id="od2"></div></div><main><div class="col1">
-<div class="top"><h1>Acorn Hunt <span class="ver">v2.8</span></h1></div>
+<div class="top"><h1>Acorn Hunt <span class="ver">v2.9</span></h1></div>
 <div class="bank"><div><span id="la"></span><b id="a">0</b><span class="sub" id="cap"></span></div><div class="gold"><span id="lg"></span><b id="g">0</b></div></div>
 <button id="hunt" onclick="hunt()">Hunt 🐿️</button>
+<button id="huntall" onclick="huntAll()" class="mini" style="width:100%;margin:8px 0 0;display:none">Hunt All</button>
 <div class="sub" id="hs" style="text-align:center;margin-top:8px"></div>
 <div class="odds" id="od"></div>
 <div id="msg">Send the squirrel out to find acorns and seeds.</div>
@@ -157,17 +158,39 @@ const uc=u=>u.id=='store'?S.cap:Math.ceil(u.c*Math.pow(u.g,lv(u.id))),pc=()=>Mat
 const gcst=x=>x.id=='pouch'?5*(S.slot+1):x.c,pgain=()=>Math.floor(Math.sqrt(S.run/1000))+abN('heart');
 function toast(t){$('msg').innerHTML=t}
 function gain(n){n=Math.floor(n);const t=Math.max(0,Math.min(n,S.cap-S.a));S.a+=t;S.run+=t;S.T.earned+=t;return t}
-function hunt(){
- accrue();if(S.hc<1)return;S.hc--;S.T.hunts++;if(S.T.hunts%10===0)S.freeSpins++;
- const m=1+.5*lv('claws')+.05*S.sp.feather+ab('hauls')+.5*S.P.n,gc=.03+.005*lv('whisk')+.005*S.sp.clover+.005*pl('luck')+ab('gold'),r=Math.random();let msg,n=0;
- if(r<gc){S.g++;S.T.gfound++;msg=AC(1)+' A golden acorn glinting in the roots!'}
- else if(r<gc+.25){n=Math.round((25+Math.random()*25)*m);msg='🍂 Big stash: +'+fmt(n)+' acorns!'}
- else{n=Math.round((5+Math.random()*10)*m);msg=AC()+' Dug up +'+fmt(n)+' acorns'}
- if(n&&gain(n)<n)msg+=' (storage full!)';
- if(Math.random()<.1+.01*S.sp.satchel+ab('seed')){const k=1+Math.floor(Math.random()*3);S.seed+=k;S.T.seeds+=k;msg+='<br>🌱 Found '+k+' seed'+(k>1?'s':'')+'!'}
- if(Math.random()<.05+ab('gseed')){S.gseed++;S.T.gseeds++;msg+='<br>'+AC(1)+'🌱 Found a golden seed!'}
- if(Math.random()<.01+.005*pl('keen')+.001*lv('nose')+ab('special')){const o=SP.filter(x=>S.sp[x.id]<lim());if(o.length){const x=o[Math.floor(Math.random()*o.length)];S.sp[x.id]++;S.T.sp[x.id]++;msg+='<br>'+x.e+' <b>Special find: '+x.n+'!</b> '+x.d(S.sp[x.id])+' in total'}}
+function rollHunt(){
+ S.T.hunts++;if(S.T.hunts%10===0)S.freeSpins++;
+ const m=1+.5*lv('claws')+.05*S.sp.feather+ab('hauls')+.5*S.P.n,gc=.03+.005*lv('whisk')+.005*S.sp.clover+.005*pl('luck')+ab('gold'),r=Math.random();
+ const res={tier:'',acorns:0,full:false,seeds:0,gseed:0,special:null};
+ if(r<gc){S.g++;S.T.gfound++;res.tier='gold'}
+ else{let n;if(r<gc+.25){res.tier='big';n=Math.round((25+Math.random()*25)*m)}else{res.tier='small';n=Math.round((5+Math.random()*10)*m)}
+  const got=gain(n);res.acorns=n;if(got<n)res.full=true}
+ if(Math.random()<.1+.01*S.sp.satchel+ab('seed')){const k=1+Math.floor(Math.random()*3);S.seed+=k;S.T.seeds+=k;res.seeds=k}
+ if(Math.random()<.05+ab('gseed')){S.gseed++;S.T.gseeds++;res.gseed=1}
+ if(Math.random()<.01+.005*pl('keen')+.001*lv('nose')+ab('special')){const o=SP.filter(x=>S.sp[x.id]<lim());if(o.length){const x=o[Math.floor(Math.random()*o.length)];S.sp[x.id]++;S.T.sp[x.id]++;res.special={e:x.e,n:x.n,d:x.d(S.sp[x.id])}}}
  S.plots.forEach(p=>{if(p&&p.h<need(p.k))p.h++});
+ return res}
+function huntMsg(res){
+ let msg=res.tier=='gold'?AC(1)+' A golden acorn glinting in the roots!':res.tier=='big'?'🍂 Big stash: +'+fmt(res.acorns)+' acorns!':AC()+' Dug up +'+fmt(res.acorns)+' acorns';
+ if(res.full)msg+=' (storage full!)';
+ if(res.seeds)msg+='<br>🌱 Found '+res.seeds+' seed'+(res.seeds>1?'s':'')+'!';
+ if(res.gseed)msg+='<br>'+AC(1)+'🌱 Found a golden seed!';
+ if(res.special)msg+='<br>'+res.special.e+' <b>Special find: '+res.special.n+'!</b> '+res.special.d+' in total';
+ return msg}
+function hunt(){accrue();if(S.hc<1)return;S.hc--;
+ toast(huntMsg(rollHunt()));save();lists();ui()}
+function huntAll(){accrue();const n=S.hc;if(n<1)return;
+ const t={gold:0,acorns:0,full:false,seeds:0,gseed:0,special:{}};
+ for(let i=0;i<n;i++){S.hc--;const res=rollHunt();
+  if(res.tier=='gold')t.gold++;else{t.acorns+=res.acorns;if(res.full)t.full=true}
+  t.seeds+=res.seeds;if(res.gseed)t.gseed++;
+  if(res.special)t.special[res.special.n]=(t.special[res.special.n]||0)+1}
+ let msg='🐿️ Hunted '+n+' time'+(n>1?'s':'')+': +'+fmt(t.acorns)+' acorns';
+ if(t.gold)msg+=', '+AC(1)+' x'+t.gold;
+ if(t.full)msg+=' (storage full!)';
+ if(t.seeds)msg+='<br>🌱 +'+t.seeds+' seed'+(t.seeds>1?'s':'');
+ if(t.gseed)msg+=' · '+AC(1)+'🌱 +'+t.gseed+' golden seed'+(t.gseed>1?'s':'');
+ const sp=Object.entries(t.special);if(sp.length)msg+='<br>✨ '+sp.map(([nm,c])=>nm+' x'+c).join(', ');
  toast(msg);save();lists();ui()}
 function plant(i,k){if(S.plots[i])return;if(k=='g'){if(!S.gseed)return;S.gseed--}else{if(!S.seed)return;S.seed--}S.plots[i]={k,h:0};lists();ui();save()}
 function harvest(i){const p=S.plots[i];if(!p||p.h<need(p.k))return;
@@ -206,6 +229,7 @@ function ui(){
  $('cap').textContent='of '+fmt(S.cap)+' storage';
  accrue();const mx=maxH(),rem=S.ht+HUNT-Date.now(),h=$('hunt'),mm=x=>Math.floor(x/60000)+':'+String(Math.floor(x/1000)%60).padStart(2,'0');
  h.disabled=S.hc<1;h.textContent=S.hc>0?'Hunt 🐿️':'Back in '+mm(rem);
+ const ha=$('huntall');if(ha){ha.style.display=S.hc>1?'block':'none';ha.textContent='Hunt All ('+S.hc+'x)'}
  $('hs').textContent='Stored hunts: '+S.hc+'/'+mx+(S.hc<mx?' · next in '+mm(rem):' · full');
  const jb=$('jpBadge');if(jb)jb.hidden=!(S.freeSpins>0);
  const bal={a:S.a,g:S.g,h:S.P.hw};
@@ -368,6 +392,7 @@ function achList(){let got=0;
   return `<details ${opn.has(c.k)?'open':''} ontoggle="tg('${c.k}',this.open)"><summary>${c.n} <span class="sub">${done}/${c.t.length}</span></summary><div class="sub" style="margin-bottom:4px">Each: ${bl(c.b)} · Now: ${bfmt(c.b,done)}</div>${rows}</details>`}).join('');
  $('ai').textContent=got+' of '+ATOT+' unlocked'}
 const CHANGELOG=[
+ {v:'2026-09-29a',t:'v2.9 — Hunt All',items:['New "Hunt All" button appears whenever you have more than 1 stored hunt — spends them all at once with one combined result']},
  {v:'2026-09-28c',t:'v2.8 — Prestige & display update',items:['Prestige achievements now give +1 Heartwood each every time you prestige (instead of +1%). Past prestiges are paid out automatically, based on the achievements you had unlocked at the time','Prestige now opens a Confirm / Cancel pop-up instead of the double-tap','Keen Nose and Golden Instinct now give +0.5% per level (up from +0.25%)','Every prestige now permanently adds +50% acorns per hunt','New Visual tab in Settings: adjustable font size and display size (Auto, or 80%–200%)','Big screens now scale up automatically, and very wide screens switch to a two-column layout']},
  {v:'2026-09-28b',t:'Retroactive fix',items:["This run\'s progress is now automatically corrected to match your all-time acorns if you've never prestiged — fixes the Acorn Sack bug for existing saves too, not just new ones"]},
  {v:'2026-09-28a',t:'Save bugs fixed',items:['Fixed "Slot spins" and "Jackpots hit" showing as NaN on saves made before those stats existed','Fixed Acorn Sack not counting toward this run\'s progress, which could make the 25,000 prestige goal take longer than it should have']},
