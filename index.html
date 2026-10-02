@@ -530,7 +530,6 @@ const HAL_JP_TIERS=[
  {p:.02,label:'JACKPOT! +7 golden acorns',a:0,g:Math.floor(5*1.5),b:0,jackpot:true,syms:()=>[JP_G,JP_G,JP_G]}
 ];
 function pickJpTier(tiers){let r=Math.random(),acc=0;for(const t of tiers){acc+=t.p;if(r<acc)return t}return tiers[0]}
-function jpTierPick(){return pickJpTier(JP_TIERS)}
 function halloweenJpTierPick(){return pickJpTier(HAL_JP_TIERS)}
 const JP_COST=1000;
 function jpTierPick(){let r=Math.random(),acc=0;for(const t of JP_TIERS){acc+=t.p;if(r<acc)return t}return JP_TIERS[0]}
