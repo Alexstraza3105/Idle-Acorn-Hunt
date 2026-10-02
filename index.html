@@ -56,7 +56,7 @@ summary{cursor:pointer;font-weight:600;padding:10px 0}
 .ann{background:var(--gold);color:#3a2a06;padding:10px 16px;text-align:center;font-size:calc(14px*var(--fs,1));display:flex;align-items:center;justify-content:center;gap:10px}
 .ann[hidden]{display:none}.ann button{background:none;border:0;color:inherit;font-size:calc(16px*var(--fs,1));cursor:pointer;line-height:1;padding:0}
 .fab{position:fixed;right:16px;bottom:calc(16px + env(safe-area-inset-bottom,0px));z-index:15;width:48px;height:48px;border-radius:50%;background:var(--acc);color:var(--onacc);border:0;font-size:calc(20px*var(--fs,1));box-shadow:0 4px 14px rgba(0,0,0,.3);cursor:pointer}
-.fab.jp{bottom:calc(72px + env(safe-area-inset-bottom,0px));background:var(--gold);color:#3a2a06}
+.fab.jp{bottom:calc(72px + env(safe-area-inset-bottom,0px));background:var(--gold);color:#3a2a06}.fab.hal{bottom:calc(128px + env(safe-area-inset-bottom,0px));background:#b4531c;color:#fff4e6}.fab.hal[hidden]{display:none}
 .badge-dot{position:absolute;top:1px;right:1px;width:13px;height:13px;border-radius:50%;background:#22c55e;border:2px solid var(--bg)}
 .reels{display:flex;gap:8px;justify-content:center;margin:14px 0}
 .reel{width:64px;height:64px;background:var(--bg);border:1px solid var(--line);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:calc(30px*var(--fs,1));overflow:hidden}
@@ -111,14 +111,16 @@ function applyView(){var v=getView(),W=window.innerWidth,z=v.zoom==='auto'?autoZ
 applyView();window.addEventListener('resize',applyView);
 </script>
 </head><body><div class="ann" id="annb" hidden><span id="annt"></span></div>
+<button class="fab hal" id="halloweenFab" onclick="openHalloweenShop()" aria-label="Open the Halloween shop" hidden>🎃</button>
 <button class="fab jp" onclick="openJackpot()" aria-label="Play the jackpot">🎰<span id="jpBadge" class="badge-dot" hidden></span></button>
 <button class="fab" onclick="openFeedback()" aria-label="Send feedback">💬</button>
 <div class="wrap"><div class="lc"><aside id="pf"></aside><div class="odds" id="od2"></div></div><main><div class="col1">
-<div class="top"><h1>Acorn Hunt <span class="ver">v2.9</span></h1></div>
+<div class="top"><h1>Acorn Hunt <span class="ver">v3.0</span></h1></div>
 <div class="bank"><div><span id="la"></span><b id="a">0</b><span class="sub" id="cap"></span></div><div class="gold"><span id="lg"></span><b id="g">0</b></div></div>
 <button id="hunt" onclick="hunt()">Hunt 🐿️</button>
 <button id="huntall" onclick="huntAll()" class="mini" style="width:100%;margin:8px 0 0;display:none">Hunt All</button>
 <div class="sub" id="hs" style="text-align:center;margin-top:8px"></div>
+<div class="sub" id="halloweenCountdown" style="text-align:center;margin-top:4px"></div>
 <div class="odds" id="od"></div>
 <div id="msg">Send the squirrel out to find acorns and seeds.</div>
 <details class="sec" data-s="farm" open ontoggle="secT(this)"><summary><h2>Farm</h2></summary><div class="sub" id="fi" style="margin-bottom:8px"></div><div id="fl"></div></details>
@@ -146,47 +148,55 @@ const SP=[{id:'oak',n:'Oak Charm',e:'🌳',d:n=>'+'+5*n+'% harvest yield'},{id:'
 const G=[{id:'sack',n:'Acorn Sack',d:d=>'Instantly get '+fmt(Math.round(S.cap*.5))+' acorns',e:'🎒',c:3},{id:'tonic',n:'Miracle Grow',d:'Every growing plot advances 5 hunts',e:'🧪',c:2},{id:'pouch',n:'Trinket Pouch',d:'+5 stack limit on every special find',e:'👜',c:5}];
 const PU=[{id:'keen',n:'Keen Nose',e:'👃',d:'+0.5% special find chance',max:10,c:l=>3+2*l},{id:'luck',n:'Golden Instinct',e:'💫',d:'+0.5% golden acorn chance',max:8,c:l=>4+2*l},{id:'farm',n:'Farmhand',e:'🧑‍🌾',d:'Acorn seeds grow 1 hunt faster (min 5)',max:7,c:l=>2*(l+1)},{id:'gfarm',n:'Golden Farmhand',e:'👩‍🌾',d:'Golden seeds grow 3 hunts faster (min 15)',max:5,c:l=>3*(l+1)},{id:'mkt',n:'Skin Market',e:'🏪',d:'Unlocks colour skins in the golden shop (WIP — coming soon)',max:1,c:l=>5,wip:true}];
 const SK=[{id:'',n:'Forest',e:'🌲'},{id:'autumn',n:'Autumn',e:'🍁'},{id:'frost',n:'Frost',e:'❄️'},{id:'plum',n:'Plum',e:'🫐'}];
-const def=()=>({a:0,g:0,hc:1,ht:Date.now(),pf:{name:'',av:'red'},ach:{},col:{},cap:5000,run:0,seed:1,gseed:0,plots:[null],up:{},sp:{oak:0,feather:0,clover:0,satchel:0},slot:0,mus:0,vol:50,T:{since:Date.now(),time:0,earned:0,hunts:0,seeds:0,gseeds:0,harv:0,gfound:0,spins:0,jackpots:0,sp:{oak:0,feather:0,clover:0,satchel:0}},P:{hw:0,n:0,lv:{}},skins:[''],skin:'',lastVer:'',theme:'',freeSpins:0,hwMig1:0});
-let S;try{S=Object.assign(def(),JSON.parse(localStorage.getItem(KEY)||'{}'))}catch(e){S=def()}
+const def=()=>({a:0,g:0,hc:1,ht:Date.now(),pf:{name:'',av:'red'},ach:{},col:{},cap:5000,run:0,seed:1,gseed:0,plots:[null],up:{},sp:{oak:0,feather:0,clover:0,satchel:0},slot:0,mus:0,vol:50,T:{since:Date.now(),time:0,earned:0,hunts:0,seeds:0,gseeds:0,harv:0,gfound:0,spins:0,jackpots:0,sp:{oak:0,feather:0,clover:0,satchel:0}},P:{hw:0,n:0,lv:{}},skins:[''],skin:'',lastVer:'',theme:'',freeSpins:0,halloween:{bats:0,upgrades:{oak:0,feather:0,clover:0,satchel:0}},hwMig1:0});
+const HAL_START=Date.parse('2026-09-30T16:00:00Z'),HAL_END=Date.parse('2026-10-31T16:00:00Z');
+const HAL_DEF=()=>({bats:0,upgrades:{oak:0,feather:0,clover:0,satchel:0}});
+function normalizeHalloween(d){d.halloween=Object.assign(HAL_DEF(),d.halloween||{});d.halloween.upgrades=Object.assign(HAL_DEF().upgrades,d.halloween.upgrades||{});d.halloween.bats=Math.max(0,Math.floor(+d.halloween.bats||0));for(const k of Object.keys(d.halloween.upgrades))d.halloween.upgrades[k]=Math.max(0,Math.floor(+d.halloween.upgrades[k]||0));return d}
+const halloweenActive=()=>{const n=Date.now();return n>=HAL_START&&n<HAL_END},halloweenUp=id=>halloweenActive()?(S.halloween.upgrades[id]||0):0;
+function halloweenCountdownText(now=Date.now()){const before=now<HAL_START,target=before?HAL_START:HAL_END;let n=Math.max(0,Math.ceil((target-now)/1000));const d=Math.floor(n/86400);n%=86400;const h=Math.floor(n/3600);n%=3600;const m=Math.floor(n/60),sec=n%60;const left=(d?d+'d ':'')+String(h).padStart(2,'0')+'h '+String(m).padStart(2,'0')+'m '+String(sec).padStart(2,'0')+'s';return before?'🎃 Halloween starts in '+left:now<HAL_END?'🎃 Halloween ends in '+left:'🎃 Halloween 2026 has ended'}
+let S;try{S=Object.assign(def(),JSON.parse(localStorage.getItem(KEY)||'{}'))}catch(e){S=def()}normalizeHalloween(S);
 S.T=Object.assign(def().T,S.T);for(const k in S.sp)if(S.T.sp[k]<S.sp[k])S.T.sp[k]=S.sp[k];S.T.earned=Math.max(S.T.earned,S.run);if(!S.T.since)S.T.since=Date.now();if(S.P.n===0&&S.run<S.T.earned)S.run=S.T.earned;
 const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}};
 const fmt=n=>{n=Math.floor(n);return n>=1e6?(n/1e6).toFixed(2)+'M':n.toLocaleString()};
 const lv=id=>S.up[id]||0,pl=id=>S.P.lv[id]||0,lim=()=>5+5*S.slot;
 const need=k=>k=='g'?Math.max(15,30-3*pl('gfarm')):Math.max(5,12-pl('farm'));
-const yld=()=>Math.round(150*(1+.05*S.sp.oak)*(1+.25*lv('soil'))*(1+ab('yield')));
+const yld=()=>Math.round(150*(1+.05*S.sp.oak)*(1+.05*halloweenUp('oak'))*(1+.25*lv('soil'))*(1+ab('yield')));
 const uc=u=>u.id=='store'?S.cap:Math.ceil(u.c*Math.pow(u.g,lv(u.id))),pc=()=>Math.ceil(200*Math.pow(3,S.plots.length-1));
 const gcst=x=>x.id=='pouch'?5*(S.slot+1):x.c,pgain=()=>Math.floor(Math.sqrt(S.run/1000))+abN('heart');
 function toast(t){$('msg').innerHTML=t}
 function gain(n){n=Math.floor(n);const t=Math.max(0,Math.min(n,S.cap-S.a));S.a+=t;S.run+=t;S.T.earned+=t;return t}
 function rollHunt(){
  S.T.hunts++;if(S.T.hunts%10===0)S.freeSpins++;
- const m=1+.5*lv('claws')+.05*S.sp.feather+ab('hauls')+.5*S.P.n,gc=.03+.005*lv('whisk')+.005*S.sp.clover+.005*pl('luck')+ab('gold'),r=Math.random();
- const res={tier:'',acorns:0,full:false,seeds:0,gseed:0,special:null};
- if(r<gc){S.g++;S.T.gfound++;res.tier='gold'}
+ const m=1+.5*lv('claws')+.05*S.sp.feather+.05*halloweenUp('feather')+ab('hauls')+.5*S.P.n,gc=.03+.005*lv('whisk')+.005*S.sp.clover+.005*halloweenUp('clover')+.005*pl('luck')+ab('gold'),r=Math.random();
+ const res={tier:'',acorns:0,gold:0,full:false,seeds:0,gseed:0,bats:0,special:null};
+ if(r<gc){res.tier='gold';res.gold=halloweenActive()?2:1;S.g+=res.gold;S.T.gfound+=res.gold}
  else{let n;if(r<gc+.25){res.tier='big';n=Math.round((25+Math.random()*25)*m)}else{res.tier='small';n=Math.round((5+Math.random()*10)*m)}
-  const got=gain(n);res.acorns=n;if(got<n)res.full=true}
- if(Math.random()<.1+.01*S.sp.satchel+ab('seed')){const k=1+Math.floor(Math.random()*3);S.seed+=k;S.T.seeds+=k;res.seeds=k}
+  if(halloweenActive())n*=2;const got=gain(n);res.acorns=n;if(got<n)res.full=true}
+ if(Math.random()<.1+.01*S.sp.satchel+.01*halloweenUp('satchel')+ab('seed')){const k=1+Math.floor(Math.random()*3);S.seed+=k;S.T.seeds+=k;res.seeds=k}
  if(Math.random()<.05+ab('gseed')){S.gseed++;S.T.gseeds++;res.gseed=1}
+ if(halloweenActive()&&Math.random()<.1){res.bats=1+Math.floor(Math.random()*3);S.halloween.bats+=res.bats}
  if(Math.random()<.01+.005*pl('keen')+.001*lv('nose')+ab('special')){const o=SP.filter(x=>S.sp[x.id]<lim());if(o.length){const x=o[Math.floor(Math.random()*o.length)];S.sp[x.id]++;S.T.sp[x.id]++;res.special={e:x.e,n:x.n,d:x.d(S.sp[x.id])}}}
  S.plots.forEach(p=>{if(p&&p.h<need(p.k))p.h++});
  return res}
 function huntMsg(res){
- let msg=res.tier=='gold'?AC(1)+' A golden acorn glinting in the roots!':res.tier=='big'?'🍂 Big stash: +'+fmt(res.acorns)+' acorns!':AC()+' Dug up +'+fmt(res.acorns)+' acorns';
+ let msg=res.tier=='gold'?AC(1)+' A golden acorn glinting in the roots!'+(res.gold>1?' ×'+res.gold:''):res.tier=='big'?'🍂 Big stash: +'+fmt(res.acorns)+' acorns!':AC()+' Dug up +'+fmt(res.acorns)+' acorns';
  if(res.full)msg+=' (storage full!)';
  if(res.seeds)msg+='<br>🌱 Found '+res.seeds+' seed'+(res.seeds>1?'s':'')+'!';
  if(res.gseed)msg+='<br>'+AC(1)+'🌱 Found a golden seed!';
+ if(res.bats)msg+='<br>🦇 Found '+res.bats+' Chocolate Bat'+(res.bats>1?'s':'')+'!';
  if(res.special)msg+='<br>'+res.special.e+' <b>Special find: '+res.special.n+'!</b> '+res.special.d+' in total';
  return msg}
 function hunt(){accrue();if(S.hc<1)return;S.hc--;
  toast(huntMsg(rollHunt()));save();lists();ui()}
 function huntAll(){accrue();const n=S.hc;if(n<1)return;
- const t={gold:0,acorns:0,full:false,seeds:0,gseed:0,special:{}};
+ const t={gold:0,acorns:0,full:false,seeds:0,gseed:0,bats:0,special:{}};
  for(let i=0;i<n;i++){S.hc--;const res=rollHunt();
-  if(res.tier=='gold')t.gold++;else{t.acorns+=res.acorns;if(res.full)t.full=true}
-  t.seeds+=res.seeds;if(res.gseed)t.gseed++;
+  if(res.tier=='gold')t.gold+=res.gold;else{t.acorns+=res.acorns;if(res.full)t.full=true}
+  t.seeds+=res.seeds;if(res.gseed)t.gseed++;t.bats+=res.bats;
   if(res.special)t.special[res.special.n]=(t.special[res.special.n]||0)+1}
  let msg='🐿️ Hunted '+n+' time'+(n>1?'s':'')+': +'+fmt(t.acorns)+' acorns';
  if(t.gold)msg+=', '+AC(1)+' x'+t.gold;
+ if(t.bats)msg+='<br>🦇 +'+t.bats+' Chocolate Bat'+(t.bats>1?'s':'');
  if(t.full)msg+=' (storage full!)';
  if(t.seeds)msg+='<br>🌱 +'+t.seeds+' seed'+(t.seeds>1?'s':'');
  if(t.gseed)msg+=' · '+AC(1)+'🌱 +'+t.gseed+' golden seed'+(t.gseed>1?'s':'');
@@ -194,7 +204,7 @@ function huntAll(){accrue();const n=S.hc;if(n<1)return;
  toast(msg);save();lists();ui()}
 function plant(i,k){if(S.plots[i])return;if(k=='g'){if(!S.gseed)return;S.gseed--}else{if(!S.seed)return;S.seed--}S.plots[i]={k,h:0};lists();ui();save()}
 function harvest(i){const p=S.plots[i];if(!p||p.h<need(p.k))return;
- if(p.k=='g'){S.g++;S.T.gfound++;toast(AC(1)+' Harvested a golden acorn!')}else{const n=yld();gain(n)<n?toast('🧺 Harvested +'+fmt(n)+' acorns (storage full!)'):toast('🧺 Harvested +'+fmt(n)+' acorns!')}
+ if(p.k=='g'){const n=halloweenActive()?2:1;S.g+=n;S.T.gfound+=n;toast(AC(1)+' Harvested '+(n>1?n+' golden acorns':'a golden acorn')+'!')}else{const n=yld()*(halloweenActive()?2:1);gain(n)<n?toast('🧺 Harvested +'+fmt(n)+' acorns (storage full!)'):toast('🧺 Harvested +'+fmt(n)+' acorns!')}
  S.T.harv++;S.plots[i]=null;lists();ui();save()}
 function buyPlot(){const c=pc();if(S.a<c||S.plots.length>=PMAX)return;S.a-=c;S.plots.push(null);lists();ui();save()}
 function buyU(i){const u=U[i],c=uc(u);if(S.a<c||lv(u.id)>=u.max)return;S.a-=c;S.up[u.id]=lv(u.id)+1;if(u.id=='store')S.cap*=2;lists();ui();save()}
@@ -209,7 +219,7 @@ function prestige(){if(S.run<UNL)return;const x=pgain();
 <div class="sub"><b>Resets:</b> acorns, farm, upgrades, special finds.<br><b>Kept:</b> Heartwood upgrades, golden acorns, skins, achievements and stats.</div>
 <div style="margin-top:16px"><button class="mini" style="margin:0" onclick="doPrestige()">Confirm prestige</button><button class="link" style="margin:0 0 0 14px" onclick="closeModal()">Cancel</button></div>`)}
 function doPrestige(){closeModal();if(S.run<UNL)return;
- const x=pgain(),k={g:S.g,slot:S.slot,skins:S.skins,skin:S.skin,P:S.P,mus:S.mus,vol:S.vol,T:S.T,pf:S.pf,cloudAt:S.cloudAt,cloudUid:S.cloudUid,ach:S.ach,col:S.col,lastVer:S.lastVer,freeSpins:S.freeSpins,hwMig1:S.hwMig1};S=Object.assign(def(),k);S.P.hw+=x;S.P.n++;save();lists();ui();toast('🪵 Prestiged! +'+x+' Heartwood. A fresh forest awaits.')}
+ const x=pgain(),k={g:S.g,slot:S.slot,skins:S.skins,skin:S.skin,P:S.P,mus:S.mus,vol:S.vol,T:S.T,pf:S.pf,cloudAt:S.cloudAt,cloudUid:S.cloudUid,ach:S.ach,col:S.col,lastVer:S.lastVer,freeSpins:S.freeSpins,halloween:S.halloween,hwMig1:S.hwMig1};S=Object.assign(def(),k);normalizeHalloween(S);S.P.hw+=x;S.P.n++;save();lists();ui();toast('🪵 Prestiged! +'+x+' Heartwood. A fresh forest awaits.')}
 function lists(){
  odds();achList();
  const nd=need('n'),gd=need('g');
@@ -224,7 +234,12 @@ function lists(){
  $('gl').innerHTML=G.map((x,i)=>`<button class="it gi" data-k="g" data-c="${gcst(x)}" onclick="buyG(${i})"><span class="em">${x.e}</span><span class="tx"><b>${x.n}</b><small>${typeof x.d=='function'?x.d():x.d}</small></span><span class="pr">${AC(1)} ${gcst(x)}</span></button>`).join('');
  $('sk').innerHTML=pl('mkt')?`<details class="sec" data-s="skins" ${S.col.skins?'':'open'} ontoggle="secT(this)"><summary><h2>Skin market</h2></summary>`+SK.map((x,i)=>{const o=S.skins.includes(x.id);return `<button class="it gi" ${o?'':'data-k="g" data-c="4"'} onclick="skin(${i})"><span class="em">${x.e}</span><span class="tx"><b>${x.n}</b><small>${o?(S.skin==x.id?'Equipped':'Tap to equip'):'Colour skin'}</small></span><span class="pr">${o?'':AC(1)+' 4'}</span></button>`}).join('')+'</details>':'';
  $('pl').innerHTML=`<div class="sub" style="margin-bottom:8px">Heartwood 🪵 ${S.P.hw} · prestiges ${S.P.n}<br>Resets acorns, farm, upgrades and special finds. Heartwood upgrades and things bought with golden acorns are kept.<br>Each prestige permanently adds +50% acorns per hunt (currently +${S.P.n*50}%).</div><button class="it" id="pb" onclick="prestige()"><span class="em">🪵</span><span class="tx"><b>Prestige for ${pgain()} Heartwood</b><small>Unlocks at ${fmt(UNL)} acorns earned this run (${fmt(S.run)} so far)</small></span></button>`+PU.map((x,i)=>{const l=pl(x.id),mx=l>=x.max;return `<button class="it" data-k="h" data-c="${x.wip?1e99:mx?1e99:x.c(l)}" ${x.wip?'disabled':''} onclick="buyP(${i})"><span class="em">${x.e}</span><span class="tx"><b>${x.n}</b> Lv ${l}/${x.max}<small>${x.d}</small></span><span class="pr">${x.wip?'WIP':mx?'Max':'🪵 '+x.c(l)}</span></button>`}).join('')}
+let uiHalloweenMode=null;
 function ui(){
+ const active=halloweenActive();if(uiHalloweenMode!==active){uiHalloweenMode=active;odds()}
+ const fab=$('halloweenFab');if(fab)fab.hidden=!active;
+ const countdown=$('halloweenCountdown');if(countdown)countdown.textContent=halloweenCountdownText();
+ const shopCountdown=$('halloweenShopCountdown');if(shopCountdown)shopCountdown.textContent=halloweenCountdownText();
  $('a').textContent=fmt(S.a);$('g').textContent=S.g;
  $('cap').textContent='of '+fmt(S.cap)+' storage';
  accrue();const mx=maxH(),rem=S.ht+HUNT-Date.now(),h=$('hunt'),mm=x=>Math.floor(x/60000)+':'+String(Math.floor(x/1000)%60).padStart(2,'0');
@@ -268,14 +283,14 @@ document.addEventListener('visibilitychange',()=>{if(!AX)return;if(document.hidd
 sndUI();
 const maxH=()=>3+lv('burrow');
 function odds(){
- const m=1+.5*lv('claws')+.05*S.sp.feather+ab('hauls')+.5*S.P.n,gc=.03+.005*lv('whisk')+.005*S.sp.clover+.005*pl('luck')+ab('gold'),big=.25,sm=1-gc-big;
+ const active=halloweenActive(),mult=active?2:1,m=1+.5*lv('claws')+.05*S.sp.feather+.05*halloweenUp('feather')+ab('hauls')+.5*S.P.n,gc=.03+.005*lv('whisk')+.005*S.sp.clover+.005*halloweenUp('clover')+.005*pl('luck')+ab('gold'),big=.25,sm=1-gc-big;
  const p=x=>(+(x*100).toFixed(2))+'%',row=(a,b)=>`<div class="row"><span>${a}</span><b>${b}</b></div>`;
  const h='<div class="sub" style="margin-top:0">Each hunt gives one of:</div>'
-  +row('Small haul · '+fmt(Math.round(5*m))+'–'+fmt(Math.round(15*m))+' acorns',p(sm))
-  +row('Big stash · '+fmt(Math.round(25*m))+'–'+fmt(Math.round(50*m))+' acorns',p(big))
-  +row(AC(1)+' Golden acorn',p(gc))
+  +row('Small haul · '+fmt(Math.round(5*m)*mult)+'–'+fmt(Math.round(15*m)*mult)+' acorns',p(sm))
+  +row('Big stash · '+fmt(Math.round(25*m)*mult)+'–'+fmt(Math.round(50*m)*mult)+' acorns',p(big))
+  +row(AC(1)+' Golden acorn'+(active?' ×2':''),p(gc))
   +'<div class="sub">Plus bonus rolls on any hunt:</div>'
-  +row('🌱 Acorn seeds (1–3)',p(.1+.01*S.sp.satchel+ab('seed')))+row(AC(1)+'🌱 Golden seed',p(.05+ab('gseed')))+row('✨ Special find',p(.01+.005*pl('keen')+.001*lv('nose')+ab('special')));$('od').innerHTML=h;$('od2').innerHTML=h}
+  +row('🌱 Acorn seeds (1–3)',p(.1+.01*S.sp.satchel+.01*halloweenUp('satchel')+ab('seed')))+row(AC(1)+'🌱 Golden seed',p(.05+ab('gseed')))+row('✨ Special find',p(.01+.005*pl('keen')+.001*lv('nose')+ab('special')))+(active?row('🦇 Chocolate Bats (1–3)',p(.1)):'');$('od').innerHTML=h;$('od2').innerHTML=h}
 function accrue(){const n=Date.now(),m=maxH();
  if(S.ht>n)S.ht=n;
  if(S.hc>=m){S.ht=n;return}
@@ -335,7 +350,7 @@ async function cloudSync(){if(!sb||!user)return;
  if(!hasProg()){applyCloud(c.data,ct);return}
  pend={d:c.data,t:ct};
  modal(`<h2 style="margin-top:0">Which save do you want?</h2><div class="sub" style="margin-bottom:10px">Your online save and this device are different.</div><p><b>☁️ Online save</b><br><span class="sub">${cnt(c.data)}</span></p><p><b>📱 This device</b><br><span class="sub">${cnt(S)}</span></p><button class="mini" style="margin:0" onclick="useCloud()">Use online save</button><button class="mini" onclick="useLocal()">Keep this device</button>`)}
-function applyCloud(d,ct){S=Object.assign(def(),d);S.cloudAt=ct;S.cloudUid=user.id;save();
+function applyCloud(d,ct){S=Object.assign(def(),d);normalizeHalloween(S);S.cloudAt=ct;S.cloudUid=user.id;save();
  document.documentElement.dataset.skin=S.skin||'';if(S.theme)document.documentElement.dataset.theme=S.theme;if(S.pf.name)$('ov').hidden=true;
  sndUI();profile();lists();applyCol();ui();closeModal();setMsg('Loaded your online save')}
 const useCloud=()=>applyCloud(pend.d,pend.t),useLocal=()=>{closeModal();push()};
@@ -392,6 +407,7 @@ function achList(){let got=0;
   return `<details ${opn.has(c.k)?'open':''} ontoggle="tg('${c.k}',this.open)"><summary>${c.n} <span class="sub">${done}/${c.t.length}</span></summary><div class="sub" style="margin-bottom:4px">Each: ${bl(c.b)} · Now: ${bfmt(c.b,done)}</div>${rows}</details>`}).join('');
  $('ai').textContent=got+' of '+ATOT+' unlocked'}
 const CHANGELOG=[
+ {v:'2026-10-02a',t:'v3.0 — Halloween 2026',items:['Halloween hunts and harvests award doubled acorns and golden acorns, plus Chocolate Bats from independent hunt drops','Open the 🎃 Halloween Shop to buy four repeatable seasonal upgrades with Chocolate Bats','The Acorn Jackpot has a limited-time Halloween prize table; event rewards end at midnight Singapore time on November 1']},
  {v:'2026-09-29a',t:'v2.9 — Hunt All',items:['New "Hunt All" button appears whenever you have more than 1 stored hunt — spends them all at once with one combined result']},
  {v:'2026-09-28c',t:'v2.8 — Prestige & display update',items:['Prestige achievements now give +1 Heartwood each every time you prestige (instead of +1%). Past prestiges are paid out automatically, based on the achievements you had unlocked at the time','Prestige now opens a Confirm / Cancel pop-up instead of the double-tap','Keen Nose and Golden Instinct now give +0.5% per level (up from +0.25%)','Every prestige now permanently adds +50% acorns per hunt','New Visual tab in Settings: adjustable font size and display size (Auto, or 80%–200%)','Big screens now scale up automatically, and very wide screens switch to a two-column layout']},
  {v:'2026-09-28b',t:'Retroactive fix',items:["This run\'s progress is now automatically corrected to match your all-time acorns if you've never prestiged — fixes the Acorn Sack bug for existing saves too, not just new ones"]},
@@ -497,22 +513,44 @@ function setTheme(t){S.theme=t=='system'?'':t;if(S.theme)document.documentElemen
 const TW='<svg viewBox="0 0 24 24" width="1.1em" height="1.1em" style="vertical-align:-.2em" aria-hidden="true"><path d="M4 20 L18 6" stroke="#8a6a43" stroke-width="2.6" stroke-linecap="round"/><path d="M9 15l-4 1M13 11l-3.5 3.5M16 8l-3 1" stroke="#6b4f30" stroke-width="1.8" stroke-linecap="round"/></svg>';
 const JP_A=AC(),JP_G=AC(1),JP_T=TW;
 function shuf(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
+const JP_B='🦇';
 const JP_TIERS=[
  {p:.4,label:'Nothing this time',g:0,a:0,syms:()=>{const o=Math.random()<.5?JP_A:JP_G;return shuf([JP_T,JP_T,o])}},
  {p:.4,label:'+500 acorns',g:0,a:500,syms:()=>shuf([JP_A,JP_A,JP_T])},
  {p:.12,label:'+5,000 acorns',g:0,a:5000,syms:()=>[JP_A,JP_A,JP_A]},
  {p:.06,label:'+2 golden acorns',g:2,a:0,syms:()=>shuf([JP_G,JP_G,JP_A])},
- {p:.02,label:'JACKPOT! +5 golden acorns',g:5,a:0,syms:()=>[JP_G,JP_G,JP_G]}
+ {p:.02,label:'JACKPOT! +5 golden acorns',g:5,a:0,jackpot:true,syms:()=>[JP_G,JP_G,JP_G]}
 ];
+const HAL_JP_TIERS=[
+ {p:.37,label:'Nothing this time',a:0,g:0,b:0,syms:()=>shuf([JP_T,JP_T,Math.random()<.5?JP_A:JP_G])},
+ {p:.40,label:'+750 acorns',a:750,g:0,b:0,syms:()=>shuf([JP_A,JP_A,JP_T])},
+ {p:.12,label:'+7,500 acorns',a:7500,g:0,b:0,syms:()=>[JP_A,JP_A,JP_A]},
+ {p:.06,label:'+3 golden acorns',a:0,g:3,b:0,syms:()=>[JP_G,JP_G,JP_A]},
+ {p:.03,label:'+50 Chocolate Bats',a:0,g:0,b:50,syms:()=>[JP_B,JP_B,JP_B]},
+ {p:.02,label:'JACKPOT! +7 golden acorns',a:0,g:Math.floor(5*1.5),b:0,jackpot:true,syms:()=>[JP_G,JP_G,JP_G]}
+];
+function pickJpTier(tiers){let r=Math.random(),acc=0;for(const t of tiers){acc+=t.p;if(r<acc)return t}return tiers[0]}
+function jpTierPick(){return pickJpTier(JP_TIERS)}
+function halloweenJpTierPick(){return pickJpTier(HAL_JP_TIERS)}
 const JP_COST=1000;
 function jpTierPick(){let r=Math.random(),acc=0;for(const t of JP_TIERS){acc+=t.p;if(r<acc)return t}return JP_TIERS[0]}
-function jackpotHTML(){const fs=S.freeSpins||0,cd=S.T.hunts%10;return `<h2 style="margin-top:0">🎰 Acorn Jackpot</h2>
+function jackpotHTML(){const fs=S.freeSpins||0,cd=S.T.hunts%10,hal=halloweenActive();return `<h2 style="margin-top:0">🎰 Acorn Jackpot</h2>
 <div class="sub" id="jpfs">${JP_COST} acorns per spin${fs?' · '+fs+' free spin'+(fs>1?'s':'')+' banked':''}</div>
+${hal?'<div class="sub" id="halloweenShopCountdown">'+halloweenCountdownText()+'</div>':''}
 <div class="sub">${cd}/10 hunts to next free spin<div class="bar" style="margin-top:4px"><i style="width:${cd*10}%"></i></div></div>
 <div class="reels"><div class="reel" id="r0">${JP_T}</div><div class="reel" id="r1">${JP_T}</div><div class="reel" id="r2">${JP_T}</div></div>
 <div id="jpm" class="sub" style="text-align:center;min-height:20px"></div>
 <button class="mini" id="jps" style="margin:10px auto 0;display:block" onclick="jpSpin()">${fs?'Spin (Free)':'Spin ('+JP_COST+' '+AC()+')'}</button>
-<div class="jptable"><div><span>${JP_G}${JP_G}${JP_G}</span><b>5 golden acorns</b></div><div><span>${JP_G}${JP_G}·</span><b>2 golden acorns</b></div><div><span>${JP_A}${JP_A}${JP_A}</span><b>5,000 acorns</b></div><div><span>${JP_A}${JP_A}·</span><b>500 acorns</b></div><div><span>${JP_T}${JP_T}·</span><b>Nothing</b></div></div>`}
+<div class="jptable">${hal?`<div><span>${JP_G}${JP_G}${JP_G}</span><b>2% · Jackpot: 7 golden acorns</b></div><div><span>${JP_B}${JP_B}${JP_B}</span><b>3% · 50 Chocolate Bats</b></div><div><span>${JP_G}${JP_G}${JP_A}</span><b>6% · 3 golden acorns</b></div><div><span>${JP_A}${JP_A}${JP_A}</span><b>12% · 7,500 acorns</b></div><div><span>${JP_A}${JP_A}·</span><b>40% · 750 acorns</b></div><div><span>${JP_T}${JP_T}·</span><b>37% · Nothing</b></div>`:`<div><span>${JP_G}${JP_G}${JP_G}</span><b>5 golden acorns</b></div><div><span>${JP_G}${JP_G}·</span><b>2 golden acorns</b></div><div><span>${JP_A}${JP_A}${JP_A}</span><b>5,000 acorns</b></div><div><span>${JP_A}${JP_A}·</span><b>500 acorns</b></div><div><span>${JP_T}${JP_T}·</span><b>Nothing</b></div>`}</div>`}
+const HAL_ITEMS=[
+ {id:'oak',e:'🌳',n:'Oak Charm',effect:'+5% harvest yield per stack',value:n=>'+'+(5*n)+'% harvest yield'},
+ {id:'feather',e:'🪶',n:"Hunter's Feather",effect:'+5% acorns per hunt per stack',value:n=>'+'+(5*n)+'% acorns per hunt'},
+ {id:'clover',e:'🍀',n:'Four-leaf Clover',effect:'+0.5% golden acorn chance per stack',value:n=>'+'+(0.5*n)+'% golden acorn chance'},
+ {id:'satchel',e:'🧺',n:'Seed Satchel',effect:'+1% seed drop chance per stack',value:n=>'+'+n+'% seed drop chance'}
+];
+function halloweenShopHTML(){return `<h2 style="margin-top:0">🎃 Halloween Shop</h2><div class="sub">🦇 Chocolate Bats: <b>${fmt(S.halloween.bats)}</b></div><div class="sub" id="halloweenShopCountdown" style="margin:4px 0 12px">${halloweenCountdownText()}</div>${HAL_ITEMS.map(x=>{const n=S.halloween.upgrades[x.id]||0;return `<button class="it" onclick="buyHalloween('${x.id}')" ${S.halloween.bats<150?'disabled':''}><span class="em">${x.e}</span><span class="tx"><b>${x.n}</b> · ${n} stack${n===1?'':'s'}<small>${x.effect}<br>Current: ${x.value(n)}</small></span><span class="pr">🦇 150</span></button>`}).join('')}`};
+function openHalloweenShop(){if(!halloweenActive())return;modal(halloweenShopHTML())}
+function buyHalloween(id){if(!halloweenActive())return;const x=HAL_ITEMS.find(i=>i.id===id);if(!x||S.halloween.bats<150)return;S.halloween.bats-=150;S.halloween.upgrades[id]=(S.halloween.upgrades[id]||0)+1;save();lists();ui();openHalloweenShop()}
 function openJackpot(){modal(jackpotHTML())}
 let jpSpinning=false;
 function jpSpin(){if(jpSpinning)return;
@@ -525,15 +563,17 @@ function jpSpin(){if(jpSpinning)return;
  if(jpsEl)jpsEl.innerHTML=fsNow>0?'Spin (Free)':'Spin ('+JP_COST+' '+AC()+')';
  if(jpfsEl)jpfsEl.textContent=JP_COST+' acorns per spin'+(fsNow?' · '+fsNow+' free spin'+(fsNow>1?'s':'')+' banked':'');
  save();ui();
- const tier=jpTierPick(),final=tier.syms(),pool=[JP_A,JP_G,JP_T];
+ let halMode=halloweenActive(),tier=halMode?halloweenJpTierPick():jpTierPick(),final=tier.syms();const pool=[JP_A,JP_G,JP_T];
  let n=0;const spin=setInterval(()=>{
   for(let i=0;i<3;i++)$('r'+i).textContent!==undefined&&($('r'+i).innerHTML=pool[Math.floor(Math.random()*3)]);
   n++;if(n>7){clearInterval(spin);
    [0,1,2].forEach((i,idx)=>setTimeout(()=>{const el=$('r'+i);if(el)el.innerHTML=final[i]},idx*220));
    setTimeout(()=>{
+    if(halMode!==halloweenActive()){halMode=halloweenActive();tier=halMode?halloweenJpTierPick():jpTierPick();final=tier.syms();[0,1,2].forEach(i=>{const el=$('r'+i);if(el)el.innerHTML=final[i]})}
     if(tier.a){gain(tier.a)}
     if(tier.g){S.g+=tier.g;S.T.gfound+=tier.g}
-    if(tier.g===5)S.T.jackpots++;
+    if(tier.b)S.halloween.bats+=tier.b;
+    if(tier.jackpot||tier.g===5)S.T.jackpots++;
     $('jpm').style.color=tier.p<=.02?'var(--gold)':tier.a||tier.g?'var(--acc)':'var(--mute)';
     $('jpm').textContent=tier.label;
     save();lists();ui();jpSpinning=false;$('jps').disabled=false
