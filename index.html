@@ -99,7 +99,13 @@ div.it{cursor:default}
 .link{font:inherit;font-size:calc(13px*var(--fs,1));background:none;border:0;color:var(--mute);text-decoration:underline;padding:0;margin-top:20px;cursor:pointer}
 .pay{width:100%;font:inherit;font-size:calc(13px*var(--fs,1));color:var(--mute);border:1px dashed var(--line);border-radius:10px;padding:8px;margin-top:6px;background:none}
 .foot{margin-top:26px;padding:10px;text-align:center;font-size:calc(13px*var(--fs,1));color:var(--mute);border:1px dashed var(--line);border-radius:10px}
-</style>
+<style>
+/* Seasonal palette and corner webs; shown only while the Halloween event is active. */
+:root.halloween-event{--bg:#1d110b;--card:#2a1a12;--ink:#f8e8d6;--mute:#c3a88f;--line:#513622;--acc:#c85c1b;--onacc:#fff2e3;--gold:#ffb632;--dis:#3a291d}
+html.halloween-event body::before{content:"";position:fixed;inset:0;z-index:0;pointer-events:none;opacity:.68;background-image:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%201000%201000%22%20preserveAspectRatio%3D%22none%22%3E%3Cg%20fill%3D%22none%22%20stroke%3D%22%23efa566%22%20stroke-width%3D%222.4%22%20stroke-opacity%3D%22.22%22%3E%3Cg%3E%3Cpath%20d%3D%22M0%200H170M0%200V170M0%200L120%20120M0%200L170%2080M0%200L80%20170M0%2032Q32%2032%2032%200M0%2064Q64%2064%2064%200M0%2096Q96%2096%2096%200M0%20128Q128%20128%20128%200M0%20160Q160%20160%20160%200%22%2F%3E%3C%2Fg%3E%3Cg%20transform%3D%22translate(1000%200)%20scale(-1%201)%22%3E%3Cpath%20d%3D%22M0%200H170M0%200V170M0%200L120%20120M0%200L170%2080M0%200L80%20170M0%2032Q32%2032%2032%200M0%2064Q64%2064%2064%200M0%2096Q96%2096%2096%200M0%20128Q128%20128%20128%200M0%20160Q160%20160%20160%200%22%2F%3E%3C%2Fg%3E%3Cg%20transform%3D%22translate(0%201000)%20scale(1%20-1)%22%3E%3Cpath%20d%3D%22M0%200H170M0%200V170M0%200L120%20120M0%200L170%2080M0%200L80%20170M0%2032Q32%2032%2032%200M0%2064Q64%2064%2064%200M0%2096Q96%2096%2096%200M0%20128Q128%20128%20128%200M0%20160Q160%20160%20160%200%22%2F%3E%3C%2Fg%3E%3Cg%20transform%3D%22translate(1000%201000)%20scale(-1%20-1)%22%3E%3Cpath%20d%3D%22M0%200H170M0%200V170M0%200L120%20120M0%200L170%2080M0%200L80%20170M0%2032Q32%2032%2032%200M0%2064Q64%2064%2064%200M0%2096Q96%2096%2096%200M0%20128Q128%20128%20128%200M0%20160Q160%20160%20160%200%22%2F%3E%3C%2Fg%3E%3C%2Fg%3E%3C%2Fsvg%3E");background-position:center;background-size:100vw 100vh;background-repeat:no-repeat}
+html.halloween-event .wrap{position:relative;z-index:1}
+html.halloween-event .ann{position:relative;z-index:2}
+</style></style>
 <script>
 var VKEY='acornhunt_view',VIEW=null;
 function getView(){if(!VIEW){var v={};try{v=JSON.parse(localStorage.getItem(VKEY)||'{}')}catch(e){}VIEW={zoom:v.zoom==null?'auto':v.zoom,fs:v.fs||100}}return{zoom:VIEW.zoom,fs:VIEW.fs}}
@@ -236,7 +242,7 @@ function lists(){
  $('pl').innerHTML=`<div class="sub" style="margin-bottom:8px">Heartwood 🪵 ${S.P.hw} · prestiges ${S.P.n}<br>Resets acorns, farm, upgrades and special finds. Heartwood upgrades and things bought with golden acorns are kept.<br>Each prestige permanently adds +50% acorns per hunt (currently +${S.P.n*50}%).</div><button class="it" id="pb" onclick="prestige()"><span class="em">🪵</span><span class="tx"><b>Prestige for ${pgain()} Heartwood</b><small>Unlocks at ${fmt(UNL)} acorns earned this run (${fmt(S.run)} so far)</small></span></button>`+PU.map((x,i)=>{const l=pl(x.id),mx=l>=x.max;return `<button class="it" data-k="h" data-c="${x.wip?1e99:mx?1e99:x.c(l)}" ${x.wip?'disabled':''} onclick="buyP(${i})"><span class="em">${x.e}</span><span class="tx"><b>${x.n}</b> Lv ${l}/${x.max}<small>${x.d}</small></span><span class="pr">${x.wip?'WIP':mx?'Max':'🪵 '+x.c(l)}</span></button>`}).join('')}
 let uiHalloweenMode=null;
 function ui(){
- const active=halloweenActive();if(uiHalloweenMode!==active){uiHalloweenMode=active;odds()}
+ const active=halloweenActive();if(uiHalloweenMode!==active){uiHalloweenMode=active;odds()}document.documentElement.classList.toggle('halloween-event',active);
  const fab=$('halloweenFab');if(fab)fab.hidden=!active;
  const countdown=$('halloweenCountdown');if(countdown)countdown.textContent=halloweenCountdownText();
  const shopCountdown=$('halloweenShopCountdown');if(shopCountdown)shopCountdown.textContent=halloweenCountdownText();
