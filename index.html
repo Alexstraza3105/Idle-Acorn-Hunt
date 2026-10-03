@@ -590,12 +590,12 @@ function jpSpin(){if(jpSpinning)return;
 const UPDATE_GUARD_KEY='acornhunt_update_attempt',UPDATE_CHECK_MS=180000,UPDATE_PROPAGATION_MS=30000,UPDATE_RETRY_MS=60000;
 let updateCheckBusy=false,updatePending=false,updateTimer=0,updateReloading=false;
 function compareGameVersions(a,b){const x=String(a).split('.').map(Number),y=String(b).split('.').map(Number);if(x.length!==3||y.length!==3||x.concat(y).some(n=>!Number.isInteger(n)||n<0))return 0;for(let i=0;i<3;i++){if(x[i]!==y[i])return x[i]>y[i]?1:-1}return 0}
-function validGameVersion(v){return /^\\d+\\.\\d+\\.\\d+$/.test(String(v||''))}
+function validGameVersion(v){return /^\d+\.\d+\.\d+$/.test(String(v||''))}
 function clearSuccessfulUpdateGuard(){try{const a=JSON.parse(sessionStorage.getItem(UPDATE_GUARD_KEY)||'null');if(a&&validGameVersion(a.to)&&compareGameVersions(GAME_VERSION,a.to)>=0)sessionStorage.removeItem(UPDATE_GUARD_KEY)}catch(e){}}
 function updateWasAttempted(target){try{const a=JSON.parse(sessionStorage.getItem(UPDATE_GUARD_KEY)||'null');if(!a)return false;if(!validGameVersion(a.to)){sessionStorage.removeItem(UPDATE_GUARD_KEY);return false}if(compareGameVersions(GAME_VERSION,a.to)>=0){sessionStorage.removeItem(UPDATE_GUARD_KEY);return false}return a.from===GAME_VERSION&&compareGameVersions(target,a.to)<=0}catch(e){return true}}
 function rememberUpdateAttempt(target){try{sessionStorage.setItem(UPDATE_GUARD_KEY,JSON.stringify({from:GAME_VERSION,to:target,at:Date.now()}));return true}catch(e){return false}}
 async function fetchUpdateVersion(){const u=new URL('version.json',document.baseURI);u.searchParams.set('_',Date.now());const r=await fetch(u.href,{cache:'no-store'});if(!r.ok)return null;const d=await r.json();return validGameVersion(d&&d.version)?d.version:null}
-async function fetchDeployedGameVersion(){const u=new URL('index.html',document.baseURI);u.searchParams.set('_version_probe',Date.now());const r=await fetch(u.href,{cache:'no-store'});if(!r.ok)return null;const h=await r.text(),m=h.match(/<meta\\s+name=["']game-version["']\\s+content=["']([^"']+)["']/i);return m&&validGameVersion(m[1])?m[1]:null}
+async function fetchDeployedGameVersion(){const u=new URL('index.html',document.baseURI);u.searchParams.set('_version_probe',Date.now());const r=await fetch(u.href,{cache:'no-store'});if(!r.ok)return null;const h=await r.text(),m=h.match(/<meta\s+name=["']game-version["']\s+content=["']([^"']+)["']/i);return m&&validGameVersion(m[1])?m[1]:null}
 function saveForUpdate(){try{localStorage.setItem(KEY,JSON.stringify(S));return true}catch(e){return false}}
 function updateReloadIsSafe(){return !jpSpinning&&$('ov').hidden&&$('ov2').hidden}
 function scheduleUpdateReload(delay){if(updateTimer||updateReloading)return;updateTimer=setTimeout(finishUpdateReload,delay)}
