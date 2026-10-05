@@ -324,7 +324,7 @@ function pfRows(){const e=$('pfr');if(!e)return;const row=(a,b)=>`<div class="ro
 const SBU='https://yqmopirxnwldtkhfodov.supabase.co',SBK='sb_publishable_am4tu9fCzpDGu-vNZhP_xA_riORcEHD';
 let sb=null,user=null,syncMsg='',pend=null;
 try{sb=window.supabase.createClient(SBU,SBK)}catch(e){}
-const modal=h=>{$('mc').innerHTML='<button class="mx" onclick="closeModal()" aria-label="Close">✕</button>'+h;$('ov2').hidden=false},closeModal=()=>{$('ov2').hidden=true};
+const modal=h=>{$('mc').innerHTML='<button class="mx" onclick="closeModal()" aria-label="Close">✕</button>'+h;$('ov2').hidden=false},closeModal=()=>{$('ov2').hidden=true;if(changelogAutoPending){changelogAutoPending=false;setTimeout(()=>showChangelog(0),0)}};
 const hasProg=()=>S.T.hunts>0||S.run>0;
 const cnt=d=>(d.pf&&d.pf.name?esc(d.pf.name)+' · ':'')+fmt((d.T&&d.T.earned)||0)+' acorns earned · '+((d.P&&d.P.n)||0)+' prestiges';
 function setMsg(t){syncMsg=t;const e=$('sm');if(e)e.textContent=t}
@@ -361,8 +361,8 @@ function applyCloud(d,ct){S=Object.assign(def(),d);normalizeHalloween(S);S.cloud
  document.documentElement.dataset.skin=S.skin||'';if(S.theme)document.documentElement.dataset.theme=S.theme;if(S.pf.name)$('ov').hidden=true;
  sndUI();profile();lists();applyCol();ui();closeModal();setMsg('Loaded your online save')}
 const useCloud=()=>applyCloud(pend.d,pend.t),useLocal=()=>{closeModal();push()};
-async function cloudInit(){if(!sb)return;
- const g=await sb.auth.getSession();user=g.data.session?g.data.session.user:null;acct();if(user)cloudSync();
+async function cloudInit(){if(!sb){maybeAutoShowChangelog();return}
+ const g=await sb.auth.getSession();user=g.data.session?g.data.session.user:null;acct();if(user)await cloudSync();maybeAutoShowChangelog();
  sb.auth.onAuthStateChange((ev,ses)=>{const u=ses?ses.user:null;if((u&&u.id)!==(user&&user.id)){user=u;acct();if(u)cloudSync()}})}
 document.addEventListener('visibilitychange',()=>{if(document.hidden&&user&&$('ov2').hidden)cloudSync()});
 const AG=[
@@ -414,7 +414,7 @@ function achList(){let got=0;
   return `<details ${opn.has(c.k)?'open':''} ontoggle="tg('${c.k}',this.open)"><summary>${c.n} <span class="sub">${done}/${c.t.length}</span></summary><div class="sub" style="margin-bottom:4px">Each: ${bl(c.b)} · Now: ${bfmt(c.b,done)}</div>${rows}</details>`}).join('');
  $('ai').textContent=got+' of '+ATOT+' unlocked'}
 const CHANGELOG=[
- {v:'2026-10-02a',t:'v3.0 — Halloween 2026',items:['Halloween hunts and harvests award doubled acorns and golden acorns, plus Chocolate Bats from independent hunt drops','Open the 🎃 Halloween Shop to buy four repeatable seasonal upgrades with Chocolate Bats','The Acorn Jackpot has a limited-time Halloween prize table; event rewards end at midnight Singapore time on November 1']},
+ {v:'3.0.0',t:'v3.0.0 — Halloween 2026',items:['A dark autumn theme and subtle maple-leaf corner silhouettes appear during the Halloween event','Hunts and harvests award double normal and golden acorns; hunts also have an independent 10% chance to find 1–3 Chocolate Bats','The Halloween Shop offers four repeatable upgrades for 150 Bats each: +5% harvest yield, +5% acorns per hunt, +0.5% golden-acorn chance, or +1% seed chance per stack','The event jackpot has a 37% nothing, 40% 750-acorn, 12% 7,500-acorn, 6% 3-golden-acorn, 3% 50-Bat, and 2% jackpot result; its golden-acorn jackpot pays 50% more, rounded down','A live countdown tracks the event, and Halloween rewards stop at midnight Singapore time on November 1, 2026']},
  {v:'2026-09-29a',t:'v2.9 — Hunt All',items:['New "Hunt All" button appears whenever you have more than 1 stored hunt — spends them all at once with one combined result']},
  {v:'2026-09-28c',t:'v2.8 — Prestige & display update',items:['Prestige achievements now give +1 Heartwood each every time you prestige (instead of +1%). Past prestiges are paid out automatically, based on the achievements you had unlocked at the time','Prestige now opens a Confirm / Cancel pop-up instead of the double-tap','Keen Nose and Golden Instinct now give +0.5% per level (up from +0.25%)','Every prestige now permanently adds +50% acorns per hunt','New Visual tab in Settings: adjustable font size and display size (Auto, or 80%–200%)','Big screens now scale up automatically, and very wide screens switch to a two-column layout']},
  {v:'2026-09-28b',t:'Retroactive fix',items:["This run\'s progress is now automatically corrected to match your all-time acorns if you've never prestiged — fixes the Acorn Sack bug for existing saves too, not just new ones"]},
@@ -433,9 +433,14 @@ const CHANGELOG=[
  {v:'2026-09-24a',t:'Farming rework',items:['Replaced buildings with a farm: plant seeds, grow them over several hunts, then harvest','Added rare special finds with permanent stackable effects','Added prestige, which resets your run for permanent Heartwood upgrades','Storage cap is now purchased with acorns instead of golden acorns']}
 ];
 function clHTML(list){return list.map(e=>`<h3 style="margin:14px 0 4px">${esc(e.t)} <span class="sub">· ${e.v}</span></h3><ul style="margin:0 0 4px 18px;padding:0">${e.items.map(i=>`<li>${esc(i)}</li>`).join('')}</ul>`).join('')}
-function showChangelog(all){const list=all?CHANGELOG:CHANGELOG.filter(e=>!S.lastVer||e.v>S.lastVer);
- modal(`<h2 style="margin-top:0">What's new</h2>${clHTML(list.length?list:CHANGELOG.slice(0,1))}<button class="mini" style="margin-top:10px" onclick="closeModal()">Got it</button>`);
- S.lastVer=CHANGELOG[0].v;save()}
+const CHANGELOG_SEEN_KEY='acornhunt_seen_game_version_v1';
+let changelogInitDone=false,changelogAutoPending=false;
+function readChangelogSeenVersion(){try{const v=localStorage.getItem(CHANGELOG_SEEN_KEY);return validGameVersion(v)?v:null}catch(e){return null}}
+function writeChangelogSeenVersion(v){try{if(validGameVersion(v))localStorage.setItem(CHANGELOG_SEEN_KEY,v)}catch(e){}}
+function showChangelog(all){const seen=readChangelogSeenVersion()||'0.0.0';const list=all?CHANGELOG:CHANGELOG.filter(e=>validGameVersion(e.v)&&compareGameVersions(e.v,seen)>0);
+ modal(`<h2 style="margin-top:0">What's new</h2>${clHTML(list.length?list:CHANGELOG)}<button class="mini" style="margin-top:10px" onclick="closeModal()">Got it</button>`);
+ writeChangelogSeenVersion(GAME_VERSION)}
+function maybeAutoShowChangelog(){if(changelogInitDone)return;changelogInitDone=true;let seen=readChangelogSeenVersion();if(!seen){const legacy=S.lastVer;seen=legacy==='2026-10-02a'?'3.0.0':(S.pf&&S.pf.name?'2.9.0':GAME_VERSION);writeChangelogSeenVersion(seen)}if(compareGameVersions(GAME_VERSION,seen)>0){if(!$('ov2').hidden){changelogAutoPending=true;return}showChangelog(0)}}
 function openFeedback(){modal(`<h2 style="margin-top:0">Send feedback</h2>
 <div class="sub" style="margin-bottom:6px">Type</div>
 <select id="fbType" style="width:100%;padding:10px;border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--ink);font:inherit">
@@ -608,6 +613,6 @@ function reset(){const b=$('rs');if(!armed){armed=1;b.textContent=user?'Tap agai
 document.documentElement.dataset.skin=S.skin||'';if(S.theme)document.documentElement.dataset.theme=S.theme;
 $('la').innerHTML=AC()+' Acorns';$('lg').innerHTML=AC(1)+' Golden';
 if(!S.hwMig1){const th=AG.find(c=>c.k==='pres').t.map(x=>x[0]);let bonus=0;for(let k=1;k<=S.P.n;k++)bonus+=th.filter(t=>t<=k-1).length;if(bonus>0){S.P.hw+=bonus;toast('🪵 Achievement bonus paid out: +'+bonus+' Heartwood for your past prestiges')}S.hwMig1=1;save()}
-profile();if(!S.pf.name)openProfile(1);else if(S.lastVer&&S.lastVer!==CHANGELOG[0].v)showChangelog(0);else if(!S.lastVer){S.lastVer=CHANGELOG[0].v;save()}
+profile();if(!S.pf.name)openProfile(1);
 lists();applyCol();ui();loadLB();setInterval(ui,1000);setInterval(save,5000);cloudInit();setInterval(()=>{if(user&&!document.hidden&&$('ov2').hidden)cloudSync()},60000);loadAnn();setInterval(loadAnn,30000);setTimeout(checkForGameUpdate,60000);setInterval(checkForGameUpdate,UPDATE_CHECK_MS);document.addEventListener('visibilitychange',()=>{if(updatePending&&!document.hidden)scheduleUpdateReload(0)});
 </script></body></html>
